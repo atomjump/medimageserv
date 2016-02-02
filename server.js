@@ -9,7 +9,7 @@ var storage =   multer.diskStorage({
     callback(null, file.fieldname + '-' + Date.now());
   }
 });
-var upload = multer({ storage : storage}).any(); //single('userPhoto');
+var upload = multer({ storage : storage}).single('file1'); //single('userPhoto');
 
 app.get('/',function(req,res){
       res.sendFile(__dirname + "/index.html");
