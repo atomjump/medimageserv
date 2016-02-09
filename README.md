@@ -36,25 +36,25 @@ sudo ufw allow 5566/tcp
 ```
 
 
-Note: this is always on, but the images are only kept on this machine temporarily.
+Note: this daemon is always on, but the images are only kept on this machine for a few seconds.
 
 
 
 2. On your Windows server/desktop
 ==============================
 
-Download and run the installable MedImageServer.exe
+Download and run the installable MedImageServer.exe from http://medimage.atomjump.com
 
 
 Edit config.js
 
 Set "readProxy" to be:
 ```
-"readProxy" : "http://YOURIP:5566/read/yourdir"
+"readProxy" : "http://YOURIP:5566/read/YOURDIR"
 ```
 
 Where YOURIP is your server's IP address. You may be able to use https:// (TBC)
-yourdir is your site's passcode
+YOURDIR is your site's passcode.
 
 
 3. On your Med Image Android app
@@ -62,16 +62,16 @@ yourdir is your site's passcode
 
 Switch off wifi on your phone.
 
-Click the large icon.
+Click the large circle.
 
 After 5 seconds it will mention that you must be on wifi. Enter your 'Server' after this as
 "http://YOURIP:5566/write/yourdir"
 
 Click the large icon to start taking photos.
 
-Enter the patient id in the box at the top. Note: #tags will allocate a directory (TBC this will create another subdirectory inside your directory).
+Enter the patient id in the box at the top. Note: #tags will allocate a directory (TBC this will create another subdirectory inside your directory). eg.
 ```
-eg. "#bestpatients Fred"
+#bestpatients Fred
 ```
 would create a directory called bestpatients/ on your PC and upload a file called 'Fred-[datetime]'
 
