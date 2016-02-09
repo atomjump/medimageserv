@@ -41,7 +41,7 @@ Note: this daemon is always on, but the images are only kept on this machine for
 
 
 
-## 2. On your Windows server/desktop
+## 2. On your Windows LAN server/desktop
 
 Download and run the installable MedImageServer.exe from http://medimage.atomjump.com
 
@@ -57,14 +57,17 @@ Where YOURIP is your server's IP address. You may be able to use https:// (TBC)
 YOURDIR is your site's passcode.
 
 
-## On your Med Image Android app
+## 3. On your Med Image Android app
 
 Switch off wifi on your phone.
 
 Click the large circle.
 
 After 5 seconds it will mention that you must be on wifi. Enter your 'Server' after this as
-"http://YOURIP:5566/write/yourdir"
+```
+"http://YOURIP:5566/write/YOURDIR"
+```
+where YOURDIR is the same site's passcode your Windows config.json "readProxy" parameter.
 
 Click the large icon to start taking photos.
 
