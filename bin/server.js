@@ -11,7 +11,7 @@ var uuid = require('node-uuid');
 var fsExtra = require('fs-extra');
 var request = require("request");
 
-var outdirDefaultParent = '/snapvolt';
+var outdirDefaultParent = '/medimage';
 var outdirPhotos = '/photos';
 var defaultTitle = "image";
 var currentDisks = [];
@@ -69,7 +69,7 @@ function ensurePhotoReadableWindows(fullPath, cb) {
 	    if(cb) {
 	     cb(null);
 	    }
-	
+
 	}
 }
 
@@ -99,7 +99,7 @@ function ensureDirectoryWritableWindows(fullPath, cb) {
 			}
 		});
 	} else {
-	    
+
 	    cb(null);
 	}
 }
@@ -110,7 +110,7 @@ function checkConfigCurrent(cb) {
 	//Reads and updates config to get any new hard-drives added to the system, or a GUID added
 	//Returns cb(err) where err = null, or a string with the error
 
-  
+
 	//Write to a json file with the current drive.  This can be removed later manually by user, or added to
 	fs.readFile(__dirname + configFile, function read(err, data) {
 		if (err) {
@@ -131,7 +131,7 @@ function checkConfigCurrent(cb) {
 					//On each drive, create a backup standard directory for photos
 					console.log("Drive detected:" + JSON.stringify(disks[cnt]));
 					var drive = disks[cnt].mountpoint;
-					
+
 					if(drive) {
 
 					    if(serverParentDir().indexOf(drive) < 0) {
@@ -184,7 +184,7 @@ function fileWalk(startDir, cb)
    console.log("Searching:" + startDir);
 
    if (fsExtra.existsSync(path.normalize(startDir))){
-       try { 
+       try {
            var walk = fsExtra.walk(startDir);
 
 	        walk.on('data', function (item) {
@@ -206,7 +206,7 @@ function fileWalk(startDir, cb)
 	   }
 	} else {
 	    cb(null);
-	
+
 	}
 
 
@@ -224,7 +224,7 @@ function download(uri, callback){
     	console.log('file-name:', res.headers['file-name']);
         if(res.headers['file-name']) {
 
-		    var createFile = path.normalize(serverParentDir() + outdirPhotos + res.headers['file-name']);  
+		    var createFile = path.normalize(serverParentDir() + outdirPhotos + res.headers['file-name']);
 		    if(createFile) {
 		        console.log("Creating file:" + createFile);
 		        var dirCreate = path.dirname(createFile);
@@ -236,7 +236,7 @@ function download(uri, callback){
 		            } else {
 		                console.log("Created dir:" + dirCreate);
 		                ensureDirectoryWritableWindows(dirCreate, function(err) {
-		                    
+
 		                    if(err) {
 		                        console.log("Error processing dir:" + err);
 		                    } else {
@@ -246,13 +246,13 @@ function download(uri, callback){
                                 var request = http.get(uri, function(response) {
                                   response.pipe(file);
                                 });
-                            }   
-		                    
-		                   
-		                
-		                
+                            }
+
+
+
+
 		                }); //end of directory writable
-		                
+
                     }
                 }); //end of ensuredir exists
             } //end of if file exists
@@ -378,8 +378,8 @@ checkConfigCurrent(function(err) {
 							for(var cnt=0; cnt< content.backupTo.length; cnt++) {
 								var target = content.backupTo[cnt] + '/' + finalFileName;
 								console.log("Backing up " + thisPath + " to:" + target);
-								//TODO: check functional
-								fsExtra.ensureDirSync(content.backupTo[cnt], function(err) {
+
+								fsExtra.ensureDir(content.backupTo[cnt], function(err) {
 									if(err) {
 										console.log("Warning: Could not create directory for backup: " + content.backupTo[cnt]);
 									} else {
@@ -432,12 +432,12 @@ checkConfigCurrent(function(err) {
 			 var parentDir = serverParentDir();
 			 console.log("This drive:" + parentDir);
 			 console.log("Coded directory:" + codeDir);
-			 
+
 			 if(codeDir.length <= 0) {
 			     console.log("Cannot read without a directory");
 			     return;
 			 }
-			 
+
 			 var outdir = path.normalize(parentDir + outdirPhotos + '/' + codeDir);
 			 var compareWith = path.normalize(parentDir + outdirPhotos);
 
@@ -514,7 +514,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards) {
 	  res.writeHead(200, {'content-type': contentType, 'file-name': theFile});
 	  res.end(data, function(err) {
 		  //Wait until finished sending, then delete locally
-		  
+
 		  if(err) {
 	  	  	 console.log(err);
 	  	  } else {
