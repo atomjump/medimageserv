@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+ <head>
+    <title>MedImage Server</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="style.css" type="text/css" media="screen">
+
+	</head>
+<body>
+   <div>
+   		<h1>MedImage Server is operational!</h1>
+
+   		<p>Your MedImage app will now be able to take photos.</p>
+   		<p>They will appear in the folder C:\medimage\photos\</p>
+		<img src="medimage-icon.png">
+		<p>You can try an upload of a .jpg file from here directly to diagnose any issues:</p>
+
+	   <form id       =  "uploadForm"
+			enctype   =  "multipart/form-data"
+			action    =  "/api/photo"
+			method    =  "POST" >
+
+		ID: <input type="text" name="title" /><br/>
+		   <input type="file" name="file1"  /><br/>
+		   <input type="submit" value="Upload" />
+	   </form>
+   </div>
+</body>
+</html>

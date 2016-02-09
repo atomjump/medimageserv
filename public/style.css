@@ -1,0 +1,14 @@
+h1 {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+p {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    position:relative;
+    margin-left: auto;
+    margin-right: auto;
+    width:80%;
+}
