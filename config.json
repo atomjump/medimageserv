@@ -1,5 +1,6 @@
 {
       "purpose": "SnapVolt-Server User Configuration File. Enter more backup directories or different drives below. Example readproxy http://YOURIP:5566/read/yourdir",
+      "onStartBackupDriveDetect": false,
       "backupTo": [
             "C:/mt32/attachments"
       ],

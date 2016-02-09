@@ -146,8 +146,10 @@ function checkConfigCurrent(cb) {
 							    fs.mkdirSync(path.normalize(drive + outdirDefaultParent + outdirPhotos));
 						    }
 
-						    //Append to the file's array
-						    content.backupTo = pushIfNew(content.backupTo, drive + outdirDefaultParent + outdirPhotos);
+						    //Append to the file's array if user has configured it as such
+						    if(content.onStartBackupDriveDetect == true) {
+						    	content.backupTo = pushIfNew(content.backupTo, drive + outdirDefaultParent + outdirPhotos);
+							}
 					    }
 					}
 				}
@@ -245,7 +247,14 @@ function download(uri, callback){
 		                        var file = fs.createWriteStream(createFile);
                                 var request = http.get(uri, function(response) {
                                   response.pipe(file);
+
+                                  response.on('end', function() {
+									//Now backup to any directories specified in the config
+									backupFile(createFile, res.headers['file-name']);
+							  	  });
                                 });
+
+
                             }
 
 
@@ -273,6 +282,43 @@ function readRemoteServer(url)
 
 	}, 5000);
 
+}
+
+
+function backupFile(thisPath, finalFileName)
+{
+
+
+	//Read in the config file
+	fs.readFile(__dirname + configFile, function read(err, data) {
+		if (err) {
+			console.log("Warning: Error reading config file for backup options: " + err);
+		} else {
+			var content = JSON.parse(data);
+
+			//Loop through all the backup directories
+			for(var cnt=0; cnt< content.backupTo.length; cnt++) {
+				var target = content.backupTo[cnt] + '/' + finalFileName;
+				console.log("Backing up " + thisPath + " to:" + target);
+
+				fsExtra.ensureDir(content.backupTo[cnt], function(err) {
+					if(err) {
+						console.log("Warning: Could not create directory for backup: " + content.backupTo[cnt]);
+					} else {
+						try {
+							console.log("Copying " + thisPath + " to " + target);
+							fsExtra.copySync(thisPath, target);
+							ensurePhotoReadableWindows(target);
+						} catch (err) {
+							console.error('Warning: there was a problem backing up: ' + err.message);
+						}
+					}
+				});
+
+			}
+		}
+
+	});
 }
 
 
@@ -307,101 +353,73 @@ checkConfigCurrent(function(err) {
 
 
 			//Use original filename for name
-			var title = files.file1[0].originalFilename;
+			if(files && files.file1 && files.file1[0]) {
+				var title = files.file1[0].originalFilename;
 
 
-			//Copy file to eg. c:/snapvolt/photos
-			var outFile = title;
-			outFile = outFile.replace('.jpg','');			//Remove jpg from filename
-			outFile = outFile.replace('.jpeg','');			//Remove jpg from filename
+				//Copy file to eg. c:/snapvolt/photos
+				var outFile = title;
+				outFile = outFile.replace('.jpg','');			//Remove jpg from filename
+				outFile = outFile.replace('.jpeg','');			//Remove jpg from filename
 
-			var words = outFile.split('-');
+				var words = outFile.split('-');
 
-			var finalFileName = "";
-			//Array of distinct words
-			for(var cnt = 0; cnt< words.length; cnt++) {
-				if(words[cnt].charAt(0) == '#') {
-					var outhashdir = words[cnt].replace('#','');
+				var finalFileName = "";
+				//Array of distinct words
+				for(var cnt = 0; cnt< words.length; cnt++) {
+					if(words[cnt].charAt(0) == '#') {
+						var outhashdir = words[cnt].replace('#','');
 
-					//Check the directory exists, and create
-					if (!fs.existsSync(path.normalize(parentDir + outdirPhotos))){
-							fs.mkdirSync(path.normalize(parentDir + outdirPhotos));
-					}
-
-					//Create the final hash outdir
-					outdir = parentDir + outdirPhotos + '/' + outhashdir;
-					if (!fs.existsSync(path.normalize(outdir))){
-						fs.mkdirSync(path.normalize(outdir));
-					}
-				} else {
-					//Start building back filename with hyphens between words
-					if(finalFileName.length > 0) {
-						finalFileName = finalFileName + '-';
-					}
-					finalFileName = finalFileName + words[cnt];
-				}
-			}
-
-
-
-
-			finalFileName = finalFileName + '.jpg';
-
-			//Move the file into the standard location of this server
-			var fullPath = outdir + '/' + finalFileName;
-			console.log("Moving " + files.file1[0].path + " to " + fullPath);
-			mv(files.file1[0].path, fullPath, {mkdirp: true},  function(err) { //path.normalize(
-				  // done. it tried fs.rename first, and then falls back to
-				  // piping the source file to the dest file and then unlinking
-				  // the source file.
-				  if(err) {
-					console.log(err);
-
-				  } else {
-					console.log(finalFileName + ' file uploaded');
-
-					//Ensure no admin restictions on Windows
-					ensurePhotoReadableWindows(fullPath);
-
-					//Now copy to any other backup directories
-					console.log("Backups:");
-					var thisPath = fullPath;
-
-					//Read in the config file
-					fs.readFile(__dirname + configFile, function read(err, data) {
-						if (err) {
-							console.log("Warning: Error reading config file for backup options: " + err);
-						} else {
-							var content = JSON.parse(data);
-
-							//Loop through all the backup directories
-							for(var cnt=0; cnt< content.backupTo.length; cnt++) {
-								var target = content.backupTo[cnt] + '/' + finalFileName;
-								console.log("Backing up " + thisPath + " to:" + target);
-
-								fsExtra.ensureDir(content.backupTo[cnt], function(err) {
-									if(err) {
-										console.log("Warning: Could not create directory for backup: " + content.backupTo[cnt]);
-									} else {
-										try {
-											console.log("Copying " + thisPath + " to " + target);
-											fsExtra.copySync(thisPath, target);
-											ensurePhotoReadableWindows(target);
-										} catch (err) {
-										    console.error('Warning: there was a problem backing up: ' + err.message);
-										}
-									}
-								});
-
-							}
+						//Check the directory exists, and create
+						if (!fs.existsSync(path.normalize(parentDir + outdirPhotos))){
+								fs.mkdirSync(path.normalize(parentDir + outdirPhotos));
 						}
 
-					});
+						//Create the final hash outdir
+						outdir = parentDir + outdirPhotos + '/' + outhashdir;
+						if (!fs.existsSync(path.normalize(outdir))){
+							fs.mkdirSync(path.normalize(outdir));
+						}
+					} else {
+						//Start building back filename with hyphens between words
+						if(finalFileName.length > 0) {
+							finalFileName = finalFileName + '-';
+						}
+						finalFileName = finalFileName + words[cnt];
+					}
+				}
 
 
 
-				  }
-			});
+
+				finalFileName = finalFileName + '.jpg';
+
+				//Move the file into the standard location of this server
+				var fullPath = outdir + '/' + finalFileName;
+				console.log("Moving " + files.file1[0].path + " to " + fullPath);
+				mv(files.file1[0].path, fullPath, {mkdirp: true},  function(err) { //path.normalize(
+					  // done. it tried fs.rename first, and then falls back to
+					  // piping the source file to the dest file and then unlinking
+					  // the source file.
+					  if(err) {
+						console.log(err);
+
+					  } else {
+						console.log(finalFileName + ' file uploaded');
+
+						//Ensure no admin restictions on Windows
+						ensurePhotoReadableWindows(fullPath);
+
+						//Now copy to any other backup directories
+						console.log("Backups:");
+						var thisPath = fullPath;
+
+						//Now backup to any directories specified in the config
+						backupFile(thisPath, finalFileName);
+
+					  }
+				});
+			}
 
 
 
