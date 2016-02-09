@@ -61,6 +61,8 @@ Where YOURIP is your server's IP address. You may be able to use https:// (TBC).
 YOURCODE is your site's passcode, that each person can specify and keep private.  You choose this value, but please ensure that it is unguessable.
 For example, you could have several hundred different practises operating off one proxy server, each with their own passcode.
 
+Then run 'Windows Services', find 'MedImage', and click 'Restart'.
+
 
 ## 3. On your Med Image Android app
 
