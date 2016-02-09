@@ -1,7 +1,8 @@
 # MedImage Server
 
-## To Install Proxy
+## 1. To Install Your Proxy
 
+This is useful when you cannot have a Wifi connection, and must go via a secure internet connection.
 
 On a linux based server:
 
