@@ -57,28 +57,28 @@ Set "readProxy" to be:
 "readProxy" : "http://YOURIP:5566/read/YOURCODE"
 ```
 
-Where YOURIP is your server's IP address. You may be able to use https:// (TBC)
+Where YOURIP is your server's IP address. You may be able to use https:// (TBC).
 YOURCODE is your site's passcode, that each person can specify and keep private.  You choose this value, but please ensure that it is unguessable.
 For example, you could have several hundred different practises operating off one proxy server, each with their own passcode.
 
 
 ## 3. On your Med Image Android app
 
-Switch off wifi on your phone.
+Switch off Wifi on your phone.
 
 Click the large circle.
 
-After 5 seconds it will mention that you must be on wifi. Enter your 'Server' after this as
+After 5 seconds it will mention that you must enter a server. Enter your 'Server' after this as
 ```
 "http://YOURIP:5566/write/YOURCODE"
 ```
-where YOURCODE is the same site's passcode your Windows config.json "readProxy" parameter.
+where YOURCODE is the same site's passcode that was in your Windows config.json "readProxy" parameter.
 
 Click the large icon to start taking photos.
 
-Enter the patient id in the box at the top. Note: #tags will allocate a directory (TBC this will create another subdirectory inside your directory). eg.
+Enter the patient id in the box at the top, specific to each photo. Note: #tags will allocate a directory (TBC this will create another subdirectory inside your directory). eg.
 ```
-#bestpatients Fred
+#elderly Fred
 ```
-would create a directory called bestpatients/ on your PC and upload a file called 'Fred-[datetime]'
+would create a directory called elderly/ on your PC and upload a file called 'Fred-[datetime]'
 
