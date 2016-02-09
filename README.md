@@ -50,15 +50,16 @@ Note: this daemon is always on, but the images are only kept on this machine for
 Download and run the installable MedImageServer.exe from http://medimage.atomjump.com
 
 
-Edit config.js
+Edit C:\MedImageServer\config.js
 
 Set "readProxy" to be:
 ```
-"readProxy" : "http://YOURIP:5566/read/YOURDIR"
+"readProxy" : "http://YOURIP:5566/read/YOURCODE"
 ```
 
 Where YOURIP is your server's IP address. You may be able to use https:// (TBC)
-YOURDIR is your site's passcode.
+YOURCODE is your site's passcode, that each person can specify and keep private.  You choose this value, but please ensure that it is unguessable.
+For example, you could have several hundred different practises operating off one proxy server, each with their own passcode.
 
 
 ## 3. On your Med Image Android app
@@ -69,9 +70,9 @@ Click the large circle.
 
 After 5 seconds it will mention that you must be on wifi. Enter your 'Server' after this as
 ```
-"http://YOURIP:5566/write/YOURDIR"
+"http://YOURIP:5566/write/YOURCODE"
 ```
-where YOURDIR is the same site's passcode your Windows config.json "readProxy" parameter.
+where YOURCODE is the same site's passcode your Windows config.json "readProxy" parameter.
 
 Click the large icon to start taking photos.
 
