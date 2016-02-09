@@ -4,7 +4,10 @@
 
 This is useful when you cannot have a Wifi connection, and must go via a secure internet connection.
 
-On a linux based server:
+On a linux based server, first install NodeJS and npm.
+See https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-an-ubuntu-14-04-server
+
+Then:
 
 ```
 git clone https://github.com/atomjump/medimageserv.git medimageserv
