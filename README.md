@@ -63,9 +63,7 @@ Set "readProxy" to be:
 "readProxy" : "http://YOURIP:5566/read/YOURCODE"
 ```
 
-Where YOURIP is your server's IP address. You may be able to use https:// (TBC).
-YOURCODE is your site's passcode, that each person can specify and keep private.  You choose this value, but please ensure that it is unguessable.
-For example, you could have several hundred different practises operating off one proxy server, each with their own passcode.
+Where YOURIP is your server's IP address. YOURCODE is your site's passcode, that each person can specify and keep private.  You choose this value, but please ensure that it is unguessable. For example, you could have several hundred different practises operating off one proxy server, each with their own passcode.
 
 Then run 'Windows Services', find 'MedImage', and click 'Restart'.
 
@@ -84,7 +82,7 @@ where YOURCODE is the same site's passcode that was in your Windows config.json 
 
 Click the large icon to start taking photos.
 
-Enter the patient id in the box at the top, specific to each photo. Note: #tags will allocate a directory (TBC this will create another subdirectory inside your directory). eg.
+Enter the patient id in the box at the top, specific to each photo. Note: #tags will allocate a directory (this will create another subdirectory inside your directory. This feature is to be completed.). eg.
 ```
 #elderly Fred
 ```
