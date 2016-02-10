@@ -244,6 +244,8 @@ function download(uri, callback){
 		                    } else {
 		                        console.log("Directory processed");
 		                        console.log("About to create local file " + createFile + " from uri:" + uri);
+		                        
+		                        
 		                        var file = fs.createWriteStream(createFile);
                                 var request = http.get(uri, function(response) {
                                   response.pipe(file);
@@ -252,8 +254,8 @@ function download(uri, callback){
 									//Now backup to any directories specified in the config
 									backupFile(createFile, res.headers['file-name']);
 							  	  });
-                                });
-
+                                }); 
+                                
 
                             }
 
