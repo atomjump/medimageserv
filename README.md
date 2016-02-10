@@ -88,3 +88,14 @@ Enter the patient id in the box at the top, specific to each photo. Note: #tags 
 ```
 would create a directory called elderly/ on your PC and upload a file called 'Fred-[datetime]'
 
+
+### Planned Improvements
+
+* https and http, rather than http support.
+* Currently #tags will only create a useful directory if you are uploading to the entire server, not the /write/YOURCODE directory. Match this capability.
+* config.json should be in Windows line ending format, so that Notepad users can more easily read it.
+* Ensure all zero length files are removed - this may already be fixed.
+* Queue images on client so that if there is no signal, the image is sent later.
+
+ 
+
