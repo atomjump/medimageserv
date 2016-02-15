@@ -11,6 +11,8 @@
    <div>
    		<h1>MedImage Server is operational!</h1>
 
+
+		<!--
    		<p>Your MedImage app will now be able to take photos.</p>
    		<p>They will appear in the folder C:\medimage\photos\</p>
 		<img src="medimage-icon.png">
@@ -25,6 +27,19 @@
 		   <input type="file" name="file1"  /><br/>
 		   <input type="submit" value="Upload" />
 	   </form>
+	   -->
+
+	 <p>
+	 	Pair with your phone via Wifi (ready, and free, always)
+	 </p>
+	 <p>
+	 	<a href="/pair">Pair with your phone (with AtomJump Server. 5GB free bandwidth)</a>
+	 </p>
+	 <p>
+	   <input type="text" id="server" />
+	   <a onclick="window.location.href = '/pair?proxyServer=' + document.getElementById('server').value" href="javascript:">Pair with your phone (Your private proxy server)</a>
+	 </p>
+
    </div>
 </body>
 </html>

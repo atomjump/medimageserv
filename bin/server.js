@@ -125,12 +125,12 @@ function checkConfigCurrent(setProxy, cb) {
 				//Only need to create the server's ID once. And make sure it is not the same as the developer's ID
 				content.globalId = uuid.v4();
 		 }
-		 
-			 
+
+
 		 if(setProxy) {
 		   content.readProxy = setProxy;
 		 }
-		 
+
 		 if(content.listenPort) {
 		   listenPort = content.listenPort;
 		 }
@@ -256,8 +256,8 @@ function download(uri, callback){
 		                    } else {
 		                        console.log("Directory processed");
 		                        console.log("About to create local file " + createFile + " from uri:" + uri);
-		                        
-		                        
+
+
 		                        var file = fs.createWriteStream(createFile);
                                 var request = http.get(uri, function(response) {
                                   response.pipe(file);
@@ -266,8 +266,8 @@ function download(uri, callback){
 									//Now backup to any directories specified in the config
 									backupFile(createFile, res.headers['file-name']);
 							  	  });
-                                }); 
-                                
+                                });
+
 
                             }
 
@@ -457,39 +457,47 @@ checkConfigCurrent(null, function(err) {
 		  var removeAfterwards = false;
 		  var read = '/read/';
 		  var pair = '/pair';
-		  
+
    console.log("Url requested:" + url);
-  
+
    if(url.substr(0,pair.length) == pair) {
        //Do a get request from the known aj server
        //for a new pairing guid
-       needle.get(pairingURL, function(error, response) {
+       var fullPairingUrl = pairingURL;
+
+       var queryString = url.substr(pair.length);
+       console.log("Query string:" + queryString);
+       if(url.substr(pair.length)) {
+		   fullPairingUrl = fullPairingUrl + pairingURL;
+   	   }
+
+       needle.get(fullPairingUrl, function(error, response) {
           if (!error && response.statusCode == 200) {
               console.log(response.body);
-         
-               var codes = response.body.split(" ");       
+
+               var codes = response.body.split(" ");
                var passcode = codes[0];
                var guid = codes[1];
                var proxyServer = codes[2].replace("\n", "");;
                var readProx = proxyServer + "/read/" + guid;
                console.log("Proxy set to:" + readProx);
-              
-              
+
+
                //Write full proxy to config file
                checkConfigCurrent(readProx, function() {
-          
-          
+
+
                    //Display passcode to user
           	         var outdir = __dirname + "/../public/passcode.html";
 				                serveUpFile(outdir, null, res, false, passcode);
 				                return;
 				            });
 
-         
+
           }
        });
-      
-  
+
+
    } else {
 
 
@@ -538,7 +546,7 @@ checkConfigCurrent(null, function(err) {
 				console.log("Security exception detected in " + outdir);
 				return;
 		 	 }
-  
+
 	   } else {
 			   	//Get a front-end facing image or html file
 			   	var outdir = __dirname + "/../public" + url;
@@ -560,7 +568,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
   // set the content type
   var ext = path.extname(normpath);
   var contentType = 'text/html';
-  
+
 
   //Handle images
   if (ext === '.png') {
@@ -575,23 +583,23 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 
   //Read the file from disk, then send to client
   fs.readFile(normpath, function (err,data) {
-  
-  
+
+
 	  if (err) {
 	   	res.writeHead(404);
 	   	res.end(JSON.stringify(err));
 	   	return;
 	  }
-	  
-	  
+
+
 	  if(customString) {
-	     var strData = data.toString(); 
+	     var strData = data.toString();
 	     strData = strData.replace("CUSTOMSTRING",customString);
 	     console.log(strData);
-	     
+
 	     data =JSON.parse( JSON.stringify( strData ) ); //JSON.parse(strData);
 	  }
-	  
+
 	  res.writeHead(200, {'content-type': contentType, 'file-name': theFile});
 	  res.end(data, function(err) {
 		  //Wait until finished sending, then delete locally
