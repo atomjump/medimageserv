@@ -17,7 +17,7 @@ var defaultTitle = "image";
 var currentDisks = [];
 var configFile = '/../config.json';
 var noFurtherFiles = "none";			//This gets piped out if there are no further files in directory
-
+var pairingURL = "https://atomjump.com/med-genid.php";
 
 
 function pushIfNew(arry, str) {
@@ -106,7 +106,7 @@ function ensureDirectoryWritableWindows(fullPath, cb) {
 
 
 
-function checkConfigCurrent(cb) {
+function checkConfigCurrent(setProxy, cb) {
 	//Reads and updates config to get any new hard-drives added to the system, or a GUID added
 	//Returns cb(err) where err = null, or a string with the error
 
@@ -121,7 +121,12 @@ function checkConfigCurrent(cb) {
 			if(!content.globalId) {
 				//Only need to create the server's ID once. And make sure it is not the same as the developer's ID
 				content.globalId = uuid.v4();
-		    }
+		 }
+		 
+			 
+		 if(setProxy) {
+		   content.readProxy = setProxy;
+		 }
 
 			//Get the current drives
 			drivelist.list(function(error, disks) {
@@ -149,7 +154,7 @@ function checkConfigCurrent(cb) {
 						    //Append to the file's array if user has configured it as such
 						    if(content.onStartBackupDriveDetect == true) {
 						    	content.backupTo = pushIfNew(content.backupTo, drive + outdirDefaultParent + outdirPhotos);
-							}
+						    	}
 					    }
 					}
 				}
@@ -324,7 +329,7 @@ function backupFile(thisPath, finalFileName)
 }
 
 
-checkConfigCurrent(function(err) {
+checkConfigCurrent(null, function(err) {
 
 	if(err) {
 		console.log("Error updating config.json: " + err);
@@ -444,7 +449,31 @@ checkConfigCurrent(function(err) {
 
 		  var removeAfterwards = false;
 		  var read = '/read/';
-          console.log("Url requested:" + url);
+		  var pair = '/pair';
+		  
+   console.log("Url requested:" + url);
+  
+   if(url.substr(0,pair.length) == pair) {
+       //Do a get request from the known aj server
+       //for a new pairing guid
+       needle(pairingURL, function(text) {
+          var res = text.split(" ");       
+          var passcode = res[0];
+          var guid = res[1];
+          var proxyServer = res[2];
+          
+          //Write guid to config file
+          checkConfigCurrent(proxyServer);
+          
+          
+          //Display passcode to user
+          	var outdir = __dirname + "/../public/passcode.html";
+				       serveUpFile(outdir, null, res, false, passcode);
+
+          
+       });
+   }
+
 
 		  if(url.substr(0,read.length) == read) {
 		  	 //Get uploaded photos from coded subdir
@@ -492,17 +521,17 @@ checkConfigCurrent(function(err) {
 				return;
 		 	 }
 
-	      } else {
-				//Get a front-end facing image or html file
-				var outdir = __dirname + "/../public" + url;
-				serveUpFile(outdir, null, res, false);
-	      }
+	   } else {
+			   	//Get a front-end facing image or html file
+			   	var outdir = __dirname + "/../public" + url;
+				   serveUpFile(outdir, null, res, false);
+	  }
 		}
 
 	}).listen(5566);
 });
 
-function serveUpFile(fullFile, theFile, res, deleteAfterwards) {
+function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 
   var normpath = path.normalize(fullFile);
 
@@ -526,11 +555,19 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards) {
 
   //Read the file from disk, then send to client
   fs.readFile(normpath, function (err,data) {
+  
+  
 	  if (err) {
-		res.writeHead(404);
-		res.end(JSON.stringify(err));
-		return;
+	   	res.writeHead(404);
+	   	res.end(JSON.stringify(err));
+	   	return;
 	  }
+	  
+	  //TODO TEST
+	  if(customString) {
+	     data.replace('CUSTOMSTRING',customString);
+	  }
+	  
 	  res.writeHead(200, {'content-type': contentType, 'file-name': theFile});
 	  res.end(data, function(err) {
 		  //Wait until finished sending, then delete locally
