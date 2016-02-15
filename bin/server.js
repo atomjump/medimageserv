@@ -466,10 +466,12 @@ checkConfigCurrent(null, function(err) {
        var fullPairingUrl = pairingURL;
 
        var queryString = url.substr(pair.length);
-       console.log("Query string:" + queryString);
+
        if(url.substr(pair.length)) {
-		   fullPairingUrl = fullPairingUrl + pairingURL;
+		   fullPairingUrl = fullPairingUrl + queryString;
+
    	   }
+   	   console.log("Requqest for pairing:" + fullPairingUrl);
 
        needle.get(fullPairingUrl, function(error, response) {
           if (!error && response.statusCode == 200) {
