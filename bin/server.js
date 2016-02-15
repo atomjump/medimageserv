@@ -360,12 +360,12 @@ checkConfigCurrent(null, function(err) {
 			console.log("This drive:" + parentDir);
 			var outdir = parentDir + outdirPhotos;
 
-
+   console.log('Outdir:' + outdir);
 			  res.writeHead(200, {'content-type': 'text/plain'});
 			  res.write('Received upload successfully! Check ' + path.normalize(parentDir + outdirPhotos) + ' for your image.\n\n');
 			  res.end();
 
-
+   console.log('Files ' + JSON.stringify(files, null, 4));
 			//Use original filename for name
 			if(files && files.file1 && files.file1[0]) {
 				var title = files.file1[0].originalFilename;
@@ -386,13 +386,20 @@ checkConfigCurrent(null, function(err) {
 
 						//Check the directory exists, and create
 						if (!fs.existsSync(path.normalize(parentDir + outdirPhotos))){
-								fs.mkdirSync(path.normalize(parentDir + outdirPhotos));
-						}
+						   		console.log('Creating dir:' + path.normalize(parentDir + outdirPhotos));
+
+		   						fs.mkdirSync(path.normalize(parentDir + outdirPhotos));
+						  			console.log('Created OK dir:' + path.normalize(parentDir + outdirPhotos));
+
+							}
 
 						//Create the final hash outdir
 						outdir = parentDir + outdirPhotos + '/' + outhashdir;
 						if (!fs.existsSync(path.normalize(outdir))){
+						 console.log('Creating dir:' + path.normalize(outdir));
 							fs.mkdirSync(path.normalize(outdir));
+					  console.log('Created OK');
+					
 						}
 					} else {
 						//Start building back filename with hyphens between words
