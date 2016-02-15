@@ -21,6 +21,7 @@ var configFile = '/../config.json';
 var noFurtherFiles = "none";			//This gets piped out if there are no further files in directory
 var pairingURL = "https://atomjump.com/med-genid.php";
 var listenPort = 5566;
+var remoteReadTimer = null;
 
 
 function pushIfNew(arry, str) {
@@ -289,7 +290,11 @@ function download(uri, callback){
 function readRemoteServer(url)
 {
 	//Every 5 seconds, read the remote server in the config file, and download images to our server.
-	setInterval(function() {
+	if(remoteReadTimer) {
+		clearInterval(remoteReadTimer);		//ensure a clear read
+	}
+
+	remoteReadTimer = setInterval(function() {
 		download(url, function(){
 			  console.log('done');
 		});
@@ -442,11 +447,11 @@ checkConfigCurrent(null, function(err) {
 
 
 
-		});
+		}); //End of form.parse
 
 		return;
 
-	  } else {
+	  } else {  //end of api upload
 		  //A get request to pull from the server
 		  // show a file upload form
 		  var url = req.url;
@@ -458,107 +463,107 @@ checkConfigCurrent(null, function(err) {
 		  var read = '/read/';
 		  var pair = '/pair';
 
-   console.log("Url requested:" + url);
+		   console.log("Url requested:" + url);
 
-   if(url.substr(0,pair.length) == pair) {
-       //Do a get request from the known aj server
-       //for a new pairing guid
-       var fullPairingUrl = pairingURL;
+		   if(url.substr(0,pair.length) == pair) {
+			   //Do a get request from the known aj server
+			   //for a new pairing guid
+			   var fullPairingUrl = pairingURL;
 
-       var queryString = url.substr(pair.length);
+			   var queryString = url.substr(pair.length);
 
-       if(url.substr(pair.length)) {
-		   fullPairingUrl = fullPairingUrl + queryString;
+			   if(url.substr(pair.length)) {
+				   fullPairingUrl = fullPairingUrl + queryString;
 
-   	   }
-   	   console.log("Requqest for pairing:" + fullPairingUrl);
+			   }
+			   console.log("Requqest for pairing:" + fullPairingUrl);
 
-       needle.get(fullPairingUrl, function(error, response) {
-          if (!error && response.statusCode == 200) {
-              console.log(response.body);
+			   needle.get(fullPairingUrl, function(error, response) {
+				  if (!error && response.statusCode == 200) {
+					  console.log(response.body);
 
-               var codes = response.body.split(" ");
-               var passcode = codes[0];
-               var guid = codes[1];
-               var proxyServer = codes[2].replace("\n", "");;
-               var readProx = proxyServer + "/read/" + guid;
-               console.log("Proxy set to:" + readProx);
-
-
-               //Write full proxy to config file
-               checkConfigCurrent(readProx, function() {
+					   var codes = response.body.split(" ");
+					   var passcode = codes[0];
+					   var guid = codes[1];
+					   var proxyServer = codes[2].replace("\n", "");
+					   var readProx = proxyServer + "/read/" + guid;
+					   console.log("Proxy set to:" + readProx);
 
 
-                   //Display passcode to user
-          	         var outdir = __dirname + "/../public/passcode.html";
-				                serveUpFile(outdir, null, res, false, passcode);
-				                return;
-				            });
+					   //Write full proxy to config file
+					   checkConfigCurrent(readProx, function() {
 
 
-          }
-       });
+						   //Display passcode to user
+							 var outdir = __dirname + "/../public/passcode.html";
+										serveUpFile(outdir, null, res, false, passcode);
+										return;
+					   });
 
 
-   } else {
+				  }
+			   });
 
 
-		  if(url.substr(0,read.length) == read) {
-		  	 //Get uploaded photos from coded subdir
-			 var codeDir = url.substr(read.length);
-			 var parentDir = serverParentDir();
-			 console.log("This drive:" + parentDir);
-			 console.log("Coded directory:" + codeDir);
-
-			 if(codeDir.length <= 0) {
-			     console.log("Cannot read without a directory");
-			     return;
-			 }
-
-			 var outdir = path.normalize(parentDir + outdirPhotos + '/' + codeDir);
-			 var compareWith = path.normalize(parentDir + outdirPhotos);
-
-			 console.log("Output directory to scan " + outdir + ". Must include:" + compareWith);
-			 //For security purposes the path must include the parentDir and outdiePhotos in a complete form
-			 //ie. be subdirectories. Otherwise a ../../ would allow deletion of an internal file
-			 if(outdir.indexOf(compareWith) > -1) {
+   			} else {		//end of pair
 
 
-				 //Get first file in the directory list
-				 fileWalk(outdir, function(outfile, cnt) {
+			  if(url.substr(0,read.length) == read) {
+				 //Get uploaded photos from coded subdir
+				 var codeDir = url.substr(read.length);
+				 var parentDir = serverParentDir();
+				 console.log("This drive:" + parentDir);
+				 console.log("Coded directory:" + codeDir);
 
-					 if(outfile) {
-						//Get outfile - compareWith
-						var localFileName = outfile.replace(compareWith, "");
-						console.log("Local file to download via proxy as:" + localFileName);
-						console.log("About to download (eventually delete): " + outfile);
+				 if(codeDir.length <= 0) {
+					 console.log("Cannot read without a directory");
+					 return;
+				 }
 
-						serveUpFile(outfile,localFileName, res, true);
-					 } else {
-						//Reply with a 'no further files' simple text response to client
+				 var outdir = path.normalize(parentDir + outdirPhotos + '/' + codeDir);
+				 var compareWith = path.normalize(parentDir + outdirPhotos);
 
-						console.log("No images");
-						res.writeHead(200, {'content-type': 'text/html'});
-						res.end(noFurtherFiles);
-						return;
+				 console.log("Output directory to scan " + outdir + ". Must include:" + compareWith);
+				 //For security purposes the path must include the parentDir and outdiePhotos in a complete form
+				 //ie. be subdirectories. Otherwise a ../../ would allow deletion of an internal file
+				 if(outdir.indexOf(compareWith) > -1) {
 
-					 }
-				 });
-		 	 } else {
-				console.log("Security exception detected in " + outdir);
-				return;
-		 	 }
 
-	   } else {
-			   	//Get a front-end facing image or html file
-			   	var outdir = __dirname + "/../public" + url;
-				   serveUpFile(outdir, null, res, false);
-	  }
-	  } //end of check for pairing
-		}
+					 //Get first file in the directory list
+					 fileWalk(outdir, function(outfile, cnt) {
 
-	}).listen(listenPort);
-});
+						 if(outfile) {
+							//Get outfile - compareWith
+							var localFileName = outfile.replace(compareWith, "");
+							console.log("Local file to download via proxy as:" + localFileName);
+							console.log("About to download (eventually delete): " + outfile);
+
+							serveUpFile(outfile,localFileName, res, true);
+						 } else {
+							//Reply with a 'no further files' simple text response to client
+
+							console.log("No images");
+							res.writeHead(200, {'content-type': 'text/html'});
+							res.end(noFurtherFiles);
+							return;
+
+						 }
+					 });
+				 } else {		//end of outdir compare
+					console.log("Security exception detected in " + outdir);
+					return;
+				 }
+
+			   } else {  //end of url read
+						//Get a front-end facing image or html file
+						var outdir = __dirname + "/../public" + url;
+						   serveUpFile(outdir, null, res, false);
+			   }
+	  		} //end of check for pairing
+		} //end of get request
+
+	}).listen(listenPort);  //end of createServer
+}); //end of checkConfigCurrent
 
 function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 
