@@ -33,11 +33,11 @@
 	 	Pair with your phone via Wifi (ready, and free, always)
 	 </p>
 	 <p>
-	 	<a href="/pair">Pair with your phone (with AtomJump Server. 5GB free bandwidth)</a>
+	 	<a href="/pair">Pair with your phone (via AtomJump Server. 5GB free bandwidth)</a>
 	 </p>
 	 <p>
 	   <input type="text" id="server" />
-	   <a onclick="window.location.href = '/pair?proxyServer=' + document.getElementById('server').value" href="javascript:">Pair with your phone (Your private proxy server)</a>
+	   <a onclick="var address= '/pair?proxyServer=' + document.getElementById('server').value; alert(address); window.location.href = address" href="javascript:">Pair with your phone (Your private proxy server)</a>
 	 </p>
 
    </div>
