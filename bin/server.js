@@ -10,6 +10,8 @@ var drivelist = require('drivelist');
 var uuid = require('node-uuid');
 var fsExtra = require('fs-extra');
 var request = require("request");
+var needle = require('needle');
+
 
 var outdirDefaultParent = '/medimage';
 var outdirPhotos = '/photos';
@@ -18,6 +20,7 @@ var currentDisks = [];
 var configFile = '/../config.json';
 var noFurtherFiles = "none";			//This gets piped out if there are no further files in directory
 var pairingURL = "https://atomjump.com/med-genid.php";
+var listenPort = 5566;
 
 
 function pushIfNew(arry, str) {
@@ -126,6 +129,10 @@ function checkConfigCurrent(setProxy, cb) {
 			 
 		 if(setProxy) {
 		   content.readProxy = setProxy;
+		 }
+		 
+		 if(content.listenPort) {
+		   listenPort = content.listenPort;
 		 }
 
 			//Get the current drives
@@ -456,23 +463,34 @@ checkConfigCurrent(null, function(err) {
    if(url.substr(0,pair.length) == pair) {
        //Do a get request from the known aj server
        //for a new pairing guid
-       needle(pairingURL, function(text) {
-          var res = text.split(" ");       
-          var passcode = res[0];
-          var guid = res[1];
-          var proxyServer = res[2];
+       needle.get(pairingURL, function(error, response) {
+          if (!error && response.statusCode == 200) {
+              console.log(response.body);
+         
+               var codes = response.body.split(" ");       
+               var passcode = codes[0];
+               var guid = codes[1];
+               var proxyServer = codes[2].replace("\n", "");;
+               var readProx = proxyServer + "/read/" + guid;
+               console.log("Proxy set to:" + readProx);
+              
+              
+               //Write full proxy to config file
+               checkConfigCurrent(readProx, function() {
           
-          //Write guid to config file
-          checkConfigCurrent(proxyServer);
           
-          
-          //Display passcode to user
-          	var outdir = __dirname + "/../public/passcode.html";
-				       serveUpFile(outdir, null, res, false, passcode);
+                   //Display passcode to user
+          	         var outdir = __dirname + "/../public/passcode.html";
+				                serveUpFile(outdir, null, res, false, passcode);
+				                return;
+				            });
 
-          
+         
+          }
        });
-   }
+      
+  
+   } else {
 
 
 		  if(url.substr(0,read.length) == read) {
@@ -520,15 +538,16 @@ checkConfigCurrent(null, function(err) {
 				console.log("Security exception detected in " + outdir);
 				return;
 		 	 }
-
+  
 	   } else {
 			   	//Get a front-end facing image or html file
 			   	var outdir = __dirname + "/../public" + url;
 				   serveUpFile(outdir, null, res, false);
 	  }
+	  } //end of check for pairing
 		}
 
-	}).listen(5566);
+	}).listen(listenPort);
 });
 
 function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
@@ -541,6 +560,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
   // set the content type
   var ext = path.extname(normpath);
   var contentType = 'text/html';
+  
 
   //Handle images
   if (ext === '.png') {
@@ -563,9 +583,13 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 	   	return;
 	  }
 	  
-	  //TODO TEST
+	  
 	  if(customString) {
-	     data.replace('CUSTOMSTRING',customString);
+	     var strData = data.toString(); 
+	     strData = strData.replace("CUSTOMSTRING",customString);
+	     console.log(strData);
+	     
+	     data =JSON.parse( JSON.stringify( strData ) ); //JSON.parse(strData);
 	  }
 	  
 	  res.writeHead(200, {'content-type': contentType, 'file-name': theFile});
