@@ -9,14 +9,26 @@
 	</head>
 <body>
    <div>
-   		<h1>MedImage Server is operational!</h1>
+ 
 
+			<img src="medimage-icon.png">
+	 
 
-		
-   		<p>Your MedImage app will now be able to take photos.</p>
-   		<p>They will appear in the folder C:\medimage\photos\</p>
-		<img src="medimage-icon.png">
-		<p>You can try an upload of a .jpg file from here directly to diagnose any issues:</p>
+	 <p>
+	 	<div class="button">Pair with your phone via Wifi (ready, and free, always)</div>
+	 </p>
+	 <p>
+	 	<a href="/pair"><div class="button">Pair with your phone (via AtomJump Server. 5GB free bandwidth)</div></a>
+	 </p>
+	 <p>
+	  
+		   <a onclick="var address= '/pair?proxyServer=' + encodeURIComponent(document.getElementById('server').value); window.location.href = address" href="javascript:"><div class="button">Server Address <input type="text" id="server" /><br/>Pair with your phone (Your private proxy server)</div></a>
+	  </div>
+	
+	 </p>	
+	 
+	 
+	 <div style="display: none" onclick="this.display.visible='block';">You can try an upload of a .jpg file from here directly to diagnose any issues:
 
 	   <form id       =  "uploadForm"
 			enctype   =  "multipart/form-data"
@@ -26,18 +38,7 @@
 			   <input type="file" name="file1"  /><br/>
 		   <input type="submit" value="Upload" />
 	   </form>
-	   
-
-	 <p>
-	 	Pair with your phone via Wifi (ready, and free, always)
-	 </p>
-	 <p>
-	 	<a href="/pair">Pair with your phone (via AtomJump Server. 5GB free bandwidth)</a>
-	 </p>
-	 <p>
-	   <input type="text" id="server" />
-	   <a onclick="var address= '/pair?proxyServer=' + encodeURIComponent(document.getElementById('server').value); window.location.href = address" href="javascript:">Pair with your phone (Your private proxy server)</a>
-	 </p>
+	  </div>
 
    </div>
 </body>

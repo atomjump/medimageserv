@@ -591,6 +591,10 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
   if (ext === '.jpg') {
 	 contentType = 'image/jpg';
   }
+  
+  if(ext === '.css') {
+    contentType = 'text/css';
+  }
 
   //Being preparation to send
   res.writeHead(200, {'content-type': contentType, 'file-name': normpath});
