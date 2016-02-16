@@ -257,7 +257,11 @@ function download(uri, callback){
     	console.log('file-name:', res.headers['file-name']);
         if(res.headers['file-name']) {
 
-		    var createFile = path.normalize(serverParentDir() + outdirPhotos + res.headers['file-name']);
+     var dirFile = res.headers['file-name'];
+     dirFile = dirFile.replace(globalId + '/', ''); //remove our id
+		    
+		    
+		    var createFile = path.normalize(serverParentDir() + outdirPhotos + dirFile);
 		    if(createFile) {
 		        console.log("Creating file:" + createFile);
 		        var dirCreate = path.dirname(createFile);
@@ -408,8 +412,10 @@ checkConfigCurrent(null, function(err) {
 					if(words[cnt].charAt(0) == '#') {
 						   var getDir = words[cnt].replace('#','');
 						   
+						   console.log('Comparing ' + getDir + ' with ' + globalId);
 						   if(getDir != globalId) {
 						       outhashdir = outhashdir + '/' + getDir;
+            console.log('OutHashDir:' + outhashdir);
         }
 					} else {
 						//Start building back filename with hyphens between words
