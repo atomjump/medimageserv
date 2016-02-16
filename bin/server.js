@@ -399,7 +399,7 @@ checkConfigCurrent(null, function(err) {
 					if(words[cnt].charAt(0) == '#') {
 						   var getDir = words[cnt].replace('#','');
 						   
-						   if(getDir != globalGuid) {
+						   if(getDir != globalId) {
 						       outhashdir = outhashdir + '/' + getDir;
         }
 					} else {

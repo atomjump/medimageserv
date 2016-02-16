@@ -1,7 +1,12 @@
 {
       "purpose": "SnapVolt-Server User Configuration File. Enter more backup directories or different drives below.SnapVolt-Server User Configuration File. Enter more backup directories or different drives below. Example readproxy http://YOURIP:5566/read/yourdir",
       "backupTo": [],
+<<<<<<< HEAD
       "readProxy": "http://104.131.151.99:5566/read/PuIAaQv4HODitWMsmH",
       "listenPort": "5567",
       "globalId": "cbc37627-1eae-402b-a336-3ff21883eb91"
+=======
+      "readProxy": "http://104.131.151.99:5566/read/UkoN6PHmchA31DvEeR",
+      "globalId": "a1506012-6e0e-4cf5-9605-7e2508b95854"
+>>>>>>> 8cf8bc0cb42b6ed5ec2d4d55631e958d6b5d8691
 }
