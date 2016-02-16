@@ -22,6 +22,7 @@ var noFurtherFiles = "none";			//This gets piped out if there are no further fil
 var pairingURL = "https://atomjump.com/med-genid.php";
 var listenPort = 5566;
 var remoteReadTimer = null;
+var globalId = "";
 
 
 function pushIfNew(arry, str) {
@@ -130,6 +131,14 @@ function checkConfigCurrent(setProxy, cb) {
 
 		 if(setProxy) {
 		   content.readProxy = setProxy;
+		 }
+		 
+		 if(globalId) {
+		   content.globalId = globalId;
+		 }
+		 
+		 if(content.globalId) {
+		    globalId = content.globalId;
 		 }
 
 		 if(content.listenPort) {
@@ -365,12 +374,12 @@ checkConfigCurrent(null, function(err) {
 			console.log("This drive:" + parentDir);
 			var outdir = parentDir + outdirPhotos;
 
-
+   console.log('Outdir:' + outdir);
 			  res.writeHead(200, {'content-type': 'text/plain'});
 			  res.write('Received upload successfully! Check ' + path.normalize(parentDir + outdirPhotos) + ' for your image.\n\n');
 			  res.end();
 
-
+   console.log('Files ' + JSON.stringify(files, null, 4));
 			//Use original filename for name
 			if(files && files.file1 && files.file1[0]) {
 				var title = files.file1[0].originalFilename;
@@ -384,21 +393,15 @@ checkConfigCurrent(null, function(err) {
 				var words = outFile.split('-');
 
 				var finalFileName = "";
+				var outhashdir = "";
 				//Array of distinct words
 				for(var cnt = 0; cnt< words.length; cnt++) {
 					if(words[cnt].charAt(0) == '#') {
-						var outhashdir = words[cnt].replace('#','');
-
-						//Check the directory exists, and create
-						if (!fs.existsSync(path.normalize(parentDir + outdirPhotos))){
-								fs.mkdirSync(path.normalize(parentDir + outdirPhotos));
-						}
-
-						//Create the final hash outdir
-						outdir = parentDir + outdirPhotos + '/' + outhashdir;
-						if (!fs.existsSync(path.normalize(outdir))){
-							fs.mkdirSync(path.normalize(outdir));
-						}
+						   var getDir = words[cnt].replace('#','');
+						   
+						   if(getDir != globalGuid) {
+						       outhashdir = outhashdir + '/' + getDir;
+        }
 					} else {
 						//Start building back filename with hyphens between words
 						if(finalFileName.length > 0) {
@@ -406,8 +409,25 @@ checkConfigCurrent(null, function(err) {
 						}
 						finalFileName = finalFileName + words[cnt];
 					}
-				}
+				}  //end of loop
 
+				//Check the directory exists, and create
+				if (!fs.existsSync(path.normalize(parentDir + outdirPhotos))){
+						   		console.log('Creating dir:' + path.normalize(parentDir + outdirPhotos));
+
+		   						fs.mkdirSync(path.normalize(parentDir + outdirPhotos));
+						  			console.log('Created OK dir:' + path.normalize(parentDir + outdirPhotos));
+
+					}
+
+					//Create the final hash outdir
+				 outdir = parentDir + outdirPhotos + outhashdir;
+					if (!fs.existsSync(path.normalize(outdir))){
+						 console.log('Creating dir:' + path.normalize(outdir));
+							fs.mkdirSync(path.normalize(outdir));
+					  console.log('Created OK');
+					
+						}
 
 
 
@@ -484,7 +504,8 @@ checkConfigCurrent(null, function(err) {
 
 					   var codes = response.body.split(" ");
 					   var passcode = codes[0];
-					   var guid = codes[1];
+					   globalId = codes[1];
+					   var guid = globalId;
 					   var proxyServer = codes[2].replace("\n", "");
 					   var readProx = proxyServer + "/read/" + guid;
 					   console.log("Proxy set to:" + readProx);
@@ -583,6 +604,10 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
   }
   if (ext === '.jpg') {
 	 contentType = 'image/jpg';
+  }
+  
+  if(ext === '.css') {
+    contentType = 'text/css';
   }
 
   //Being preparation to send
