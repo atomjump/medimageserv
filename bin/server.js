@@ -1,3 +1,12 @@
+/*
+
+MedImage Server - runs an http server allowing uploads of photos
+and downloads from other MedImage Servers.
+
+../config.json contains the settings for this server.
+
+*/
+
 var multiparty = require('multiparty');
 var http = require('http');
 var util = require('util');
