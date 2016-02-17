@@ -4,7 +4,7 @@ The MedImage Server is a companion product to the MedImage apps on smart-phones.
 
 The combined product enables the medical practitioner to take a photo of a patient with their mobile phone, and have the image transferred directly into a specific folder on their PC or server.  The image is tagged with a patient id immediately before the photo is taken.
 
-The most common way to install this package is to use an internet connected web-server as a 'proxy' (typically linux based), which temporarily holds the photos that are uploaded from the phone via 3G/4G to the server. A Windows Med Image reader sits on the Doctor's PC, which reads the proxy on a regular basis, and downloads images directly into a chosen folder (or folders) on the PC. 
+The most common way to install this package is to use an internet connected PC as a 'proxy' (typically linux based), which temporarily holds the photos that are uploaded from the phone via 3G/4G to the server. A Windows Med Image reader sits on the Doctor's PC, which reads the proxy on a regular basis, and downloads images directly into a chosen folder (or folders) on the PC. 
 
 ## 1. To Install Your Proxy
 
@@ -55,34 +55,17 @@ Note: this daemon is always on, but the images are only kept on this machine for
 
 Download and run the installable MedImageServer.exe from http://medimage.atomjump.com
 
-
-Edit C:\MedImageServer\config.js
-
-Set "readProxy" to be:
-```
-"readProxy" : "http://YOURIP:5566/read/YOURCODE"
-```
-
-Where YOURIP is your server's IP address. YOURCODE is your site's passcode, that each person can specify and keep private.  You choose this value, but please ensure that it is unguessable. For example, you could have several hundred different practises operating off one proxy server, each with their own passcode.
-
-Then run 'Windows Services', find 'MedImage', and click 'Restart'.
+If you have installed your own proxy, enter the URL of your proxy server eg. 'http://myproxy.mycompany.com:5566' into the third large button. You will be given a 4 digit pairing code.
 
 
-## 3. On your Med Image Android app
 
-Switch off Wifi on your phone.
+## 3. On your Med Image Android app 
 
-Click the large circle.
+Search the Play Store for 'Med Image'. Purchase and install.
 
-After 5 seconds it will mention that you must enter a server. Enter your 'Server' after this as
-```
-"http://YOURIP:5566/write/YOURCODE"
-```
-where YOURCODE is the same site's passcode that was in your Windows config.json "readProxy" parameter.
+Click the large circle on the app to connect and start taking photos. If you have no wifi connection it will ask you for your 4 digit pairing code from your server.
 
-Click the large icon to start taking photos.
-
-Enter the patient id in the box at the top, specific to each photo. Note: #tags will allocate a directory (this will create another subdirectory inside your directory. This feature is to be completed.). eg.
+Enter the patient id in the box at the top, specific to each photo. Note: #tags will allocate a directory (this will create another subdirectory inside your directory.). eg.
 ```
 #elderly Fred
 ```
@@ -92,9 +75,6 @@ would create a directory called elderly/ on your PC and upload a file called 'Fr
 ### Planned Improvements
 
 * https and http, rather than http support.
-* Currently #tags will only create a useful directory if you are uploading to the entire server, not the /write/YOURCODE directory. Match this capability.
-* config.json should be in Windows line ending format, so that Notepad users can more easily read it.
-* Ensure all zero length files are removed - this may already be fixed.
 * Queue images on client so that if there is no signal, the image is sent later.
 
  
