@@ -141,11 +141,11 @@ function checkConfigCurrent(setProxy, cb) {
 		 if(setProxy) {
 		   content.readProxy = setProxy;
 		 }
-		 
+
 		 if(globalId) {
 		   content.globalId = globalId;
 		 }
-		 
+
 		 if(content.globalId) {
 		    globalId = content.globalId;
 		 }
@@ -259,8 +259,8 @@ function download(uri, callback){
 
      var dirFile = res.headers['file-name'];
      dirFile = dirFile.replace(globalId + '/', ''); //remove our id
-		    
-		    
+
+
 		    var createFile = path.normalize(serverParentDir() + outdirPhotos + dirFile);
 		    if(createFile) {
 		        console.log("Creating file:" + createFile);
@@ -326,7 +326,7 @@ function readRemoteServer(url)
 }
 
 
-function backupFile(thisPath, finalFileName)
+function backupFile(thisPath, outhashdir, finalFileName)
 {
 
 
@@ -339,10 +339,10 @@ function backupFile(thisPath, finalFileName)
 
 			//Loop through all the backup directories
 			for(var cnt=0; cnt< content.backupTo.length; cnt++) {
-				var target = content.backupTo[cnt] + '/' + finalFileName;
+				var target = content.backupTo[cnt] + '/' + outhashdir + '/' + finalFileName;
 				console.log("Backing up " + thisPath + " to:" + target);
 
-				fsExtra.ensureDir(content.backupTo[cnt], function(err) {
+				fsExtra.ensureDir(content.backupTo[cnt] + '/' + outhashdir, function(err) {
 					if(err) {
 						console.log("Warning: Could not create directory for backup: " + content.backupTo[cnt]);
 					} else {
@@ -411,7 +411,7 @@ checkConfigCurrent(null, function(err) {
 				for(var cnt = 0; cnt< words.length; cnt++) {
 					if(words[cnt].charAt(0) == '#') {
 						   var getDir = words[cnt].replace('#','');
-						   
+
 						   console.log('Comparing ' + getDir + ' with ' + globalId);
 						   if(getDir != globalId) {
 						       outhashdir = outhashdir + '/' + getDir;
@@ -441,7 +441,7 @@ checkConfigCurrent(null, function(err) {
 						 console.log('Creating dir:' + path.normalize(outdir));
 							fs.mkdirSync(path.normalize(outdir));
 					  console.log('Created OK');
-					
+
 						}
 
 
@@ -469,7 +469,7 @@ checkConfigCurrent(null, function(err) {
 						var thisPath = fullPath;
 
 						//Now backup to any directories specified in the config
-						backupFile(thisPath, finalFileName);
+						backupFile(thisPath, outhashdir, finalFileName);
 
 					  }
 				});
@@ -620,7 +620,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
   if (ext === '.jpg') {
 	 contentType = 'image/jpg';
   }
-  
+
   if(ext === '.css') {
     contentType = 'text/css';
   }
