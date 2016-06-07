@@ -287,7 +287,7 @@ function download(uri, callback){
 
                                   response.on('end', function() {
 									//Now backup to any directories specified in the config
-									backupFile(createFile, res.headers['file-name']);
+									backupFile(createFile, "", dirFile);
 							  	  });
                                 });
 
@@ -339,7 +339,12 @@ function backupFile(thisPath, outhashdir, finalFileName)
 
 			//Loop through all the backup directories
 			for(var cnt=0; cnt< content.backupTo.length; cnt++) {
-				var target = content.backupTo[cnt] + '/' + outhashdir + '/' + finalFileName;
+
+				if(outhashdir) {
+					var target = content.backupTo[cnt] + '/' + outhashdir + '/' + finalFileName;
+			    	} else {
+					var target = content.backupTo[cnt] + finalFileName;
+				}
 				console.log("Backing up " + thisPath + " to:" + target);
 
 				fsExtra.ensureDir(content.backupTo[cnt] + '/' + outhashdir, function(err) {
