@@ -392,12 +392,12 @@ checkConfigCurrent(null, function(err) {
 			console.log("This drive:" + parentDir);
 			var outdir = parentDir + outdirPhotos;
 
-   console.log('Outdir:' + outdir);
+   			console.log('Outdir:' + outdir);
 			  res.writeHead(200, {'content-type': 'text/plain'});
 			  res.write('Received upload successfully! Check ' + path.normalize(parentDir + outdirPhotos) + ' for your image.\n\n');
 			  res.end();
 
-   console.log('Files ' + JSON.stringify(files, null, 4));
+   			console.log('Files ' + JSON.stringify(files, null, 4));
 			//Use original filename for name
 			if(files && files.file1 && files.file1[0]) {
 				var title = files.file1[0].originalFilename;
@@ -420,8 +420,8 @@ checkConfigCurrent(null, function(err) {
 						   console.log('Comparing ' + getDir + ' with ' + globalId);
 						   if(getDir != globalId) {
 						       outhashdir = outhashdir + '/' + getDir;
-            console.log('OutHashDir:' + outhashdir);
-        }
+            						console.log('OutHashDir:' + outhashdir);
+        					}
 					} else {
 						//Start building back filename with hyphens between words
 						if(finalFileName.length > 0) {
@@ -438,16 +438,16 @@ checkConfigCurrent(null, function(err) {
 		   						fs.mkdirSync(path.normalize(parentDir + outdirPhotos));
 						  			console.log('Created OK dir:' + path.normalize(parentDir + outdirPhotos));
 
-					}
+				}
 
 					//Create the final hash outdir
 				 outdir = parentDir + outdirPhotos + outhashdir;
-					if (!fs.existsSync(path.normalize(outdir))){
-						 console.log('Creating dir:' + path.normalize(outdir));
-							fs.mkdirSync(path.normalize(outdir));
-					  console.log('Created OK');
+				if (!fs.existsSync(path.normalize(outdir))){
+					console.log('Creating dir:' + path.normalize(outdir));
+					fs.mkdirSync(path.normalize(outdir));
+					console.log('Created OK');
 
-						}
+				}
 
 
 
@@ -516,7 +516,7 @@ checkConfigCurrent(null, function(err) {
 				   fullPairingUrl = fullPairingUrl + queryString;
 
 			   }
-			   console.log("Requqest for pairing:" + fullPairingUrl);
+			   console.log("Request for pairing:" + fullPairingUrl);
 
 			   needle.get(fullPairingUrl, function(error, response) {
 				  if (!error && response.statusCode == 200) {
