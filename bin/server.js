@@ -122,6 +122,7 @@ function ensureDirectoryWritableWindows(fullPath, cb) {
 
 function checkConfigCurrent(setProxy, cb) {
 	//Reads and updates config to get any new hard-drives added to the system, or a GUID added
+	//setProxy is optional, otherwise set it to null
 	//Returns cb(err) where err = null, or a string with the error
 
 
@@ -135,24 +136,24 @@ function checkConfigCurrent(setProxy, cb) {
 			if(!content.globalId) {
 				//Only need to create the server's ID once. And make sure it is not the same as the developer's ID
 				content.globalId = uuid.v4();
-		 }
+		 	}
 
 
-		 if(setProxy) {
-		   content.readProxy = setProxy;
-		 }
-
-		 if(globalId) {
-		   content.globalId = globalId;
-		 }
-
-		 if(content.globalId) {
-		    globalId = content.globalId;
-		 }
-
-		 if(content.listenPort) {
-		   listenPort = content.listenPort;
-		 }
+			 if(setProxy) {
+			   content.readProxy = setProxy;
+			 }
+	
+			 if(globalId) {
+			   content.globalId = globalId;
+			 }
+	
+			 if(content.globalId) {
+			    globalId = content.globalId;
+			 }
+	
+			 if(content.listenPort) {
+			   listenPort = content.listenPort;
+			 }
 
 			//Get the current drives
 			drivelist.list(function(error, disks) {
@@ -511,43 +512,46 @@ checkConfigCurrent(null, function(err) {
 			   var fullPairingUrl = pairingURL;
 
 			   var queryString = url.substr(pair.length);
-
-			   if(globalId != "") {
-			   	//We already know the global id - use it to update the passcode only
-			   	queryString = queryString + "&guid=" + globalId;
-			   }
-
-			   if(url.substr(pair.length)) {
-				   fullPairingUrl = fullPairingUrl + queryString;
-
-			   }
-			   console.log("Request for pairing:" + fullPairingUrl);
-
-			   needle.get(fullPairingUrl, function(error, response) {
-				  if (!error && response.statusCode == 200) {
-					  console.log(response.body);
-
-					   var codes = response.body.split(" ");
-					   var passcode = codes[0];
-					   globalId = codes[1];
-					   var guid = globalId;
-					   var proxyServer = codes[2].replace("\n", "");
-					   var readProx = proxyServer + "/read/" + guid;
-					   console.log("Proxy set to:" + readProx);
-
-
-					   //Write full proxy to config file
-					   checkConfigCurrent(readProx, function() {
-
-
-						   //Display passcode to user
-							 var outdir = __dirname + "/../public/passcode.html";
-										serveUpFile(outdir, null, res, false, passcode);
-										return;
-					   });
-
-
-				  }
+			   
+			   
+			   checkConfigCurrent(null, function() {
+				   if(globalId != "") {
+				   	//We already know the global id - use it to update the passcode only
+				   	queryString = queryString + "&guid=" + globalId;
+				   }
+	
+				   if(url.substr(pair.length)) {
+					   fullPairingUrl = fullPairingUrl + queryString;
+	
+				   }
+				   console.log("Request for pairing:" + fullPairingUrl);
+	
+				   needle.get(fullPairingUrl, function(error, response) {
+					  if (!error && response.statusCode == 200) {
+						  console.log(response.body);
+	
+						   var codes = response.body.split(" ");
+						   var passcode = codes[0];
+						   globalId = codes[1];
+						   var guid = globalId;
+						   var proxyServer = codes[2].replace("\n", "");
+						   var readProx = proxyServer + "/read/" + guid;
+						   console.log("Proxy set to:" + readProx);
+	
+	
+						   //Write full proxy to config file
+						   checkConfigCurrent(readProx, function() {
+	
+	
+							   //Display passcode to user
+								 var outdir = __dirname + "/../public/passcode.html";
+											serveUpFile(outdir, null, res, false, passcode);
+											return;
+						   });
+	
+	
+					  }
+				   });
 			   });
 
 
