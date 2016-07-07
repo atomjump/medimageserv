@@ -267,7 +267,7 @@ function download(uri, callback){
 		        var dirCreate = path.dirname(createFile);
 		        console.log("Creating dir:" + dirCreate);
 		        //Make sure directory
-            	fsExtra.ensureDir(dirCreate, function(err) {
+            		fsExtra.ensureDir(dirCreate, function(err) {
 		            if(err) {
 			            console.log("Warning: Could not create directory for: " + dirCreate);
 		            } else {
@@ -511,6 +511,11 @@ checkConfigCurrent(null, function(err) {
 			   var fullPairingUrl = pairingURL;
 
 			   var queryString = url.substr(pair.length);
+
+			   if(globalId != "") {
+			   	//We already know the global id - use it to update the passcode only
+			   	queryString = queryString + "&guid=" + globalId;
+			   }
 
 			   if(url.substr(pair.length)) {
 				   fullPairingUrl = fullPairingUrl + queryString;
