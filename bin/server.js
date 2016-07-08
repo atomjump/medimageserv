@@ -135,7 +135,8 @@ function checkConfigCurrent(setProxy, cb) {
 
 			if(!content.globalId) {
 				//Only need to create the server's ID once. And make sure it is not the same as the developer's ID
-				content.globalId = uuid.v4();
+				//Old style:content.globalId = uuid.v4();
+				//Now we assume a blank guid to begin with.
 		 	}
 
 
