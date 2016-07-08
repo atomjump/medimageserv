@@ -517,10 +517,14 @@ checkConfigCurrent(null, function(err) {
 			   checkConfigCurrent(null, function() {
 				   if(globalId != "") {
 				   	//We already know the global id - use it to update the passcode only
-				   	queryString = queryString + "&guid=" + globalId;
+				   	if(queryString) {
+				   		queryString = queryString + "&guid=" + globalId;
+					} else {
+						queryString = "?guid=" + globalId;
+					}
 				   }
 	
-				   if(url.substr(pair.length)) {
+				   if(queryString) {
 					   fullPairingUrl = fullPairingUrl + queryString;
 	
 				   }
