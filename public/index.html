@@ -5,8 +5,21 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<meta charset="utf-8">
 	<link rel="stylesheet" href="style.css" type="text/css" media="screen">
+   <script>
+   	function checkCall()
+   	{
+   	 	if(document.getElementById('server').value != "") { 
+   	 		var address= '/pair?proxyServer=' + encodeURIComponent(document.getElementById('server').value);
+   	 		window.location.href = address;
+   	 	
+   	 		
+   	 	}
+   	 	return false;
+   	}
+   	
+   </script>
 
-	</head>
+</head>
 <body>
    <div>
 
@@ -21,7 +34,7 @@
 	 </p>
 	 <p>
 
-	<a onclick="if(document.getElementById('server').value != "") { var address= '/pair?proxyServer=' + encodeURIComponent(document.getElementById('server').value); window.location.href = address; }" href="javascript:"><div class="button">Server Address <input type="text" id="server" /><br/>Pair with your phone (Your private proxy server)</div></a>
+	<a onclick="return checkCall();" href="javascript:"><div class="button">Server Address <input type="text" id="server" /><br/>Pair with your phone (Your private proxy server)</div></a>
    </div>
 
 	 </p>
