@@ -9,6 +9,7 @@ var multiparty = require('multiparty');
 var http = require('http');
 var util = require('util');
 var path = require("path");
+var upath = require("upath");
 require("date-format-lite");
 var mv = require('mv');
 var fs = require('fs');
@@ -65,7 +66,7 @@ function updateConfig(newdir, cb) {
 
 if(process.argv[2]) {
   
-  var photoDir = path.posix.normalize(process.argv[2]);
+  var photoDir = upath.normalize(process.argv[2]);
   //path.posix.normalize(p)
   updateConfig(photoDir, function() {
       
