@@ -65,7 +65,8 @@ function updateConfig(newdir, cb) {
 
 if(process.argv[2]) {
   
-  var photoDir = path.normalize(process.argv[2]);
+  var photoDir = path.posix.normalize(process.argv[2]);
+  //path.posix.normalize(p)
   updateConfig(photoDir, function() {
       
     
