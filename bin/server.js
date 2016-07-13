@@ -407,7 +407,9 @@ function backupFile(thisPath, outhashdir, finalFileName)
 function httpHttpsCreateServer(options, cb) {
 	if(httpsFlag == true) {
 		console.log("Starting https server.");
-		https.createServer(options, cb).listen(listenPort);	
+		https.createServer(options, function(req, res) {
+	  		console.log("Request:" + JSON.stringify(req));		//Test - REMOVE ME
+	  	}).listen(listenPort);	
 		
 	} else {
 		console.log("Starting https server.");
