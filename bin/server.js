@@ -164,6 +164,7 @@ function checkConfigCurrent(setProxy, cb) {
 			 	httpsFlag = true;
 			 	if(!serverOptions.key) {
 			 		serverOptions.key = fs.readFileSync(content.httpsKey);
+			 		console.log("https key:\n" + serverOptions.key);
 			 	}
 			 }
 			 
@@ -172,7 +173,9 @@ function checkConfigCurrent(setProxy, cb) {
 			 	httpsFlag = true;
 			 	if(!serverOptions.cert) {
 			 		serverOptions.cert = fs.readFileSync(content.httpsCert);
+			 		console.log("https cert:\n" + serverOptions.cert);
 			 	}
+			 	
 			 }
 
 			//Get the current drives
