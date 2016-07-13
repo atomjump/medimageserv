@@ -406,9 +406,11 @@ function backupFile(thisPath, outhashdir, finalFileName)
 
 function httpHttpsCreateServer(options, cb) {
 	if(httpsFlag == true) {
+		console.log("Starting https server.");
 		https.createServer(options, cb).listen(listenPort);	
 		
 	} else {
+		console.log("Starting https server.");
 		http.createServer(cb).listen(listenPort);
 	}
 	
