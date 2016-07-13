@@ -9,6 +9,7 @@ and downloads from other MedImage Servers.
 
 var multiparty = require('multiparty');
 var http = require('http');
+var https = require('https');
 var util = require('util');
 var path = require("path");
 require("date-format-lite");
@@ -32,6 +33,8 @@ var pairingURL = "https://atomjump.com/med-genid.php";
 var listenPort = 5566;
 var remoteReadTimer = null;
 var globalId = "";
+var httpsFlag = false;				//whether we are serving up https (= true) or http (= false)
+var serverOptions = {};				//https server options
 
 
 function pushIfNew(arry, str) {
@@ -129,7 +132,7 @@ function checkConfigCurrent(setProxy, cb) {
 	//Write to a json file with the current drive.  This can be removed later manually by user, or added to
 	fs.readFile(__dirname + configFile, function read(err, data) {
 		if (err) {
-				cb("Sorry, cannot read config file! " + err);
+			cb("Sorry, cannot read config file! " + err);
 		} else {
 			var content = JSON.parse(data);
 
@@ -154,6 +157,22 @@ function checkConfigCurrent(setProxy, cb) {
 	
 			 if(content.listenPort) {
 			   listenPort = content.listenPort;
+			 }
+			 
+			 if(content.httpsKey) {
+			 	//httpsKey should point to the key .pem file
+			 	httpsFlag = true;
+			 	if(!serverOptions.key) {
+			 		serverOptions.key = fs.readFileSync(content.httpsKey);
+			 	}
+			 }
+			 
+			 if(content.httpsCert) {
+			 	//httpsCert should point to the cert .pem file
+			 	httpsFlag = true;
+			 	if(!serverOptions.cert) {
+			 		serverOptions.cert = fs.readFileSync(content.httpsCert);
+			 	}
 			 }
 
 			//Get the current drives
@@ -259,8 +278,8 @@ function download(uri, callback){
     	console.log('file-name:', res.headers['file-name']);
         if(res.headers['file-name']) {
 
-     var dirFile = res.headers['file-name'];
-     dirFile = dirFile.replace(globalId + '/', ''); //remove our id
+     	var dirFile = res.headers['file-name'];
+     	dirFile = dirFile.replace(globalId + '/', ''); //remove our id
 
 
 		    var createFile = path.normalize(serverParentDir() + outdirPhotos + dirFile);
@@ -284,17 +303,29 @@ function download(uri, callback){
 
 
 		                        var file = fs.createWriteStream(createFile);
-                                var request = http.get(uri, function(response) {
-                                  response.pipe(file);
+	                                if(uri.substr(0,5) == "https") {
+	                                	//https version
+	                                	var request = https.get(uri, function(response) {
+		                                  	response.pipe(file);
+		                                  	response.on('end', function() {
+								//Now backup to any directories specified in the config
+								backupFile(createFile, "", dirFile);
+							});
+	                                	});
+	                                } else {
+	                                	//http version
+		                                var request = http.get(uri, function(response) {
+		                                  	response.pipe(file);
+		                                  	response.on('end', function() {
+								//Now backup to any directories specified in the config
+								backupFile(createFile, "", dirFile);
+							});
+	                                	});
+	                                	
+	                                }
 
-                                  response.on('end', function() {
-									//Now backup to any directories specified in the config
-									backupFile(createFile, "", dirFile);
-							  	  });
-                                });
 
-
-                            }
+                            	   }
 
 
 
@@ -370,6 +401,17 @@ function backupFile(thisPath, outhashdir, finalFileName)
 }
 
 
+function httpHttpsCreateServer(options, cb) {
+	if(httpsFlag == true) {
+		https.createServer(options, cb).listen(listenPort);	
+		
+	} else {
+		http.createServer(cb).listen(listenPort);
+	}
+	
+}
+
+
 checkConfigCurrent(null, function(err) {
 
 	if(err) {
@@ -377,7 +419,7 @@ checkConfigCurrent(null, function(err) {
 		process.exit(0);
 	}
 
-	http.createServer(function(req, res) {
+	httpHttpsCreateServer(serverOptions, function(req, res) {
 	  if (req.url === '/api/photo' && req.method === 'POST') {
 		// parse a file upload
 
@@ -617,7 +659,7 @@ checkConfigCurrent(null, function(err) {
 	  		} //end of check for pairing
 		} //end of get request
 
-	}).listen(listenPort);  //end of createServer
+	});  //end of createServer
 }); //end of checkConfigCurrent
 
 function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
