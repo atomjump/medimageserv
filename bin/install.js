@@ -39,21 +39,21 @@ function updateConfig(newdir, cb) {
 
 			content.backupTo = [ newdir ];
 
-				//Write the file nicely formatted again
-				fs.writeFile(__dirname + configFile, JSON.stringify(content, null, 6), function(err) {
-					if(err) {
-						cb(err);
-					}
-          
-          
+			//Write the file nicely formatted again
+			fs.writeFile(__dirname + configFile, JSON.stringify(content, null, 6), function(err) {
+				if(err) {
+					cb(err);
+				}
+  
+  
 
-					console.log("The config file was saved!");
+				console.log("The config file was saved!");
 
-					
-					cb(null);
-				});
+				
+				cb(null);
+			});
 
-			 });
+			
 
 
 		};
