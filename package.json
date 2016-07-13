@@ -22,7 +22,8 @@
     "node-uuid": "^1.4.7",
     "path": "^0.12.7",
     "request": "~2.16.6",
-    "needle": "~1.0.0"
+    "needle": "~1.0.0",
+    "upath": "~0.2.0"
   },
   "main": "server/server",
   "devDependencies": {
