@@ -425,6 +425,8 @@ checkConfigCurrent(null, function(err) {
 	}
 
 	httpHttpsCreateServer(serverOptions, function(req, res) {
+	  console.log("Request:" + JSON.stringify(req));		//Test - REMOVE ME	
+		
 	  if (req.url === '/api/photo' && req.method === 'POST') {
 		// parse a file upload
 
