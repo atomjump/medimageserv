@@ -75,7 +75,6 @@ would create a directory called elderly/ on your PC and upload a file called 'Fr
 ### Planned Improvements
 
 * https and http, rather than http support.
-* Queue images on client so that if there is no signal, the image is sent later.
-* Had one report of an image being sent but an incomplete .jpg came through.
+
  
 
