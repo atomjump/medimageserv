@@ -109,7 +109,7 @@ function ensureDirectoryWritableWindows(fullPath, cb) {
 	//Optional cb(err) passed back
 	//Check platform is windows
 	var platform = process.platform;
-	console.log(process.platform);
+	if(verbose == true) console.log(process.platform);
 	var isWin = false;
 	if(platform.indexOf("win") >= 0) {
 	    isWin = true;
@@ -535,7 +535,7 @@ function handleServer(req, res) {
 						ensurePhotoReadableWindows(fullPath);
 
 						//Now copy to any other backup directories
-						console.log("Backups:");
+						if(verbose == true) console.log("Backups:");
 						var thisPath = fullPath;
 
 						//Now backup to any directories specified in the config
