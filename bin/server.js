@@ -779,7 +779,7 @@ function handleServer(req, res) {
 							if(req.method === "HEAD") {
 								//Get the header only
 								var normpath = path.normalize(outfile);
-								res.writeHead(200, {'content-type': contentType, 'file-name': normpath});
+								res.writeHead(200, {'content-type': "image/jpg", 'file-name': normpath});
 								res.end();
 								
 							} else {
