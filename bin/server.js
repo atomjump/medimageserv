@@ -5,14 +5,15 @@ and downloads from other MedImage Servers.
 
 ../config.json contains the settings for this server.
 
+Usage:  node server.js [-verbose]
+
 
 Testing https connection:    
 openssl s_client -CApath /etc/ssl/certs -connect yourdomain.com:5566
 
 */
 
-//Verbose option:
-//if(argv[2])
+
 
 var multiparty = require('multiparty');
 var http = require('http');
@@ -30,7 +31,7 @@ var request = require("request");
 var needle = require('needle');
 
 
-var verbose = true;		//Set to true to display debug info
+var verbose = false;		//Set to true to display debug info
 var outdirDefaultParent = '/medimage';
 var outdirPhotos = '/photos';
 var defaultTitle = "image";
@@ -43,6 +44,12 @@ var remoteReadTimer = null;
 var globalId = "";
 var httpsFlag = false;				//whether we are serving up https (= true) or http (= false)
 var serverOptions = {};				//default https server options (see nodejs https module)
+
+
+//Check any command-line options
+if((process.argv[2]) && (process.argv[2] == '-verbose')){
+	verbose = true;
+}
 
 
 function pushIfNew(arry, str) {
