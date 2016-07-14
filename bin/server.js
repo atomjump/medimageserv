@@ -35,30 +35,7 @@ var remoteReadTimer = null;
 var globalId = "";
 var httpsFlag = false;				//whether we are serving up https (= true) or http (= false)
 var serverOptions = {};
-/*
-	requestCert : false,
-	cipher:	[
-	    "ECDHE-RSA-AES128-GCM-SHA256",	
-	    "ECDHE-RSA-AES256-SHA384",
-	    "DHE-RSA-AES256-SHA384",
-	    "ECDHE-RSA-AES256-SHA256",
-	    "DHE-RSA-AES256-SHA256",
-	    "ECDHE-RSA-AES128-SHA256",
-	    "DHE-RSA-AES128-SHA256",
-	    "HIGH",
-	    "!aNULL",
-	    "!eNULL",
-	    "!EXPORT",
-	    "!DES",
-	    "!RC4",
-	    "!MD5",
-	    "!PSK",
-	    "!SRP",
-	    "!CAMELLIA"
-	].join(':')
-	
-};				//https server options
-*/
+
 
 function pushIfNew(arry, str) {
   //Push a string to an array if it is new
@@ -327,14 +304,25 @@ function download(uri, callback){
 		                        console.log("Directory processed");
 		                        console.log("About to create local file " + createFile + " from uri:" + uri);
 					
+					var localFile = fs.createWriteStream(createFile);
 					
 					request.get(uri)
 					      .on('response', function (resp) {
+					      		console.log("Headers from resp:" + resp.rawHeaders)
 					      		if (resp.statusCode == 200) {
-					          		backupFile(createFile, "", dirFile);							
+					      			//OK - can put in a delete get request here now as a 2nd part?
+					          		
 							}
 						}) 
-					      .pipe(fs.createWriteStream(createFile));
+						.on('error', function(err) {
+						    console.log("Error downloading: " + err);
+						 })
+					      	 .pipe(localFile);
+					
+					localFile.on('end', function() {
+						console.log("Downloaded and written locally: " + createFile);
+					        backupFile(createFile, "", dirFile);
+					})
 
 					/*
 					//var file = fs.createWriteStream(createFile);
