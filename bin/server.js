@@ -334,7 +334,7 @@ function download(uri, callback){
 					      .on('response', function (resp) {
 					      		if(verbose == true) console.log("Resp:" + JSON.stringify(resp))
 					      		if (resp.statusCode == 200) {
-					      			console.log("Downloaded " + createFile);
+					      			console.log("\nDownloaded " + createFile);
 					      			//OK - can put in a delete get request here now as a 2nd part?
 					          		
 					          		//Backup the file
@@ -529,7 +529,7 @@ function handleServer(req, res) {
 						console.log(err);
 
 					  } else {
-						console.log(finalFileName + ' file uploaded');
+						console.log('\n' + finalFileName + ' file uploaded');
 
 						//Ensure no admin restictions on Windows
 						ensurePhotoReadableWindows(fullPath);
@@ -755,7 +755,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 					//doesn't hold permanently
 					if(verbose == true) console.log("About to delete:" + normpath);
 					fs.unlink(normpath, function() {
-					   console.log("Downloaded and removed " + theFile);
+					   console.log("\nDownloaded and removed " + theFile);
 					})
 			  }
 	   	   }
