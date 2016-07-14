@@ -329,8 +329,8 @@ function download(uri, callback){
 					
 					var file = fs.createWriteStream(createFile);
 					
-					
-					needle.get(url, function(err, resp) {
+					//TODO FIX THIS!
+					needle.get(url, {parse_response: false}, function(err, resp) {
 					    
 					    if (!err) {
 							//Now backup to any directories specified in the config
