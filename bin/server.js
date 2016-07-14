@@ -408,9 +408,10 @@ function httpHttpsCreateServer(options, cb) {
 	if(httpsFlag == true) {
 		console.log("Starting https server.");
 		https.createServer(options, function(req, res) {
+			console.log("Request:" + JSON.stringify(req));		//Test - REMOVE ME
   			res.writeHead(200);
   			res.end('hello world\n');
-	  		//console.log("Request:" + JSON.stringify(req));		//Test - REMOVE ME
+	  	
 	  	}).listen(listenPort);	
 		
 	} else {
