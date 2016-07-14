@@ -253,14 +253,14 @@ function fileWalk(startDir, cb)
 {
    //Read and return the first file in dir, and the count of which file it is. Only the cnt = 0 is used
    var items = [];
-   console.log("Searching:" + startDir);
+   if(verbose == true) console.log("Searching:" + startDir);
 
    if (fsExtra.existsSync(path.normalize(startDir))){
        try {
            var walk = fsExtra.walk(startDir);
 
 	        walk.on('data', function (item) {
-	                console.log("Found:" + item.path);
+	                	if(verbose == true) console.log("Found:" + item.path);
 			        items.push(item.path);
 		          })
 		          .on('end', function () {
@@ -374,6 +374,7 @@ function readRemoteServer(url)
 	}
 
 	remoteReadTimer = setInterval(function() {
+		console.log(".");			//Display movement to show pinging
 		download(url, function(){
 			  console.log('done');
 		});
@@ -640,7 +641,7 @@ function handleServer(req, res) {
 				 var outdir = path.normalize(parentDir + outdirPhotos + '/' + codeDir);
 				 var compareWith = path.normalize(parentDir + outdirPhotos);
 
-				 console.log("Output directory to scan " + outdir + ". Must include:" + compareWith);
+				 if(verbose == true) console.log("Output directory to scan " + outdir + ". Must include:" + compareWith);
 				 //For security purposes the path must include the parentDir and outdiePhotos in a complete form
 				 //ie. be subdirectories. Otherwise a ../../ would allow deletion of an internal file
 				 if(outdir.indexOf(compareWith) > -1) {
