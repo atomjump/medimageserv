@@ -769,7 +769,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
   }
 
   //Being preparation to send
-  res.writeHead(200, {'content-type': contentType, 'file-name': normpath});
+  //Should this be here??: res.writeHead(200, {'content-type': contentType, 'file-name': normpath});
 
   //Read the file from disk, then send to client
   fs.readFile(normpath, function (err,data) {
@@ -783,6 +783,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 
 
 	  if(customString) {
+	     //This is use for a replace on an HTML file with the passcode
 	     var strData = data.toString();
 	     strData = strData.replace("CUSTOMSTRING",customString);
 	     console.log(strData);
@@ -793,7 +794,6 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 	  res.writeHead(200, {'content-type': contentType, 'file-name': theFile});
 	  res.end(data, function(err) {
 		  //Wait until finished sending, then delete locally
-
 		  if(err) {
 	  	  	 console.log(err);
 	  	  } else {
