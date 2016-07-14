@@ -342,8 +342,7 @@ function download(uri, callback){
 		}) 
 		.on('error', function(err) {
 		    console.log("Error downloading: " + err);
-		 })
-	      	 .pipe(localFile);
+		 });
 	
 	/*localFile.on('end', function() {
 		console.log("Downloaded and written locally: " + createFile);
@@ -774,8 +773,17 @@ function handleServer(req, res) {
 							var localFileName = outfile.replace(compareWith, "");
 							console.log("Local file to download via proxy as:" + localFileName);
 							console.log("About to download (eventually delete): " + outfile);
-
-							serveUpFile(outfile,localFileName, res, true);
+							
+							if(req.method === "HEAD") {
+								//Get the header only
+								var normpath = path.normalize(outfile);
+								res.writeHead(200, {'content-type': contentType, 'file-name': normpath});
+								res.end();
+								
+							} else {
+								//Now get the full file
+								serveUpFile(outfile,localFileName, res, true);
+							}
 							
 						 } else {
 							//Reply with a 'no further files' simple text response to client
@@ -828,7 +836,8 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
   }
 
   //Being preparation to send
-  //res.writeHead(200, {'content-type': contentType, 'file-name': normpath});
+ 
+  
 
   //Read the file from disk, then send to client
   fs.readFile(normpath, function (err,data) {
