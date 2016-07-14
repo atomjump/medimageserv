@@ -327,8 +327,10 @@ function download(uri, callback){
 		                        console.log("Directory processed");
 		                        console.log("About to create local file " + createFile + " from uri:" + uri);
 					
-					
-					needle.get(uri, { output: createFile }, function(err, resp, body) {
+					var file = fs.createWriteStream(createFile);
+					needle.get(uri).pipe(file);
+					//TODO must backup on success
+					/*needle.get(uri, { output: createFile }, function(err, resp, body) {
 						if (!error && response.statusCode == 200) {
 							//Now backup to any directories specified in the config
 							backupFile(createFile, "", dirFile);
@@ -337,7 +339,7 @@ function download(uri, callback){
 							console.log("Error downloading file.");
 							//TODO: handle this better here.
 						}
-					});
+					});*/
 					/* old way:
 		                        var file = fs.createWriteStream(createFile);
 	                                if(uri.substr(0,5) == "https") {
