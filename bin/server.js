@@ -327,18 +327,19 @@ function download(uri, callback){
 		                        console.log("Directory processed");
 		                        console.log("About to create local file " + createFile + " from uri:" + uri);
 					
-					//var file = fs.createWriteStream(createFile);
-					request.get(url)
-                .on('response', function (resp) {
-      if (resp.statusCode == 200) {
-          backupFile(createFile, "", dirFile);							
-}
-}) 
-                .pipe(fs.createWriteStream(createFile));
+					
+					request.get(uri)
+					      .on('response', function (resp) {
+					      		if (resp.statusCode == 200) {
+					          		backupFile(createFile, "", dirFile);							
+							}
+						}) 
+					      .pipe(fs.createWriteStream(createFile));
 
 					/*
+					//var file = fs.createWriteStream(createFile);
 
-    //TODO FIX THIS!
+    					//TODO FIX THIS!
 					needle.get(url, {parse_response: false}, function(err, resp) {
 					    
 					    if (!err) {
