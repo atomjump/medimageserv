@@ -35,6 +35,7 @@ var remoteReadTimer = null;
 var globalId = "";
 var httpsFlag = false;				//whether we are serving up https (= true) or http (= false)
 var serverOptions = {
+	requestCert : false,
 	cipher:	[
 	    "ECDHE-RSA-AES256-SHA384",
 	    "DHE-RSA-AES256-SHA384",
