@@ -5,7 +5,14 @@ and downloads from other MedImage Servers.
 
 ../config.json contains the settings for this server.
 
+
+Testing https connection:    
+openssl s_client -CApath /etc/ssl/certs -connect yourdomain.com:5566
+
 */
+
+//Verbose option:
+//if(argv[2])
 
 var multiparty = require('multiparty');
 var http = require('http');
@@ -23,6 +30,7 @@ var request = require("request");
 var needle = require('needle');
 
 
+var verbose = true;		//Set to true to display debug info
 var outdirDefaultParent = '/medimage';
 var outdirPhotos = '/photos';
 var defaultTitle = "image";
@@ -34,7 +42,7 @@ var listenPort = 5566;
 var remoteReadTimer = null;
 var globalId = "";
 var httpsFlag = false;				//whether we are serving up https (= true) or http (= false)
-var serverOptions = {};
+var serverOptions = {};				//default https server options (see nodejs https module)
 
 
 function pushIfNew(arry, str) {
@@ -218,7 +226,7 @@ function checkConfigCurrent(setProxy, cb) {
 					console.log("The config file was saved!");
 
 					//Now start any ping to read from a remote server
-					if(content.readProxy) {
+					if((content.readProxy) && (content.readProxy != "")) {
 						readRemoteServer(content.readProxy);
 
 					}
@@ -272,93 +280,19 @@ function fileWalk(startDir, cb)
 
 function download(uri, callback){
   	
-  	/* Experiment
-	var localFile;								
-  	
-  	
-  	request.get(uri)
-	      .on('response', function (res) {
-	      		console.log("Resp:" + JSON.stringify(res))
-	      		if (res.statusCode == 200) {
-	      			//OK - can put in a delete get request here now as a 2nd part?
-	          		console.log('content-type:', res.headers['content-type']);
-			    	console.log('content-length:', res.headers['content-length']);
-			    	console.log('file-name:', res.headers['file-name']);
-			        if(res.headers['file-name']) {
-			        	//This indicates there is a file to download
-			        	
-			        	//Create a local file to store the download to.
-			        	var randExt = Math.floor(Math.random() * (100000 - 0)) + 0;
-					var tempDownloadName = path.normalize(serverParentDir() + outdirPhotos + '/Downloading-' + randExt + '.jpg');
-			        	console.log("About to create local temporary file " + tempDownloadName + " from uri:" + uri);
-			        	localFile = fs.createWriteStream(tempDownloadName);
-			        	
-			        	//Get a local raw filename (without directories appended)
-			        	var dirFile = res.headers['file-name'];
-     					dirFile = dirFile.replace(globalId + '/', ''); //remove our id
-     					
-     					//Get an actual target filename
-     					var createFile = path.normalize(serverParentDir() + outdirPhotos + dirFile);
-				        if(createFile) {
-					        console.log("Creating file:" + createFile);
-					        var dirCreate = path.dirname(createFile);
-					        console.log("Creating dir:" + dirCreate);
-					        //Make sure directory
-			            		fsExtra.ensureDir(dirCreate, function(err) {
-					            if(err) {
-						            console.log("Warning: Could not create directory for: " + dirCreate);
-					            } else {
-					                console.log("Created dir:" + dirCreate);
-					                ensureDirectoryWritableWindows(dirCreate, function(err) {
-			
-					                    	if(err) {
-					                        	console.log("Error processing dir:" + err);
-					                    	} else {
-					                        	console.log("Directory processed");
-					                        	console.log("Copying " + tempDownloadName + " to " + createFile);
-									fsExtra.copySync(tempDownloadName, createFile);
-									ensurePhotoReadableWindows(createFile);
-									
-									//Now backup file
-									backupFile(createFile, "", dirFile);
-									
-									//And remove the temporary file
-									console.log("Removing temporary file " + tempDownloadName); 
-									//fsExtra.removeSync(tempDownloadName);
-						        		console.log("WARNING: kept the file while testing.");
-					                    		
-					                    	}
-						
-					        	}); //end of directory writable
-
-					            }	//End of warning message
-                				}); //end of ensuredir exists
-            				} //end of if createFile exists
-        			} //end of if file-name exists
-	      		} else { //end of if statusCode = 200
-	      		
-	      			//Not a correct status code returned.
-	      			console.log("Status code returned:" + res.statusCode);
-	      		}
-		}) 
-		.on('error', function(err) {
-		    console.log("Error downloading: " + err);
-		 });
-	
-	localFile.on('end', function() {
-		console.log("Downloaded and written locally: " + createFile);
-	        
-	})*/
+ 
   
   //Get a header of file first - see if there is any content (this will be pinged once every 10 seconds or so)
   request.head(uri, function(err, res, body){
     if(err) {
-		console.log("Error requesting from proxy:" + err);
-	} else {
+	console.log("Error requesting from proxy:" + err);
+    } else {
+    	if(verbose == true) {
 		console.log(JSON.stringify(res.headers));
-    	console.log('content-type:', res.headers['content-type']);
-    	console.log('content-length:', res.headers['content-length']);
-    	console.log('file-name:', res.headers['file-name']);
+	    	console.log('content-type:', res.headers['content-type']);
+	    	console.log('content-length:', res.headers['content-length']);
+	    	console.log('file-name:', res.headers['file-name']);
+    	} 
         if(res.headers['file-name']) {
 		
 		//Yes there was a new photo file to download fully.
@@ -368,29 +302,30 @@ function download(uri, callback){
 
 		var createFile = path.normalize(serverParentDir() + outdirPhotos + dirFile);
 		if(createFile) {
-		        console.log("Creating file:" + createFile);
+			
+		        if(verbose == true) console.log("Creating file:" + createFile);
 		        var dirCreate = path.dirname(createFile);
-		        console.log("Creating dir:" + dirCreate);
+		        if(verbose == true) console.log("Creating dir:" + dirCreate);
 		        //Make sure directory
             		fsExtra.ensureDir(dirCreate, function(err) {
 		            if(err) {
 			            console.log("Warning: Could not create directory for: " + dirCreate);
 		            } else {
-		                console.log("Created dir:" + dirCreate);
+		                if(verbose == true) console.log("Created dir:" + dirCreate);
 		                ensureDirectoryWritableWindows(dirCreate, function(err) {
 
 		                    if(err) {
 		                        console.log("Error processing dir:" + err);
 		                    } else {
-		                        console.log("Directory processed");
-		                        console.log("About to create local file " + createFile + " from uri:" + uri);
+		                        if(verbose == true) console.log("Directory processed");
+		                        if(verbose == true) console.log("About to create local file " + createFile + " from uri:" + uri);
 					
 					
 					//Now do a full get of the file, and pipe directly back
 					var localFile = fs.createWriteStream(createFile);
 					request.get(uri)
 					      .on('response', function (resp) {
-					      		console.log("Resp:" + JSON.stringify(resp))
+					      		if(verbose == true) console.log("Resp:" + JSON.stringify(resp))
 					      		if (resp.statusCode == 200) {
 					      			console.log("Downloaded " + createFile);
 					      			//OK - can put in a delete get request here now as a 2nd part?
@@ -404,69 +339,6 @@ function download(uri, callback){
 						 })
 					      	 .pipe(localFile);
 					
-					
-
-					/*
-					//var file = fs.createWriteStream(createFile);
-
-    					//TODO FIX THIS!
-					needle.get(url, {parse_response: false}, function(err, resp) {
-					    
-					    if (!err) {
-							//Now backup to any directories specified in the config
-							//resp.body.pipe(file);
-							file.write(resp.body);
-							///resp.body.on('end', function() {
-								//Now backup to any directories specified in the config
-							file.end(function() {
-								backupFile(createFile, "", dirFile);
-							})
-								
-							//});
-					    } else {
-							//resp.body has file - pipe to file
-							console.log("Error downloading."); //TODO better handling
-					    }
-					    
-					  });
-					  */
-					
-					/*needle.get(uri, { output: createFile }, function(err, resp, body) {
-						if (!error && response.statusCode == 200) {
-							//Now backup to any directories specified in the config
-							backupFile(createFile, "", dirFile);
-							
-						} else {
-							console.log("Error downloading file.");
-							//TODO: handle this better here.
-						}
-					});*/
-					/* old way:
-		                        var file = fs.createWriteStream(createFile);
-	                                if(uri.substr(0,5) == "https") {
-	                                	console.log("Getting https.  Uri:" + uri);
-	                                	//https version
-	                                	var request = https.get(uri, function(response) {
-		                                  	response.pipe(file);
-		                                  	response.on('end', function() {
-								//Now backup to any directories specified in the config
-								backupFile(createFile, "", dirFile);
-							});
-	                                	});
-	                                } else {
-	                                	//http version
-	                                	console.log("Getting http.  Uri:" + uri);
-		                                var request = http.get(uri, function(response) {
-		                                  	response.pipe(file);
-		                                  	response.on('end', function() {
-								//Now backup to any directories specified in the config
-								backupFile(createFile, "", dirFile);
-							});
-	                                	});
-	                                	
-	                                }
-	                                */
-
 
                             	   }
 
@@ -479,7 +351,7 @@ function download(uri, callback){
                 }); //end of ensuredir exists
             } //end of if file exists
         } //end of if file-name exists
-	} //end of no error from proxy
+     } //end of no error from proxy
   }); //end of request head
   
   
@@ -574,15 +446,15 @@ function handleServer(req, res) {
 
 			//The standard outdir is the drive from the current server script
 			var parentDir = serverParentDir();
-			console.log("This drive:" + parentDir);
+			if(verbose == true) console.log("This drive:" + parentDir);
 			var outdir = parentDir + outdirPhotos;
 
-   			console.log('Outdir:' + outdir);
+   			if(verbose == true) console.log('Outdir:' + outdir);
 			  res.writeHead(200, {'content-type': 'text/plain'});
 			  res.write('Received upload successfully! Check ' + path.normalize(parentDir + outdirPhotos) + ' for your image.\n\n');
 			  res.end();
 
-   			console.log('Files ' + JSON.stringify(files, null, 4));
+   			if(verbose == true) console.log('Files ' + JSON.stringify(files, null, 4));
 			//Use original filename for name
 			if(files && files.file1 && files.file1[0]) {
 				var title = files.file1[0].originalFilename;
@@ -602,10 +474,10 @@ function handleServer(req, res) {
 					if(words[cnt].charAt(0) == '#') {
 						   var getDir = words[cnt].replace('#','');
 
-						   console.log('Comparing ' + getDir + ' with ' + globalId);
+						   if(verbose == true) console.log('Comparing ' + getDir + ' with ' + globalId);
 						   if(getDir != globalId) {
 						       outhashdir = outhashdir + '/' + getDir;
-            						console.log('OutHashDir:' + outhashdir);
+            						if(verbose == true) console.log('OutHashDir:' + outhashdir);
         					}
 					} else {
 						//Start building back filename with hyphens between words
@@ -618,19 +490,19 @@ function handleServer(req, res) {
 
 				//Check the directory exists, and create
 				if (!fs.existsSync(path.normalize(parentDir + outdirPhotos))){
-						   		console.log('Creating dir:' + path.normalize(parentDir + outdirPhotos));
+			   		if(verbose == true) console.log('Creating dir:' + path.normalize(parentDir + outdirPhotos));
 
-		   						fs.mkdirSync(path.normalize(parentDir + outdirPhotos));
-						  			console.log('Created OK dir:' + path.normalize(parentDir + outdirPhotos));
+   					fs.mkdirSync(path.normalize(parentDir + outdirPhotos));
+			  		if(verbose == true) console.log('Created OK dir:' + path.normalize(parentDir + outdirPhotos));
 
 				}
 
-					//Create the final hash outdir
-				 outdir = parentDir + outdirPhotos + outhashdir;
+				//Create the final hash outdir
+				outdir = parentDir + outdirPhotos + outhashdir;
 				if (!fs.existsSync(path.normalize(outdir))){
-					console.log('Creating dir:' + path.normalize(outdir));
+					if(verbose == true) console.log('Creating dir:' + path.normalize(outdir));
 					fs.mkdirSync(path.normalize(outdir));
-					console.log('Created OK');
+					if(verbose == true) console.log('Created OK');
 
 				}
 
@@ -640,7 +512,7 @@ function handleServer(req, res) {
 
 				//Move the file into the standard location of this server
 				var fullPath = outdir + '/' + finalFileName;
-				console.log("Moving " + files.file1[0].path + " to " + fullPath);
+				if(verbose == true) console.log("Moving " + files.file1[0].path + " to " + fullPath);
 				mv(files.file1[0].path, fullPath, {mkdirp: true},  function(err) { //path.normalize(
 					  // done. it tried fs.rename first, and then falls back to
 					  // piping the source file to the dest file and then unlinking
@@ -732,9 +604,9 @@ function handleServer(req, res) {
 	
 	
 							   //Display passcode to user
-								 var outdir = __dirname + "/../public/passcode.html";
-											serveUpFile(outdir, null, res, false, passcode);
-											return;
+							   var outdir = __dirname + "/../public/passcode.html";
+							   serveUpFile(outdir, null, res, false, passcode);
+							   return;
 						   });
 	
 	
@@ -750,8 +622,8 @@ function handleServer(req, res) {
 				 //Get uploaded photos from coded subdir
 				 var codeDir = url.substr(read.length);
 				 var parentDir = serverParentDir();
-				 console.log("This drive:" + parentDir);
-				 console.log("Coded directory:" + codeDir);
+				 if(verbose == true) console.log("This drive:" + parentDir);
+				 if(verbose == true) console.log("Coded directory:" + codeDir);
 
 				 if(codeDir.length <= 0) {
 					 console.log("Cannot read without a directory");
@@ -773,7 +645,7 @@ function handleServer(req, res) {
 						 if(outfile) {
 							//Get outfile - compareWith
 							var localFileName = outfile.replace(compareWith, "");
-							console.log("Local file to download via proxy as:" + localFileName);
+							if(verbose == true) console.log("Local file to download via proxy as:" + localFileName);
 							console.log("About to download (eventually delete): " + outfile);
 							
 							if(req.method === "HEAD") {
@@ -789,7 +661,11 @@ function handleServer(req, res) {
 						 } else {
 							//Reply with a 'no further files' simple text response to client
 
-							console.log("No images");
+							if(verbose == true) {
+								console.log("No images");
+							} else {
+								console.log(".");
+							}
 							res.writeHead(200, {'content-type': 'text/html'});
 							res.end(noFurtherFiles);
 							return;
@@ -869,7 +745,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 			  if(deleteAfterwards == true) {
 					//Delete the file 'normpath' from the server. This server is like a proxy cache and
 					//doesn't hold permanently
-					console.log("About to delete:" + normpath);
+					if(verbose == true) console.log("About to delete:" + normpath);
 					fs.unlink(normpath, function() {
 					   console.log("Deleted " + normpath + " successfully!");
 					})
