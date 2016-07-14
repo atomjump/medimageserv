@@ -34,7 +34,27 @@ var listenPort = 5566;
 var remoteReadTimer = null;
 var globalId = "";
 var httpsFlag = false;				//whether we are serving up https (= true) or http (= false)
-var serverOptions = {};				//https server options
+var serverOptions = {
+	cipher:	[
+	    "ECDHE-RSA-AES256-SHA384",
+	    "DHE-RSA-AES256-SHA384",
+	    "ECDHE-RSA-AES256-SHA256",
+	    "DHE-RSA-AES256-SHA256",
+	    "ECDHE-RSA-AES128-SHA256",
+	    "DHE-RSA-AES128-SHA256",
+	    "HIGH",
+	    "!aNULL",
+	    "!eNULL",
+	    "!EXPORT",
+	    "!DES",
+	    "!RC4",
+	    "!MD5",
+	    "!PSK",
+	    "!SRP",
+	    "!CAMELLIA"
+	].join(':');
+	
+};				//https server options
 
 
 function pushIfNew(arry, str) {
