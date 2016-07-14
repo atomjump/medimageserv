@@ -34,7 +34,8 @@ var listenPort = 5566;
 var remoteReadTimer = null;
 var globalId = "";
 var httpsFlag = false;				//whether we are serving up https (= true) or http (= false)
-var serverOptions = {
+var serverOptions = {};
+/*
 	requestCert : false,
 	cipher:	[
 	    "ECDHE-RSA-AES128-GCM-SHA256",	
@@ -57,7 +58,7 @@ var serverOptions = {
 	].join(':')
 	
 };				//https server options
-
+*/
 
 function pushIfNew(arry, str) {
   //Push a string to an array if it is new
