@@ -674,6 +674,7 @@ function handleServer(req, res) {
 							console.log("About to download (eventually delete): " + outfile);
 
 							serveUpFile(outfile,localFileName, res, true);
+							return;	//Do we need this in here TESTING ONLY!!
 						 } else {
 							//Reply with a 'no further files' simple text response to client
 
