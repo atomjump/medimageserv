@@ -432,31 +432,18 @@ function backupFile(thisPath, outhashdir, finalFileName)
 function httpHttpsCreateServer(options, cb) {
 	if(httpsFlag == true) {
 		console.log("Starting https server.");
-		https.createServer(options, cb).listen(listenPort); /*function(req, res) {
-			res.writeHead(200);
-			res.end('hello world\n');
-			console.log("Request:" + JSON.stringify(req));
-		})*/ 
+		https.createServer(options, handleServer(req, res)).listen(listenPort);
 		
 		
 	} else {
 		console.log("Starting https server.");
-		http.createServer(cb).listen(listenPort);
+		http.createServer(handleServer(req, res)).listen(listenPort);
 	}
 	
 }
 
-
-checkConfigCurrent(null, function(err) {
-
-	if(err) {
-		console.log("Error updating config.json: " + err);
-		process.exit(0);
-	}
-
-	httpHttpsCreateServer(serverOptions, function(req, res) {
-	  //console.log("Request:" + JSON.stringify(req));		//Test - REMOVE ME	
-		
+function handleServer(req, res) {
+	
 	  if (req.url === '/api/photo' && req.method === 'POST') {
 		// parse a file upload
 
@@ -695,8 +682,20 @@ checkConfigCurrent(null, function(err) {
 			   }
 	  		} //end of check for pairing
 		} //end of get request
+	
+	
+	
+}
 
-	});  //end of createServer
+
+checkConfigCurrent(null, function(err) {
+
+	if(err) {
+		console.log("Error updating config.json: " + err);
+		process.exit(0);
+	}
+
+	httpHttpsCreateServer(serverOptions);  //end of createServer
 }); //end of checkConfigCurrent
 
 function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
