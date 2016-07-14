@@ -52,7 +52,7 @@ var serverOptions = {
 	    "!PSK",
 	    "!SRP",
 	    "!CAMELLIA"
-	].join(':');
+	].join(':')
 	
 };				//https server options
 
