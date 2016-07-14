@@ -272,6 +272,7 @@ function fileWalk(startDir, cb)
 
 function download(uri, callback){
   	
+  	/* Experiment
 	var localFile;								
   	
   	
@@ -344,12 +345,12 @@ function download(uri, callback){
 		    console.log("Error downloading: " + err);
 		 });
 	
-	/*localFile.on('end', function() {
+	localFile.on('end', function() {
 		console.log("Downloaded and written locally: " + createFile);
 	        
 	})*/
   
-  /* Old
+  //Get a header of file first - see if there is any content (this will be pinged once every 10 seconds or so)
   request.head(uri, function(err, res, body){
     if(err) {
 		console.log("Error requesting from proxy:" + err);
@@ -359,13 +360,14 @@ function download(uri, callback){
     	console.log('content-length:', res.headers['content-length']);
     	console.log('file-name:', res.headers['file-name']);
         if(res.headers['file-name']) {
+		
+		//Yes there was a new photo file to download fully.
+     		var dirFile = res.headers['file-name'];
+     		dirFile = dirFile.replace(globalId + '/', ''); //remove our id
 
-     	var dirFile = res.headers['file-name'];
-     	dirFile = dirFile.replace(globalId + '/', ''); //remove our id
 
-
-		    var createFile = path.normalize(serverParentDir() + outdirPhotos + dirFile);
-		    if(createFile) {
+		var createFile = path.normalize(serverParentDir() + outdirPhotos + dirFile);
+		if(createFile) {
 		        console.log("Creating file:" + createFile);
 		        var dirCreate = path.dirname(createFile);
 		        console.log("Creating dir:" + dirCreate);
@@ -384,25 +386,25 @@ function download(uri, callback){
 		                        console.log("About to create local file " + createFile + " from uri:" + uri);
 					
 					
-					
+					//Now do a full get of the file, and pipe directly back
+					var localFile = = fs.createWriteStream(createFile);
 					request.get(uri)
 					      .on('response', function (resp) {
 					      		console.log("Resp:" + JSON.stringify(resp))
 					      		if (resp.statusCode == 200) {
+					      			console.log("Downloaded " + createFile);
 					      			//OK - can put in a delete get request here now as a 2nd part?
 					          		
+					          		//Backup the file
+					          		backupFile(createFile, "", dirFile);
 							}
 						}) 
 						.on('error', function(err) {
 						    console.log("Error downloading: " + err);
 						 })
-					      	 .pipe(localFile);
+					      	 .pipe(createFile);
 					
-					localFile.on('end', function() {
-						console.log("Downloaded and written locally: " + createFile);
-					        backupFile(createFile, "", dirFile);
-					})
-	*/
+					
 
 					/*
 					//var file = fs.createWriteStream(createFile);
@@ -465,7 +467,7 @@ function download(uri, callback){
 	                                }
 	                                */
 
- /* Old
+
                             	   }
 
 
@@ -480,7 +482,7 @@ function download(uri, callback){
 	} //end of no error from proxy
   }); //end of request head
   
-  */
+  
 }
 
 
