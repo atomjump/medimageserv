@@ -345,10 +345,10 @@ function download(uri, callback){
 		 })
 	      	 .pipe(localFile);
 	
-	localFile.on('end', function() {
+	/*localFile.on('end', function() {
 		console.log("Downloaded and written locally: " + createFile);
 	        
-	})
+	})*/
   
   /* Old
   request.head(uri, function(err, res, body){
