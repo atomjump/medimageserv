@@ -778,7 +778,6 @@ function handleServer(req, res) {
 							
 							if(req.method === "HEAD") {
 								//Get the header only
-								v
 								res.writeHead(200, {'content-type': "image/jpg", 'file-name': localFileName });
 								res.end();
 								
