@@ -328,8 +328,25 @@ function download(uri, callback){
 		                        console.log("About to create local file " + createFile + " from uri:" + uri);
 					
 					var file = fs.createWriteStream(createFile);
-					needle.get(uri).pipe(file);
-					//TODO must backup on success
+					needle.get({ parse: false, }, uri).pipe(file);
+					
+					needle.get(url, function(err, resp) {
+					    
+					    if (!error) {
+							//Now backup to any directories specified in the config
+							resp.body.pipe(file);
+							resp.body.on('end', function() {
+								//Now backup to any directories specified in the config
+								backupFile(createFile, "", dirFile);
+							});
+					    } else {
+							//resp.body has file - pipe to file
+							console.log("Error downloading."); //TODO better handling
+					    }
+					    
+					  });
+					  
+					
 					/*needle.get(uri, { output: createFile }, function(err, resp, body) {
 						if (!error && response.statusCode == 200) {
 							//Now backup to any directories specified in the config
@@ -674,7 +691,7 @@ function handleServer(req, res) {
 							console.log("About to download (eventually delete): " + outfile);
 
 							serveUpFile(outfile,localFileName, res, true);
-							return;	//Do we need this in here TESTING ONLY!!
+							
 						 } else {
 							//Reply with a 'no further files' simple text response to client
 
