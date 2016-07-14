@@ -568,7 +568,7 @@ function handleServer(req, res) {
 		  var read = '/read/';
 		  var pair = '/pair';
 
-		   console.log("Url requested:" + url);
+		   if(verbose == true) console.log("Url requested:" + url);
 
 		   if(url.substr(0,pair.length) == pair) {
 			   //Do a get request from the known aj server
