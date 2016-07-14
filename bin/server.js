@@ -778,8 +778,8 @@ function handleServer(req, res) {
 							
 							if(req.method === "HEAD") {
 								//Get the header only
-								var normpath = path.normalize(outfile);
-								res.writeHead(200, {'content-type': "image/jpg", 'file-name': normpath});
+								v
+								res.writeHead(200, {'content-type': "image/jpg", 'file-name': localFileName });
 								res.end();
 								
 							} else {
@@ -861,7 +861,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 	     data =JSON.parse( JSON.stringify( strData ) ); //JSON.parse(strData);
 	  }
 
-	  res.writeHead(200, {'content-type': contentType, 'file-name': theFile});  //or should this be 'normpath' not 'theFile'?
+	  res.writeHead(200, {'content-type': contentType, 'file-name': theFile});  
 	  res.end(data, function(err) {
 		  //Wait until finished sending, then delete locally
 		  if(err) {
