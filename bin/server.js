@@ -326,8 +326,19 @@ function download(uri, callback){
 		                    } else {
 		                        console.log("Directory processed");
 		                        console.log("About to create local file " + createFile + " from uri:" + uri);
-
-
+					
+					
+					needle.get(uri, { output: createFile }, function(err, resp, body) {
+						if (!error && response.statusCode == 200) {
+							//Now backup to any directories specified in the config
+							backupFile(createFile, "", dirFile);
+							
+						} else {
+							console.log("Error downloading file.");
+							//TODO: handle this better here.
+						}
+					});
+					/* old way:
 		                        var file = fs.createWriteStream(createFile);
 	                                if(uri.substr(0,5) == "https") {
 	                                	console.log("Getting https.  Uri:" + uri);
@@ -351,6 +362,7 @@ function download(uri, callback){
 	                                	});
 	                                	
 	                                }
+	                                */
 
 
                             	   }
