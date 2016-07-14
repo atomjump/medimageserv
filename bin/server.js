@@ -187,7 +187,7 @@ function checkConfigCurrent(setProxy, cb) {
 			 	httpsFlag = true;
 			 	if(!serverOptions.key) {
 			 		serverOptions.key = fs.readFileSync(content.httpsKey);
-			 		console.log("https key:\n" + serverOptions.key);
+			 		console.log("https key loaded");
 			 	}
 			 }
 			 
@@ -196,7 +196,7 @@ function checkConfigCurrent(setProxy, cb) {
 			 	httpsFlag = true;
 			 	if(!serverOptions.cert) {
 			 		serverOptions.cert = fs.readFileSync(content.httpsCert);
-			 		console.log("https cert:\n" + serverOptions.cert);
+			 		console.log("https cert loaded");
 			 	}
 			 	
 			 }
@@ -481,7 +481,7 @@ function httpHttpsCreateServer(options) {
 		
 		
 	} else {
-		console.log("Starting https server.");
+		console.log("Starting http server.");
 		http.createServer(handleServer).listen(listenPort);
 	}
 	
@@ -722,27 +722,15 @@ function handleServer(req, res) {
 				 }
 
 			   } else {  //end of url read
-						//Get a front-end facing image or html file
-						var outdir = __dirname + "/../public" + url;
-						   serveUpFile(outdir, null, res, false);
+					//Get a front-end facing image or html file
+					var outdir = __dirname + "/../public" + url;
+					serveUpFile(outdir, null, res, false);
 			   }
 	  		} //end of check for pairing
 		} //end of get request
 	
-	
-	
 }
 
-
-checkConfigCurrent(null, function(err) {
-
-	if(err) {
-		console.log("Error updating config.json: " + err);
-		process.exit(0);
-	}
-
-	httpHttpsCreateServer(serverOptions);  //end of createServer
-}); //end of checkConfigCurrent
 
 function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 
@@ -812,3 +800,14 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 
 
 }
+
+//This section runs on startup.
+checkConfigCurrent(null, function(err) {
+
+	if(err) {
+		console.log("Error updating config.json: " + err);
+		process.exit(0);
+	}
+
+	httpHttpsCreateServer(serverOptions);  //end of createServer
+}); //end of checkConfigCurrent
