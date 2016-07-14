@@ -328,11 +328,11 @@ function download(uri, callback){
 		                        console.log("About to create local file " + createFile + " from uri:" + uri);
 					
 					var file = fs.createWriteStream(createFile);
-					needle.get({ parse: false, }, uri).pipe(file);
+					
 					
 					needle.get(url, function(err, resp) {
 					    
-					    if (!error) {
+					    if (!err) {
 							//Now backup to any directories specified in the config
 							resp.body.pipe(file);
 							resp.body.on('end', function() {
