@@ -37,6 +37,7 @@ var httpsFlag = false;				//whether we are serving up https (= true) or http (= 
 var serverOptions = {
 	requestCert : false,
 	cipher:	[
+	    "ECDHE-RSA-AES128-GCM-SHA256",	
 	    "ECDHE-RSA-AES256-SHA384",
 	    "DHE-RSA-AES256-SHA384",
 	    "ECDHE-RSA-AES256-SHA256",
@@ -434,6 +435,8 @@ function httpHttpsCreateServer(options, cb) {
   			res.end('hello world\n');
 	  	
 	  	}).listen(listenPort);	
+		
+		
 		
 	} else {
 		console.log("Starting https server.");
