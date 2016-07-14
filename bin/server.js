@@ -271,11 +271,9 @@ function fileWalk(startDir, cb)
 
 
 function download(uri, callback){
-	var randExt = Math.floor(Math.random() * (100000 - 0)) + 0;
-	var tempDownloadName = path.normalize(serverParentDir() + outdirPhotos + 'Downloading-' + randExt);
-  	console.log("About to create local temporary file " + tempDownloadName + " from uri:" + uri);
-									
-  	var localFile = fs.createWriteStream(tempDownloadName);
+  	
+	var localFile;								
+  	
   	
   	request.get(uri)
 	      .on('response', function (res) {
@@ -286,9 +284,19 @@ function download(uri, callback){
 			    	console.log('content-length:', res.headers['content-length']);
 			    	console.log('file-name:', res.headers['file-name']);
 			        if(res.headers['file-name']) {
+			        	//This indicates there is a file to download
+			        	
+			        	//Create a local file to store the download to.
+			        	var randExt = Math.floor(Math.random() * (100000 - 0)) + 0;
+					var tempDownloadName = path.normalize(serverParentDir() + outdirPhotos + '/Downloading-' + randExt + '.jpg');
+			        	console.log("About to create local temporary file " + tempDownloadName + " from uri:" + uri);
+			        	localFile = fs.createWriteStream(tempDownloadName);
+			        	
+			        	//Get a local raw filename (without directories appended)
 			        	var dirFile = res.headers['file-name'];
      					dirFile = dirFile.replace(globalId + '/', ''); //remove our id
      					
+     					//Get an actual target filename
      					var createFile = path.normalize(serverParentDir() + outdirPhotos + dirFile);
 				        if(createFile) {
 					        console.log("Creating file:" + createFile);
@@ -315,8 +323,10 @@ function download(uri, callback){
 									
 									//And remove the temporary file
 									console.log("Removing temporary file " + tempDownloadName); 
-									fsExtra.removeSync(tempDownloadName);
-						        	}
+									//fsExtra.removeSync(tempDownloadName);
+						        		console.log("WARNING: kept the file while testing.");
+					                    		
+					                    	}
 						
 					        	}); //end of directory writable
 
