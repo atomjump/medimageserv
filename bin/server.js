@@ -387,7 +387,7 @@ function download(uri, callback){
 					
 					
 					//Now do a full get of the file, and pipe directly back
-					var localFile = = fs.createWriteStream(createFile);
+					var localFile = fs.createWriteStream(createFile);
 					request.get(uri)
 					      .on('response', function (resp) {
 					      		console.log("Resp:" + JSON.stringify(resp))
@@ -402,7 +402,7 @@ function download(uri, callback){
 						.on('error', function(err) {
 						    console.log("Error downloading: " + err);
 						 })
-					      	 .pipe(createFile);
+					      	 .pipe(localFile);
 					
 					
 
