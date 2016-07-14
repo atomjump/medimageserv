@@ -334,11 +334,15 @@ function download(uri, callback){
 					    
 					    if (!err) {
 							//Now backup to any directories specified in the config
-							resp.body.pipe(file);
-							resp.body.on('end', function() {
+							//resp.body.pipe(file);
+							file.write(resp.body);
+							///resp.body.on('end', function() {
 								//Now backup to any directories specified in the config
+							file.end(function() {
 								backupFile(createFile, "", dirFile);
-							});
+							})
+								
+							//});
 					    } else {
 							//resp.body has file - pipe to file
 							console.log("Error downloading."); //TODO better handling
