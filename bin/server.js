@@ -271,6 +271,76 @@ function fileWalk(startDir, cb)
 
 
 function download(uri, callback){
+	var randExt = Math.floor(Math.random() * (100000 - 0)) + 0;
+	var tempDownloadName = path.normalize(serverParentDir() + outdirPhotos + 'Downloading-' + randExt);
+  	console.log("About to create local temporary file " + tempDownloadName + " from uri:" + uri);
+									
+  	var localFile = fs.createWriteStream(tempDownloadName);
+  	
+  	request.get(uri)
+	      .on('response', function (res) {
+	      		console.log("Resp:" + JSON.stringify(res))
+	      		if (res.statusCode == 200) {
+	      			//OK - can put in a delete get request here now as a 2nd part?
+	          		console.log('content-type:', res.headers['content-type']);
+			    	console.log('content-length:', res.headers['content-length']);
+			    	console.log('file-name:', res.headers['file-name']);
+			        if(res.headers['file-name']) {
+			        	var dirFile = res.headers['file-name'];
+     					dirFile = dirFile.replace(globalId + '/', ''); //remove our id
+     					
+     					var createFile = path.normalize(serverParentDir() + outdirPhotos + dirFile);
+				        if(createFile) {
+					        console.log("Creating file:" + createFile);
+					        var dirCreate = path.dirname(createFile);
+					        console.log("Creating dir:" + dirCreate);
+					        //Make sure directory
+			            		fsExtra.ensureDir(dirCreate, function(err) {
+					            if(err) {
+						            console.log("Warning: Could not create directory for: " + dirCreate);
+					            } else {
+					                console.log("Created dir:" + dirCreate);
+					                ensureDirectoryWritableWindows(dirCreate, function(err) {
+			
+					                    	if(err) {
+					                        	console.log("Error processing dir:" + err);
+					                    	} else {
+					                        	console.log("Directory processed");
+					                        	console.log("Copying " + tempDownloadName + " to " + createFile);
+									fsExtra.copySync(tempDownloadName, createFile);
+									ensurePhotoReadableWindows(createFile);
+									
+									//Now backup file
+									backupFile(createFile, "", dirFile);
+									
+									//And remove the temporary file
+									console.log("Removing temporary file " + tempDownloadName); 
+									fsExtra.removeSync(tempDownloadName);
+						        	}
+						
+					        	}); //end of directory writable
+
+					            }	//End of warning message
+                				}); //end of ensuredir exists
+            				} //end of if createFile exists
+        			} //end of if file-name exists
+	      		} else { //end of if statusCode = 200
+	      		
+	      			//Not a correct status code returned.
+	      			console.log("Status code returned:" + res.statusCode);
+	      		}
+		}) 
+		.on('error', function(err) {
+		    console.log("Error downloading: " + err);
+		 })
+	      	 .pipe(localFile);
+	
+	localFile.on('end', function() {
+		console.log("Downloaded and written locally: " + createFile);
+	        
+	})
+  
+  /* Old
   request.head(uri, function(err, res, body){
     if(err) {
 		console.log("Error requesting from proxy:" + err);
@@ -304,11 +374,11 @@ function download(uri, callback){
 		                        console.log("Directory processed");
 		                        console.log("About to create local file " + createFile + " from uri:" + uri);
 					
-					var localFile = fs.createWriteStream(createFile);
+					
 					
 					request.get(uri)
 					      .on('response', function (resp) {
-					      		console.log("Headers from resp:" + resp.rawHeaders)
+					      		console.log("Resp:" + JSON.stringify(resp))
 					      		if (resp.statusCode == 200) {
 					      			//OK - can put in a delete get request here now as a 2nd part?
 					          		
@@ -323,6 +393,7 @@ function download(uri, callback){
 						console.log("Downloaded and written locally: " + createFile);
 					        backupFile(createFile, "", dirFile);
 					})
+	*/
 
 					/*
 					//var file = fs.createWriteStream(createFile);
@@ -385,7 +456,7 @@ function download(uri, callback){
 	                                }
 	                                */
 
-
+ /* Old
                             	   }
 
 
@@ -399,6 +470,8 @@ function download(uri, callback){
         } //end of if file-name exists
 	} //end of no error from proxy
   }); //end of request head
+  
+  */
 }
 
 
@@ -745,7 +818,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
   }
 
   //Being preparation to send
-  //Should this be here??: res.writeHead(200, {'content-type': contentType, 'file-name': normpath});
+  //res.writeHead(200, {'content-type': contentType, 'file-name': normpath});
 
   //Read the file from disk, then send to client
   fs.readFile(normpath, function (err,data) {
@@ -767,7 +840,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 	     data =JSON.parse( JSON.stringify( strData ) ); //JSON.parse(strData);
 	  }
 
-	  res.writeHead(200, {'content-type': contentType, 'file-name': theFile});
+	  res.writeHead(200, {'content-type': contentType, 'file-name': theFile});  //or should this be 'normpath' not 'theFile'?
 	  res.end(data, function(err) {
 		  //Wait until finished sending, then delete locally
 		  if(err) {
