@@ -374,7 +374,7 @@ function readRemoteServer(url)
 	}
 
 	remoteReadTimer = setInterval(function() {
-		console.log(".");			//Display movement to show pinging
+		process.stdout.write("^");     //Display movement to show upload pinging
 		download(url, function(){
 			  console.log('done');
 		});
@@ -672,7 +672,7 @@ function handleServer(req, res) {
 							if(verbose == true) {
 								console.log("No images");
 							} else {
-								console.log(".");
+								process.stdout.write(".");
 							}
 							res.writeHead(200, {'content-type': 'text/html'});
 							res.end(noFurtherFiles);
