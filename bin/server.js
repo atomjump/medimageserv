@@ -328,8 +328,11 @@ function download(uri, callback){
 		                        console.log("About to create local file " + createFile + " from uri:" + uri);
 					
 					var file = fs.createWriteStream(createFile);
-					
-					//TODO FIX THIS!
+					request(url).pipe(fs.createWriteStream(createFile));
+
+					/*
+
+    //TODO FIX THIS!
 					needle.get(url, {parse_response: false}, function(err, resp) {
 					    
 					    if (!err) {
@@ -349,7 +352,7 @@ function download(uri, callback){
 					    }
 					    
 					  });
-					  
+					  */
 					
 					/*needle.get(uri, { output: createFile }, function(err, resp, body) {
 						if (!error && response.statusCode == 200) {
