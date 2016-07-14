@@ -330,6 +330,7 @@ function download(uri, callback){
 
 		                        var file = fs.createWriteStream(createFile);
 	                                if(uri.substr(0,5) == "https") {
+	                                	console.log("Getting https.  Uri:" + uri);
 	                                	//https version
 	                                	var request = https.get(uri, function(response) {
 		                                  	response.pipe(file);
@@ -340,6 +341,7 @@ function download(uri, callback){
 	                                	});
 	                                } else {
 	                                	//http version
+	                                	console.log("Getting http.  Uri:" + uri);
 		                                var request = http.get(uri, function(response) {
 		                                  	response.pipe(file);
 		                                  	response.on('end', function() {
