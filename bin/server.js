@@ -76,17 +76,17 @@ function ensurePhotoReadableWindows(fullPath, cb) {
 	//Optional cb(err) passed back
 	//Check platform is windows
 	var platform = process.platform;
-	console.log(process.platform);
+	if(verbose == true) console.log(process.platform);
 	var isWin = false;
 	if(platform.indexOf("win") >= 0) {
 	    isWin = true;
 	}
-	console.log("IsWin=" + isWin);
+	if(verbose == true) console.log("IsWin=" + isWin);
 	if(isWin) {
 		//See: http://serverfault.com/questions/335625/icacls-granting-access-to-all-users-on-windows-7
 		//Grant all users access, rather than just admin
 		var run = 'icacls ' + fullPath + ' /t /grant Everyone:(OI)(CI)F';
-		console.log("Running:" + run);
+		if(verbose == true) console.log("Running:" + run);
 		exec(run, function(error, stdout, stderr){
 			console.log(stdout);
 			if(cb) {
@@ -114,12 +114,12 @@ function ensureDirectoryWritableWindows(fullPath, cb) {
 	if(platform.indexOf("win") >= 0) {
 	    isWin = true;
 	}
-	console.log("IsWin=" + isWin);
+	if(verbose == true) console.log("IsWin=" + isWin);
 	if(isWin) {
 		//See: http://serverfault.com/questions/335625/icacls-granting-access-to-all-users-on-windows-7
 		//Grant all users access, rather than just admin
 		var run = 'icacls ' + fullPath + ' /grant Everyone:(OI)(CI)F';
-		console.log("Running:" + run);
+		if(verbose == true) console.log("Running:" + run);
 		exec(run, function(error, stdout, stderr){
 			console.log(stdout);
 			if(cb) {
@@ -219,7 +219,7 @@ function checkConfigCurrent(setProxy, cb) {
 						    //Append to the file's array if user has configured it as such
 						    if(content.onStartBackupDriveDetect == true) {
 						    	content.backupTo = pushIfNew(content.backupTo, drive + outdirDefaultParent + outdirPhotos);
-						    	}
+						    }
 					    }
 					}
 				}
@@ -374,7 +374,7 @@ function readRemoteServer(url)
 	}
 
 	remoteReadTimer = setInterval(function() {
-		process.stdout.write("^");     //Display movement to show upload pinging
+		process.stdout.write("'");     //Display movement to show upload pinging
 		download(url, function(){
 			  console.log('done');
 		});
@@ -654,7 +654,7 @@ function handleServer(req, res) {
 							//Get outfile - compareWith
 							var localFileName = outfile.replace(compareWith, "");
 							if(verbose == true) console.log("Local file to download via proxy as:" + localFileName);
-							console.log("About to download (eventually delete): " + outfile);
+							if(verbose == true) console.log("About to download (eventually delete): " + outfile);
 							
 							if(req.method === "HEAD") {
 								//Get the header only
@@ -700,7 +700,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 
   var normpath = path.normalize(fullFile);
 
-  console.log(normpath);
+  if(verbose == true) console.log(normpath);
 
 
   // set the content type
