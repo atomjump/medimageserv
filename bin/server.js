@@ -5,10 +5,19 @@ and downloads from other MedImage Servers.
 
 ../config.json contains the settings for this server.
 
+Usage:  node server.js [-verbose]
+
+
+Testing https connection:    
+openssl s_client -CApath /etc/ssl/certs -connect yourdomain.com:5566
+
 */
+
+
 
 var multiparty = require('multiparty');
 var http = require('http');
+var https = require('https');
 var util = require('util');
 var path = require("path");
 require("date-format-lite");
@@ -22,6 +31,7 @@ var request = require("request");
 var needle = require('needle');
 
 
+var verbose = false;		//Set to true to display debug info
 var outdirDefaultParent = '/medimage';
 var outdirPhotos = '/photos';
 var defaultTitle = "image";
@@ -32,6 +42,14 @@ var pairingURL = "https://atomjump.com/med-genid.php";
 var listenPort = 5566;
 var remoteReadTimer = null;
 var globalId = "";
+var httpsFlag = false;				//whether we are serving up https (= true) or http (= false)
+var serverOptions = {};				//default https server options (see nodejs https module)
+
+
+//Check any command-line options
+if((process.argv[2]) && (process.argv[2] == '-verbose')){
+	verbose = true;
+}
 
 
 function pushIfNew(arry, str) {
@@ -58,17 +76,17 @@ function ensurePhotoReadableWindows(fullPath, cb) {
 	//Optional cb(err) passed back
 	//Check platform is windows
 	var platform = process.platform;
-	console.log(process.platform);
+	if(verbose == true) console.log(process.platform);
 	var isWin = false;
 	if(platform.indexOf("win") >= 0) {
 	    isWin = true;
 	}
-	console.log("IsWin=" + isWin);
+	if(verbose == true) console.log("IsWin=" + isWin);
 	if(isWin) {
 		//See: http://serverfault.com/questions/335625/icacls-granting-access-to-all-users-on-windows-7
 		//Grant all users access, rather than just admin
 		var run = 'icacls ' + fullPath + ' /t /grant Everyone:(OI)(CI)F';
-		console.log("Running:" + run);
+		if(verbose == true) console.log("Running:" + run);
 		exec(run, function(error, stdout, stderr){
 			console.log(stdout);
 			if(cb) {
@@ -91,17 +109,17 @@ function ensureDirectoryWritableWindows(fullPath, cb) {
 	//Optional cb(err) passed back
 	//Check platform is windows
 	var platform = process.platform;
-	console.log(process.platform);
+	if(verbose == true) console.log(process.platform);
 	var isWin = false;
 	if(platform.indexOf("win") >= 0) {
 	    isWin = true;
 	}
-	console.log("IsWin=" + isWin);
+	if(verbose == true) console.log("IsWin=" + isWin);
 	if(isWin) {
 		//See: http://serverfault.com/questions/335625/icacls-granting-access-to-all-users-on-windows-7
 		//Grant all users access, rather than just admin
 		var run = 'icacls ' + fullPath + ' /grant Everyone:(OI)(CI)F';
-		console.log("Running:" + run);
+		if(verbose == true) console.log("Running:" + run);
 		exec(run, function(error, stdout, stderr){
 			console.log(stdout);
 			if(cb) {
@@ -129,7 +147,7 @@ function checkConfigCurrent(setProxy, cb) {
 	//Write to a json file with the current drive.  This can be removed later manually by user, or added to
 	fs.readFile(__dirname + configFile, function read(err, data) {
 		if (err) {
-				cb("Sorry, cannot read config file! " + err);
+			cb("Sorry, cannot read config file! " + err);
 		} else {
 			var content = JSON.parse(data);
 
@@ -154,6 +172,25 @@ function checkConfigCurrent(setProxy, cb) {
 	
 			 if(content.listenPort) {
 			   listenPort = content.listenPort;
+			 }
+			 
+			 if(content.httpsKey) {
+			 	//httpsKey should point to the key .pem file
+			 	httpsFlag = true;
+			 	if(!serverOptions.key) {
+			 		serverOptions.key = fs.readFileSync(content.httpsKey);
+			 		console.log("https key loaded");
+			 	}
+			 }
+			 
+			 if(content.httpsCert) {
+			 	//httpsCert should point to the cert .pem file
+			 	httpsFlag = true;
+			 	if(!serverOptions.cert) {
+			 		serverOptions.cert = fs.readFileSync(content.httpsCert);
+			 		console.log("https cert loaded");
+			 	}
+			 	
 			 }
 
 			//Get the current drives
@@ -182,7 +219,7 @@ function checkConfigCurrent(setProxy, cb) {
 						    //Append to the file's array if user has configured it as such
 						    if(content.onStartBackupDriveDetect == true) {
 						    	content.backupTo = pushIfNew(content.backupTo, drive + outdirDefaultParent + outdirPhotos);
-						    	}
+						    }
 					    }
 					}
 				}
@@ -196,7 +233,7 @@ function checkConfigCurrent(setProxy, cb) {
 					console.log("The config file was saved!");
 
 					//Now start any ping to read from a remote server
-					if(content.readProxy) {
+					if((content.readProxy) && (content.readProxy != "")) {
 						readRemoteServer(content.readProxy);
 
 					}
@@ -216,14 +253,14 @@ function fileWalk(startDir, cb)
 {
    //Read and return the first file in dir, and the count of which file it is. Only the cnt = 0 is used
    var items = [];
-   console.log("Searching:" + startDir);
+   if(verbose == true) console.log("Searching:" + startDir);
 
    if (fsExtra.existsSync(path.normalize(startDir))){
        try {
            var walk = fsExtra.walk(startDir);
 
 	        walk.on('data', function (item) {
-	                console.log("Found:" + item.path);
+	                	if(verbose == true) console.log("Found:" + item.path);
 			        items.push(item.path);
 		          })
 		          .on('end', function () {
@@ -249,52 +286,68 @@ function fileWalk(startDir, cb)
 
 
 function download(uri, callback){
+  	
+ 
+  
+  //Get a header of file first - see if there is any content (this will be pinged once every 10 seconds or so)
   request.head(uri, function(err, res, body){
     if(err) {
-		console.log("Error requesting from proxy:" + err);
-	} else {
+	console.log("Error requesting from proxy:" + err);
+    } else {
+    	if(verbose == true) {
 		console.log(JSON.stringify(res.headers));
-    	console.log('content-type:', res.headers['content-type']);
-    	console.log('content-length:', res.headers['content-length']);
-    	console.log('file-name:', res.headers['file-name']);
+	    	console.log('content-type:', res.headers['content-type']);
+	    	console.log('content-length:', res.headers['content-length']);
+	    	console.log('file-name:', res.headers['file-name']);
+    	} 
         if(res.headers['file-name']) {
+		
+		//Yes there was a new photo file to download fully.
+     		var dirFile = res.headers['file-name'];
+     		dirFile = dirFile.replace(globalId + '/', ''); //remove our id
 
-     var dirFile = res.headers['file-name'];
-     dirFile = dirFile.replace(globalId + '/', ''); //remove our id
 
-
-		    var createFile = path.normalize(serverParentDir() + outdirPhotos + dirFile);
-		    if(createFile) {
-		        console.log("Creating file:" + createFile);
+		var createFile = path.normalize(serverParentDir() + outdirPhotos + dirFile);
+		if(createFile) {
+			
+		        if(verbose == true) console.log("Creating file:" + createFile);
 		        var dirCreate = path.dirname(createFile);
-		        console.log("Creating dir:" + dirCreate);
+		        if(verbose == true) console.log("Creating dir:" + dirCreate);
 		        //Make sure directory
             		fsExtra.ensureDir(dirCreate, function(err) {
 		            if(err) {
 			            console.log("Warning: Could not create directory for: " + dirCreate);
 		            } else {
-		                console.log("Created dir:" + dirCreate);
+		                if(verbose == true) console.log("Created dir:" + dirCreate);
 		                ensureDirectoryWritableWindows(dirCreate, function(err) {
 
 		                    if(err) {
 		                        console.log("Error processing dir:" + err);
 		                    } else {
-		                        console.log("Directory processed");
-		                        console.log("About to create local file " + createFile + " from uri:" + uri);
+		                        if(verbose == true) console.log("Directory processed");
+		                        if(verbose == true) console.log("About to create local file " + createFile + " from uri:" + uri);
+					
+					
+					//Now do a full get of the file, and pipe directly back
+					var localFile = fs.createWriteStream(createFile);
+					request.get(uri)
+					      .on('response', function (resp) {
+					      		if(verbose == true) console.log("Resp:" + JSON.stringify(resp))
+					      		if (resp.statusCode == 200) {
+					      			console.log("\nDownloaded " + createFile);
+					      			//OK - can put in a delete get request here now as a 2nd part?
+					          		
+					          		//Backup the file
+					          		backupFile(createFile, "", dirFile);
+							}
+						}) 
+						.on('error', function(err) {
+						    console.log("Error downloading: " + err);
+						 })
+					      	 .pipe(localFile);
+					
 
-
-		                        var file = fs.createWriteStream(createFile);
-                                var request = http.get(uri, function(response) {
-                                  response.pipe(file);
-
-                                  response.on('end', function() {
-									//Now backup to any directories specified in the config
-									backupFile(createFile, "", dirFile);
-							  	  });
-                                });
-
-
-                            }
+                            	   }
 
 
 
@@ -305,8 +358,10 @@ function download(uri, callback){
                 }); //end of ensuredir exists
             } //end of if file exists
         } //end of if file-name exists
-	} //end of no error from proxy
+     } //end of no error from proxy
   }); //end of request head
+  
+  
 }
 
 
@@ -319,6 +374,7 @@ function readRemoteServer(url)
 	}
 
 	remoteReadTimer = setInterval(function() {
+		process.stdout.write("'");     //Display movement to show upload pinging
 		download(url, function(){
 			  console.log('done');
 		});
@@ -347,7 +403,7 @@ function backupFile(thisPath, outhashdir, finalFileName)
 			    	} else {
 					var target = content.backupTo[cnt] + finalFileName;
 				}
-				console.log("Backing up " + thisPath + " to:" + target);
+				if(verbose == true) console.log("Backing up " + thisPath + " to:" + target);
 
 				fsExtra.ensureDir(content.backupTo[cnt] + '/' + outhashdir, function(err) {
 					if(err) {
@@ -370,14 +426,21 @@ function backupFile(thisPath, outhashdir, finalFileName)
 }
 
 
-checkConfigCurrent(null, function(err) {
-
-	if(err) {
-		console.log("Error updating config.json: " + err);
-		process.exit(0);
+function httpHttpsCreateServer(options) {
+	if(httpsFlag == true) {
+		console.log("Starting https server.");
+		https.createServer(options, handleServer).listen(listenPort);
+		
+		
+	} else {
+		console.log("Starting http server.");
+		http.createServer(handleServer).listen(listenPort);
 	}
+	
+}
 
-	http.createServer(function(req, res) {
+function handleServer(req, res) {
+	
 	  if (req.url === '/api/photo' && req.method === 'POST') {
 		// parse a file upload
 
@@ -391,15 +454,15 @@ checkConfigCurrent(null, function(err) {
 
 			//The standard outdir is the drive from the current server script
 			var parentDir = serverParentDir();
-			console.log("This drive:" + parentDir);
+			if(verbose == true) console.log("This drive:" + parentDir);
 			var outdir = parentDir + outdirPhotos;
 
-   			console.log('Outdir:' + outdir);
+   			if(verbose == true) console.log('Outdir:' + outdir);
 			  res.writeHead(200, {'content-type': 'text/plain'});
 			  res.write('Received upload successfully! Check ' + path.normalize(parentDir + outdirPhotos) + ' for your image.\n\n');
 			  res.end();
 
-   			console.log('Files ' + JSON.stringify(files, null, 4));
+   			if(verbose == true) console.log('Files ' + JSON.stringify(files, null, 4));
 			//Use original filename for name
 			if(files && files.file1 && files.file1[0]) {
 				var title = files.file1[0].originalFilename;
@@ -419,10 +482,10 @@ checkConfigCurrent(null, function(err) {
 					if(words[cnt].charAt(0) == '#') {
 						   var getDir = words[cnt].replace('#','');
 
-						   console.log('Comparing ' + getDir + ' with ' + globalId);
+						   if(verbose == true) console.log('Comparing ' + getDir + ' with ' + globalId);
 						   if(getDir != globalId) {
 						       outhashdir = outhashdir + '/' + getDir;
-            						console.log('OutHashDir:' + outhashdir);
+            						if(verbose == true) console.log('OutHashDir:' + outhashdir);
         					}
 					} else {
 						//Start building back filename with hyphens between words
@@ -435,19 +498,19 @@ checkConfigCurrent(null, function(err) {
 
 				//Check the directory exists, and create
 				if (!fs.existsSync(path.normalize(parentDir + outdirPhotos))){
-						   		console.log('Creating dir:' + path.normalize(parentDir + outdirPhotos));
+			   		if(verbose == true) console.log('Creating dir:' + path.normalize(parentDir + outdirPhotos));
 
-		   						fs.mkdirSync(path.normalize(parentDir + outdirPhotos));
-						  			console.log('Created OK dir:' + path.normalize(parentDir + outdirPhotos));
+   					fs.mkdirSync(path.normalize(parentDir + outdirPhotos));
+			  		if(verbose == true) console.log('Created OK dir:' + path.normalize(parentDir + outdirPhotos));
 
 				}
 
-					//Create the final hash outdir
-				 outdir = parentDir + outdirPhotos + outhashdir;
+				//Create the final hash outdir
+				outdir = parentDir + outdirPhotos + outhashdir;
 				if (!fs.existsSync(path.normalize(outdir))){
-					console.log('Creating dir:' + path.normalize(outdir));
+					if(verbose == true) console.log('Creating dir:' + path.normalize(outdir));
 					fs.mkdirSync(path.normalize(outdir));
-					console.log('Created OK');
+					if(verbose == true) console.log('Created OK');
 
 				}
 
@@ -457,7 +520,7 @@ checkConfigCurrent(null, function(err) {
 
 				//Move the file into the standard location of this server
 				var fullPath = outdir + '/' + finalFileName;
-				console.log("Moving " + files.file1[0].path + " to " + fullPath);
+				if(verbose == true) console.log("Moving " + files.file1[0].path + " to " + fullPath);
 				mv(files.file1[0].path, fullPath, {mkdirp: true},  function(err) { //path.normalize(
 					  // done. it tried fs.rename first, and then falls back to
 					  // piping the source file to the dest file and then unlinking
@@ -466,13 +529,13 @@ checkConfigCurrent(null, function(err) {
 						console.log(err);
 
 					  } else {
-						console.log(finalFileName + ' file uploaded');
+						console.log('\n' + finalFileName + ' file uploaded');
 
 						//Ensure no admin restictions on Windows
 						ensurePhotoReadableWindows(fullPath);
 
 						//Now copy to any other backup directories
-						console.log("Backups:");
+						if(verbose == true) console.log("Backups:");
 						var thisPath = fullPath;
 
 						//Now backup to any directories specified in the config
@@ -505,7 +568,7 @@ checkConfigCurrent(null, function(err) {
 		  var read = '/read/';
 		  var pair = '/pair';
 
-		   console.log("Url requested:" + url);
+		   if(verbose == true) console.log("Url requested:" + url);
 
 		   if(url.substr(0,pair.length) == pair) {
 			   //Do a get request from the known aj server
@@ -549,9 +612,9 @@ checkConfigCurrent(null, function(err) {
 	
 	
 							   //Display passcode to user
-								 var outdir = __dirname + "/../public/passcode.html";
-											serveUpFile(outdir, null, res, false, passcode);
-											return;
+							   var outdir = __dirname + "/../public/passcode.html";
+							   serveUpFile(outdir, null, res, false, passcode);
+							   return;
 						   });
 	
 	
@@ -567,8 +630,8 @@ checkConfigCurrent(null, function(err) {
 				 //Get uploaded photos from coded subdir
 				 var codeDir = url.substr(read.length);
 				 var parentDir = serverParentDir();
-				 console.log("This drive:" + parentDir);
-				 console.log("Coded directory:" + codeDir);
+				 if(verbose == true) console.log("This drive:" + parentDir);
+				 if(verbose == true) console.log("Coded directory:" + codeDir);
 
 				 if(codeDir.length <= 0) {
 					 console.log("Cannot read without a directory");
@@ -578,7 +641,7 @@ checkConfigCurrent(null, function(err) {
 				 var outdir = path.normalize(parentDir + outdirPhotos + '/' + codeDir);
 				 var compareWith = path.normalize(parentDir + outdirPhotos);
 
-				 console.log("Output directory to scan " + outdir + ". Must include:" + compareWith);
+				 if(verbose == true) console.log("Output directory to scan " + outdir + ". Must include:" + compareWith);
 				 //For security purposes the path must include the parentDir and outdiePhotos in a complete form
 				 //ie. be subdirectories. Otherwise a ../../ would allow deletion of an internal file
 				 if(outdir.indexOf(compareWith) > -1) {
@@ -590,14 +653,27 @@ checkConfigCurrent(null, function(err) {
 						 if(outfile) {
 							//Get outfile - compareWith
 							var localFileName = outfile.replace(compareWith, "");
-							console.log("Local file to download via proxy as:" + localFileName);
-							console.log("About to download (eventually delete): " + outfile);
-
-							serveUpFile(outfile,localFileName, res, true);
+							if(verbose == true) console.log("Local file to download via proxy as:" + localFileName);
+							if(verbose == true) console.log("About to download (eventually delete): " + outfile);
+							
+							if(req.method === "HEAD") {
+								//Get the header only
+								res.writeHead(200, {'content-type': "image/jpg", 'file-name': localFileName });
+								res.end();
+								
+							} else {
+								//Now get the full file
+								serveUpFile(outfile,localFileName, res, true);
+							}
+							
 						 } else {
 							//Reply with a 'no further files' simple text response to client
 
-							console.log("No images");
+							if(verbose == true) {
+								console.log("No images");
+							} else {
+								process.stdout.write(".");
+							}
 							res.writeHead(200, {'content-type': 'text/html'});
 							res.end(noFurtherFiles);
 							return;
@@ -610,21 +686,21 @@ checkConfigCurrent(null, function(err) {
 				 }
 
 			   } else {  //end of url read
-						//Get a front-end facing image or html file
-						var outdir = __dirname + "/../public" + url;
-						   serveUpFile(outdir, null, res, false);
+					//Get a front-end facing image or html file
+					var outdir = __dirname + "/../public" + url;
+					serveUpFile(outdir, null, res, false);
 			   }
 	  		} //end of check for pairing
 		} //end of get request
+	
+}
 
-	}).listen(listenPort);  //end of createServer
-}); //end of checkConfigCurrent
 
 function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 
   var normpath = path.normalize(fullFile);
 
-  console.log(normpath);
+  if(verbose == true) console.log(normpath);
 
 
   // set the content type
@@ -645,7 +721,8 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
   }
 
   //Being preparation to send
-  res.writeHead(200, {'content-type': contentType, 'file-name': normpath});
+ 
+  
 
   //Read the file from disk, then send to client
   fs.readFile(normpath, function (err,data) {
@@ -659,26 +736,26 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 
 
 	  if(customString) {
+	     //This is use for a replace on an HTML file with the passcode
 	     var strData = data.toString();
 	     strData = strData.replace("CUSTOMSTRING",customString);
 	     console.log(strData);
 
-	     data =JSON.parse( JSON.stringify( strData ) ); //JSON.parse(strData);
+	     data = JSON.parse( JSON.stringify( strData ) ); //JSON.parse(strData);
 	  }
 
-	  res.writeHead(200, {'content-type': contentType, 'file-name': theFile});
+	  res.writeHead(200, {'content-type': contentType, 'file-name': theFile});  
 	  res.end(data, function(err) {
 		  //Wait until finished sending, then delete locally
-
 		  if(err) {
 	  	  	 console.log(err);
 	  	  } else {
 			  if(deleteAfterwards == true) {
 					//Delete the file 'normpath' from the server. This server is like a proxy cache and
 					//doesn't hold permanently
-					console.log("About to delete:" + normpath);
+					if(verbose == true) console.log("About to delete:" + normpath);
 					fs.unlink(normpath, function() {
-					   console.log("Deleted " + normpath + " successfully!");
+					   console.log("Sent on and removed " + theFile);
 					})
 			  }
 	   	   }
@@ -688,3 +765,14 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 
 
 }
+
+//This section runs on startup.
+checkConfigCurrent(null, function(err) {
+
+	if(err) {
+		console.log("Error updating config.json: " + err);
+		process.exit(0);
+	}
+
+	httpHttpsCreateServer(serverOptions);  //end of createServer
+}); //end of checkConfigCurrent
