@@ -741,7 +741,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 	     strData = strData.replace("CUSTOMSTRING",customString);
 	     console.log(strData);
 
-	     data =JSON.parse( JSON.stringify( strData ) ); //JSON.parse(strData);
+	     data = JSON.parse( JSON.stringify( strData ) ); //JSON.parse(strData);
 	  }
 
 	  res.writeHead(200, {'content-type': contentType, 'file-name': theFile});  
@@ -755,7 +755,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 					//doesn't hold permanently
 					if(verbose == true) console.log("About to delete:" + normpath);
 					fs.unlink(normpath, function() {
-					   console.log("\nSent on and removed " + theFile);
+					   console.log("Sent on and removed " + theFile);
 					})
 			  }
 	   	   }
