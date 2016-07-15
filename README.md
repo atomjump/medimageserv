@@ -16,6 +16,7 @@ See https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-a
 Then:
 
 ```
+npm install forever -g
 npm install medimage -g
 ```
 
