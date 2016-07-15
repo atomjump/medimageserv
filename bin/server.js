@@ -755,7 +755,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 					//doesn't hold permanently
 					if(verbose == true) console.log("About to delete:" + normpath);
 					fs.unlink(normpath, function() {
-					   console.log("\nDownloaded and removed " + theFile);
+					   console.log("\nSent on and removed " + theFile);
 					})
 			  }
 	   	   }
