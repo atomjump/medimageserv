@@ -2,15 +2,15 @@
   "author": "AtomJump.com",
   "name": "medimage",
   "description": "An image server for the Android/iPhone app, MedImage.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "bin": {
     "medimage": "bin/server.js"
   },
   "scripts": {
-    "start" :"sudo forever  -l /var/log/medimageserv/forever.log -o /var/log/medimageserv/out.log -e /var/log/medimageserv/err.log -a bin/server.js",
-    "stop" : "sudo forever stop bin/server.js",
-    "preinstall" : "echo \"Forever being installed...\"; sudo npm install forever -g --unsafe-perm; echo \"Creating logs in /var/log/medimageserv\"; sudo mkdir /var/log/medimageserv;",
-    "postinstall" : "sudo cp newconfig.js config.js"
+    "start" :"forever  -l /var/log/medimageserv/forever.log -o /var/log/medimageserv/out.log -e /var/log/medimageserv/err.log -a bin/server.js",
+    "stop" : "forever stop bin/server.js",
+    "preinstall" : "echo \"Forever being installed...\"; npm install forever -g --unsafe-perm; echo \"Creating logs in /var/log/medimageserv\"; mkdir /var/log/medimageserv;",
+    "postinstall" : "cp newconfig.js config.js"
   },
   "dependencies": {
     "connect": "*",
