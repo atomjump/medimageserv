@@ -330,15 +330,14 @@ function download(uri, callback){
 					
 					//Now do a full get of the file, and pipe directly back
 					var localFile = fs.createWriteStream(createFile);
-					request.get(uri)
+					var stream = request.get(uri)
 					      .on('response', function (resp) {
 					      		if(verbose == true) console.log("Resp:" + JSON.stringify(resp))
 					      		if (resp.statusCode == 200) {
 					      			console.log("\nDownloaded " + createFile);
 					      			//OK - can put in a delete get request here now as a 2nd part?
 					          		
-					          		//Backup the file
-					          		backupFile(createFile, "", dirFile);
+					          		
 							}
 						}) 
 						.on('error', function(err) {
@@ -346,6 +345,11 @@ function download(uri, callback){
 						 })
 					      	 .pipe(localFile);
 					
+					stream.on('finish', function () { 
+						//Backup the file
+					        backupFile(createFile, "", dirFile);
+						
+					});
 
                             	   }
 
