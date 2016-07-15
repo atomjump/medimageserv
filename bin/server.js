@@ -403,7 +403,7 @@ function backupFile(thisPath, outhashdir, finalFileName)
 			    	} else {
 					var target = content.backupTo[cnt] + finalFileName;
 				}
-				console.log("Backing up " + thisPath + " to:" + target);
+				if(verbose == true) console.log("Backing up " + thisPath + " to:" + target);
 
 				fsExtra.ensureDir(content.backupTo[cnt] + '/' + outhashdir, function(err) {
 					if(err) {
