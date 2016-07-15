@@ -74,12 +74,12 @@ would create a directory called elderly/ on your PC and upload a file called 'Fr
 These are located in the file config.json.
 
 
-**backupTo** should be an array of linux-style paths where the files are backed up to.
-**readProxy** should be null if this is the master 'proxy' server, but will be set automatically after you sync.
-**listenPort** is the port on your server which is open to being read
-**httpsKey** is optional. If you are on an https server, it is required (an http server should leave this blank). It is a file path to the key .pem file which includes your private ssl key.
-**httpsCert** is optional. If you are on an https server, it is required (an http server should leave this blank). It is a file path to the certificate .pem file which includes your server's ssl certificate.
-**onStartBackupDriveDetect** is optional. If set to 'true' it autodetects new drives added when starting, and will backup your new photos to:
+* **backupTo** should be an array of linux-style paths where the files are backed up to.
+* **readProxy** should be null if this is the master 'proxy' server, but will be set automatically after you sync.
+* **listenPort** is the port on your server which is open to being read
+* **httpsKey** is optional. If you are on an https server, it is required (an http server should leave this blank). It is a file path to the key .pem file which includes your private ssl key.
+* **httpsCert** is optional. If you are on an https server, it is required (an http server should leave this blank). It is a file path to the certificate .pem file which includes your server's ssl certificate.
+* **onStartBackupDriveDetect** is optional. If set to 'true' it autodetects new drives added when starting, and will backup your new photos to:
   New Drive:\MedImage\photos 
 
 
