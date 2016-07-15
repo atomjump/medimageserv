@@ -1,13 +1,16 @@
 {
   "author": "AtomJump.com",
-  "name": "MedImage-Server",
-  "description": "An image server for the app Med Image",
-  "version": "0.0.1",
+  "name": "medimage",
+  "description": "An image server for the Android/iPhone app, MedImage.",
+  "version": "0.1.0",
   "bin": {
-    "medimage-server": "bin/server.js",
-    "medimage": "cli/cli.js"
+    "medimage": "bin/server.js"
   },
-  "scripts": {},
+  "scripts": {
+    "start" :"forever  -l /var/log/medimageserv/forever.log -o /var/log/medimageserv/out.log -e /var/log/medimageserv/err.log -a bin/server.js",
+    "stop" : "forever stop bin/server.js",
+    "preinstall" : "echo \"Forever being installed...\"; npm install forever -g; echo \"Creating logs in /var/log/medimageserv\" mkdir /var/log/medimageserv"
+  },
   "dependencies": {
     "connect": "*",
     "date-format-lite": "*",
@@ -26,15 +29,15 @@
     "upath": "*",
     "https": "*"
   },
-  "main": "server/server",
+  "main": "bin/server.js",
   "devDependencies": {
-    "grunt-contrib-copy": "~0.4.1",
-    "grunt-contrib-less": "~0.5.0",
-    "grunt-contrib-jade": "~0.5.0",
-    "grunt": "~0.4.1"
+    "grunt-contrib-copy": "*",
+    "grunt-contrib-less": "*",
+    "grunt-contrib-jade": "*",
+    "grunt": "*"
   },
   "optionalDependencies": {},
   "engines": {
-    "node": "*"
+    "node": ">=4.4"
   }
 }
