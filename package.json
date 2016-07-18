@@ -8,9 +8,9 @@
   },
   "preferGlobal": "true",
   "scripts": {
-    "start" :"pm2 start medimage",
-    "stop" : "pm2 stop medimage",
-    "postinstall" : "pm2 install medimage.js; pm2 startup"
+    "start" :"pm2 start medimage.js",
+    "stop" : "pm2 stop medimage.js",
+    "postinstall" : "ln -s medimage.js bin/server.js; pm2 start medimage.js; pm2 startup"
   },
   "dependencies": {
     "connect": "*",
