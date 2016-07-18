@@ -91,14 +91,7 @@ start() {
     #
     # Note that redirecting the output to /dev/null (or anywhere) is necessary
     # to make this script work if provisioning the service via Chef.
-    forever \
-      --pidFile $PIDFILE \
-      -a \
-      -l $LOGFILE \
-      --minUptime $MIN_UPTIME \
-      --spinSleepTime $SPIN_SLEEP_TIME \
-      start $APPLICATION_PATH 2>&1 > /dev/null &
-    RETVAL=$?
+    forever --pidFile $PIDFILE -a -l $LOGFILE --minUptime $MIN_UPTIME --spinSleepTime $SPIN_SLEEP_TIME start $APPLICATION_PATH 2>&1 > /dev/null & RETVAL=$?
 }
  
 stop() {
