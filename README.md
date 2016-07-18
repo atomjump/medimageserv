@@ -17,8 +17,8 @@ Then:
 
 ```
 sudo npm install pm2@latest -g
-sudo npm install medimage -g
-pm2 start medimage
+npm install medimage
+pm2 start node_modules/medimage/medimage
 pm2 startup     (and run the command it outputs)
 ```
 
