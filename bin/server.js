@@ -38,6 +38,8 @@ var outdirPhotos = '/photos';
 var defaultTitle = "image";
 var currentDisks = [];
 var configFile = '/../config.json';
+var newConfigFile = '/../newconfig.json';	//This is for a new install generally - it will auto-create from this file
+						//if the config doesn't yet exist
 var noFurtherFiles = "none";			//This gets piped out if there are no further files in directory
 var pairingURL = "https://atomjump.com/med-genid.php";
 var listenPort = 5566;
@@ -148,7 +150,32 @@ function checkConfigCurrent(setProxy, cb) {
 	//Write to a json file with the current drive.  This can be removed later manually by user, or added to
 	fs.readFile(__dirname + configFile, function read(err, data) {
 		if (err) {
-			cb("Sorry, cannot read config file! " + err);
+			
+			//Copy newconfig.json into config.json - it is likely a file that doesn't yet exist
+			//Check file exists
+			fs.stat('foo.txt', function(ferr, stat) {
+				    if(ferr == null) {
+				    	//File exists, perhaps a file permissions issue.
+			        	cb("Sorry, cannot read the config file! Please check your file permissions. " + ferr);
+				    } else if(ferr.code == 'ENOENT') {
+				        // file does not exist. Copy across a new version of newconfig.json to config.json
+				        // and re-run
+				        fsExtra.copy(__dirname + newConfigFile, __dirname + configFile, function (err) {
+					  if (err) {
+					  	return console.error(err)
+					  } else {
+					  	//Success - try reading again
+					  	checkConfigCurrent(setProxy, cb);
+					  	return;
+					  }
+					}) // copies file 
+				    } else {
+				    	//Some other error. Perhaps a permissions problem
+					cb("Sorry, cannot read the config file! Please check your file permissions. " + ferr);
+				    }
+			});
+			
+		
 		} else {
 			var content = JSON.parse(data);
 
