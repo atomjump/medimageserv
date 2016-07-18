@@ -30,7 +30,7 @@
     "upath": "*",
     "https": "*"
   },
-  "main": "medimage",
+  "main": "medimage.js",
   "devDependencies": {
     "grunt-contrib-copy": "*",
     "grunt-contrib-less": "*",
