@@ -8,9 +8,9 @@
   },
   "preferGlobal": "true",
   "scripts": {
-    "start" :"pm2 start medimage.js",
-    "stop" : "pm2 stop medimage.js",
-    "postinstall" : "ln -s medimage.js bin/server.js; pm2 start medimage.js; pm2 startup"
+    "start" :"",
+    "stop" : "",
+    "postinstall" : ""
   },
   "dependencies": {
     "connect": "*",
@@ -30,7 +30,7 @@
     "upath": "*",
     "https": "*"
   },
-  "main": "medimage.js",
+  "main": "bin/server.js",
   "devDependencies": {
     "grunt-contrib-copy": "*",
     "grunt-contrib-less": "*",
