@@ -1,6 +1,6 @@
 {
   "apps" : [{
     "name"       : "medimage",
-    "script"     : "bin/server.js"
+    "script"     : "./bin/server.js"
   }]
 }
