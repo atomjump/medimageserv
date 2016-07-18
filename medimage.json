@@ -1,0 +1,6 @@
+{
+  [{
+    "name"       : "medimage",
+    "script"     : "bin/server.js"
+  }]
+}
