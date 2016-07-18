@@ -58,7 +58,7 @@
 NAME="MedImage Server"
 NODE_BIN_DIR=""
 NODE_PATH=""
-APPLICATION_PATH="medimage-server"
+APPLICATION_PATH="medimage"
 PIDFILE="/var/run/medimage.pid"
 LOGFILE="/var/log/medimage/medimage.log"
 MIN_UPTIME="5000"
