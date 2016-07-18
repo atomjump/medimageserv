@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /*
 
 MedImage Server - runs an http server allowing uploads of photos
