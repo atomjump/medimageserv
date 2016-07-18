@@ -16,8 +16,10 @@ See https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-a
 Then:
 
 ```
-npm install forever -g
-npm install medimage -g
+sudo npm install pm2@latest -g
+sudo npm install medimage -g
+pm2 start medimage
+pm2 startup     (and run the command it outputs)
 ```
 
 You may have to open the firewall to port 5566 for reading and writing eg.:
@@ -28,17 +30,17 @@ sudo ufw allow 5566/tcp
 
 To start MedImage server
 ```
-medimage start
+pm2 start medimage
 ```
 
 To stop MedImage server:
 ```
-medimage stop
+pm2 stop medimage
 ```
 
 To restart (after any config.json changes):
 ```
-medimage restart
+pm2 restart medimage
 ```
 
 
