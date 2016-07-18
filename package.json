@@ -9,7 +9,7 @@
   "preferGlobal": "true",
   "scripts": {
     "start" :"pm2 start medimage",
-    "stop" : "pm2 stop medimage".
+    "stop" : "pm2 stop medimage",
     "postinstall" : "pm2 startup"
   },
   "dependencies": {
