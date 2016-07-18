@@ -17,9 +17,9 @@ Then:
 
 ```
 sudo npm install pm2@latest -g
-npm install medimage
-pm2 start node_modules/medimage/medimage
-pm2 startup     (and run the command it outputs)
+npm install medimage -g
+pm2 start /usr/lib/node_modules/medimage/bin/server.js   (check your medimage is installed there)
+pm2 startup     (and run the command it outputs, to get autostart at boot-up)
 ```
 
 You may have to open the firewall to port 5566 for reading and writing eg.:
@@ -30,17 +30,17 @@ sudo ufw allow 5566/tcp
 
 To start MedImage server
 ```
-pm2 start medimage
+pm2 start server
 ```
 
 To stop MedImage server:
 ```
-pm2 stop medimage
+pm2 stop server
 ```
 
 To restart (after any config.json changes):
 ```
-pm2 restart medimage
+pm2 restart server
 ```
 
 
