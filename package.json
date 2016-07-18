@@ -10,7 +10,7 @@
   "scripts": {
     "start" :"forever  -l /var/log/medimageserv/forever.log -o /var/log/medimageserv/out.log -e /var/log/medimageserv/err.log -a bin/server.js",
     "stop" : "forever stop bin/server.js",
-    "postinstall" : "echo \"1. Forever should also be installed with 'npm install forever -g'\"; echo \"2. Now create a log directory with 'sudo mkdir /var/log/medimageserv'\"; echo \"3. You will need to 'sudo cp newconfig.json config.json' in the path this is written to, to get a fresh config.\""
+    "postinstall" : "echo \"1. Forever should also be installed with 'npm install forever -g'\"; echo \"2. Now create a log directory with 'sudo mkdir /var/log/medimageserv'\"; echo \"3. You will need to 'sudo cp newconfig.json config.json' in the path this is written to, to get a fresh config.\"; "
   },
   "dependencies": {
     "connect": "*",
