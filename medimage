@@ -55,7 +55,7 @@
 # MIN_UPTIME="5000"
 # SPIN_SLEEP_TIME="2000"
  
-NAME=""
+NAME="MedImage Server"
 NODE_BIN_DIR=""
 NODE_PATH=""
 APPLICATION_PATH="medimage"
