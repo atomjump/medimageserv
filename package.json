@@ -6,6 +6,7 @@
   "bin": {
     "medimage": "bin/server.js"
   },
+  "preferGlobal": "true",
   "scripts": {
     "start" :"forever  -l /var/log/medimageserv/forever.log -o /var/log/medimageserv/out.log -e /var/log/medimageserv/err.log -a bin/server.js",
     "stop" : "forever stop bin/server.js",
