@@ -394,12 +394,14 @@ function download(uri, callback){
 					
 					stream.on('finish', function () { 
 						//Update the data transferred
-						bytesTransferred += res.headers['content-length'];
+						if(uri.indexOf("atomjump.com") >= 0) {
+							bytesTransferred += res.headers['content-length'];
 						
-						//Save the bytes transferred for progress
-						checkConfigCurrent(null, function() {
+							//Save the bytes transferred to atomjump.com for progress
+							checkConfigCurrent(null, function() {
 							
-						})
+							})
+						}
 						
 						//Backup the file
 					        backupFile(createFile, "", dirFile);
