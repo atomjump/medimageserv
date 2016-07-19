@@ -48,6 +48,7 @@ var remoteReadTimer = null;
 var globalId = "";
 var httpsFlag = false;				//whether we are serving up https (= true) or http (= false)
 var serverOptions = {};				//default https server options (see nodejs https module)
+var bytesTransferred = 0;
 
 
 //Check any command-line options
@@ -154,7 +155,7 @@ function checkConfigCurrent(setProxy, cb) {
 			
 			//Copy newconfig.json into config.json - it is likely a file that doesn't yet exist
 			//Check file exists
-			fs.stat('foo.txt', function(ferr, stat) {
+			fs.stat(__dirname + configFile, function(ferr, stat) {
 				    if(ferr == null) {
 				    	//File exists, perhaps a file permissions issue.
 			        	cb("Sorry, cannot read the config file! Please check your file permissions. " + ferr);
@@ -226,6 +227,16 @@ function checkConfigCurrent(setProxy, cb) {
 			 		serverOptions.cert = fs.readFileSync(content.httpsCert);
 			 		console.log("https cert loaded");
 			 	}
+			 	
+			 }
+			 
+			 if(bytesTransferred != 0) {
+			 	//Keep this up-to-date as we download
+			 	content.transfer = bytesTransferred;
+			 } else {
+			 	
+			 	//Just starting server = get bytes from transfer
+			 	bytesTransferred = content.transfer;
 			 	
 			 }
 
@@ -382,6 +393,14 @@ function download(uri, callback){
 					      	 .pipe(localFile);
 					
 					stream.on('finish', function () { 
+						//Update the data transferred
+						bytesTransferred += res.headers['content-length'];
+						
+						//Save the bytes transferred for progress
+						checkConfigCurrent(null, function() {
+							
+						})
+						
 						//Backup the file
 					        backupFile(createFile, "", dirFile);
 						
