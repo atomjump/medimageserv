@@ -31,12 +31,6 @@
     "https": "*"
   },
   "main": "bin/server.js",
-  "devDependencies": {
-    "grunt-contrib-copy": "*",
-    "grunt-contrib-less": "*",
-    "grunt-contrib-jade": "*",
-    "grunt": "*"
-  },
   "optionalDependencies": {},
   "engines": {
     "node": ">=4.4"
