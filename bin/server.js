@@ -234,9 +234,10 @@ function checkConfigCurrent(setProxy, cb) {
 			 	//Keep this up-to-date as we download
 			 	content.transfer = bytesTransferred;
 			 } else {
-			 	
-			 	//Just starting server = get bytes from transfer
-			 	bytesTransferred = content.transfer;
+			 	if(content.transfer) {
+			 		//Just starting server = get bytes from transfer
+			 		bytesTransferred = content.transfer;
+			 	}
 			 	
 			 }
 
