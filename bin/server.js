@@ -331,6 +331,16 @@ function fileWalk(startDir, cb)
 
 }
 
+//Courtesy http://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
+function formatBytes(bytes,decimals) {
+   if(bytes == 0) return '0 Byte';
+   var k = 1000; // or 1024 for binary
+   var dm = decimals + 1 || 3;
+   var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+   var i = Math.floor(Math.log(bytes) / Math.log(k));
+   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+}
+
 
 function download(uri, callback){
   	
@@ -624,8 +634,8 @@ function handleServer(req, res) {
 		  if((url == '/') || (url == "")) {
 			  url = "/index.html";
 			  
-			  //The homepage has a custom string of the number of bytes transferred (TODO: convert to MB/GB)
-			  customString = bytesTransferred.toString;
+			  //The homepage has a custom string of the number of bytes transferred
+			  customString = formatBytes(bytesTransferred, 1);
 		  } else {
 		  	//Mainly we don't have any custom strings
 		  	customString = "";
