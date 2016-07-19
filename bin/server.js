@@ -247,7 +247,7 @@ function checkConfigCurrent(setProxy, cb) {
 
 				for(var cnt=0; cnt< disks.length; cnt++) {
 					//On each drive, create a backup standard directory for photos
-					console.log("Drive detected:" + JSON.stringify(disks[cnt]));
+					if(verbose == true) console.log("Drive detected:" + JSON.stringify(disks[cnt]));
 					var drive = disks[cnt].mountpoint;
 
 					if(drive) {
@@ -278,7 +278,7 @@ function checkConfigCurrent(setProxy, cb) {
 						cb(err);
 					}
 
-					console.log("The config file was saved!");
+					if(verbose == true) console.log("The config file was saved!");
 
 					//Now start any ping to read from a remote server
 					if((content.readProxy) && (content.readProxy != "")) {
@@ -408,7 +408,10 @@ function download(uri, callback){
 					stream.on('finish', function () { 
 						//Update the data transferred
 						if(uri.indexOf("atomjump.com") >= 0) {
-							bytesTransferred += res.headers['content-length'];
+							var stats = fs.statSync(createFile);
+ 							var fileSizeInBytes = stats["size"];
+							
+							bytesTransferred += fileSizeInBytes;
 						
 							//Save the bytes transferred to atomjump.com for progress
 							checkConfigCurrent(null, function() {
