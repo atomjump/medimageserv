@@ -621,6 +621,12 @@ function handleServer(req, res) {
 		  var url = req.url;
 		  if((url == '/') || (url == "")) {
 			  url = "/index.html";
+			  
+			  //The homepage has a custom string of the number of bytes transferred (TODO: convert to MB/GB)
+			  customString = bytesTransferred.toString;
+		  } else {
+		  	//Mainly we don't have any custom strings
+		  	customString = "";
 		  }
 
 		  var removeAfterwards = false;
@@ -747,7 +753,9 @@ function handleServer(req, res) {
 			   } else {  //end of url read
 					//Get a front-end facing image or html file
 					var outdir = __dirname + "/../public" + url;
-					serveUpFile(outdir, null, res, false);
+					
+					
+					serveUpFile(outdir, null, res, false, customString);
 			   }
 	  		} //end of check for pairing
 		} //end of get request
