@@ -10,9 +10,9 @@ p {
 }
 
 .contrastlink {
-    color: #888;
+    color: #b5a0db;
     font-family: Arial, Helvetica, sans-serif;
-    
+    text-decoration: underline;
 }
 
 li {
