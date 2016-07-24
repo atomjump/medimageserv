@@ -539,9 +539,9 @@ function handleServer(_req, _res) {
 	  res.end();
 	});
 	
-	req.on('data', function() {
+	/*req.on('data', function() {
 			
-	});
+	});*/
 	
 	req.on('end', function() {
 	
@@ -661,7 +661,7 @@ function handleServer(_req, _res) {
 					});
 				} else { //End of file exists
 					//No file exists
-					console.log("Error uploading file.");
+					console.log("Error uploading file. No file on server.");
 			        	res.statusCode = 400;			//Error during transmission - tell the app about it
 	  				res.end();
 					return;
