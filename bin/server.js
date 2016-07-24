@@ -832,8 +832,8 @@ function handleServer(_req, _res) {
 						serveUpFile(outdir, null, res, false, customString);
 				   }
 		  		} //end of check for pairing
-			} //end of get request
-		}); //End of end
+			});
+		}); //Request end end
 	}	//end of ordinary file processing
 }
 
