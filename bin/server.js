@@ -390,12 +390,13 @@ function download(uri, callback){
 					
 					//Now do a full get of the file, and pipe directly back
 					var localFile = fs.createWriteStream(createFile);
+					var complete = false;
 					var stream = request.get(uri)
 					      .on('response', function (resp) {
 					      		if(verbose == true) console.log("Resp:" + JSON.stringify(resp))
 					      		if (resp.statusCode == 200) {
 					      			console.log("\nDownloaded " + createFile);
-					      			
+					      			complete = true;
 							}
 						}) 
 						.on('error', function(err) {
@@ -405,7 +406,7 @@ function download(uri, callback){
 					
 					stream.on('finish', function () { 
 						//If 
-						if (resp.statusCode == 200) {
+						if (complete == true) {
 							//Update the data transferred successfully
 							if(uri.indexOf("atomjump.com") >= 0) {
 								var stats = fs.statSync(createFile);
