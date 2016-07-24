@@ -558,9 +558,11 @@ function handleServer(_req, _res) {
 
 			if(err) {
 			      	console.log("Error uploading file " + JSON.stringify(err))
-			        res.statusCode = 400;			//Error during transmission - tell the app about it
-	  			res.end();
-				return;
+			        
+        			res.writeHead(400, {'content-type': 'text/plain'});
+        			res.end("Invalid request: " + err.message);
+        			return;
+     
 			} else {
 
 				//The standard outdir is the drive from the current server script
