@@ -800,6 +800,10 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
   if (ext === '.jpg') {
 	 contentType = 'image/jpg';
   }
+  
+  if(ext === '.svg') {
+  	contentType = 'image/svg+xml';
+  }
 
   if(ext === '.css') {
     contentType = 'text/css';
