@@ -873,13 +873,15 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 	     data = JSON.parse( JSON.stringify( strData ) ); //JSON.parse(strData);
 	  }
 
+	/* Try without an error check
 	  res.on('error', function(err) {
 	  	//Error piping out
-      		console.error(err);
+      		//console.error(err);
       		res.writeHead(404);
 	   	res.end(JSON.stringify(err));
 	   	return;
     	  });
+    	  */
 
 	  res.writeHead(200, {'content-type': contentType, 'file-name': theFile});  
 	  res.end(data, function(err) {
