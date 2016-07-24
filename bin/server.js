@@ -690,26 +690,26 @@ function handleServer(_req, _res) {
 		req.on('end', function() {
 	
 	
-			  //A get request to pull from the server
-			  // show a file upload form
-			  var url = req.url;
-			  if((url == '/') || (url == "")) {
+			//A get request to pull from the server
+			// show a file upload form
+			var url = req.url;
+			if((url == '/') || (url == "")) {
 				  url = "/index.html";
 				  
 				  //The homepage has a custom string of the number of bytes transferred
 				  customString = formatBytes(bytesTransferred, 1);
-			  } else {
+			} else {
 			  	//Mainly we don't have any custom strings
 			  	customString = "";
-			  }
+			}
 	
-			  var removeAfterwards = false;
-			  var read = '/read/';
-			  var pair = '/pair';
+			var removeAfterwards = false;
+			var read = '/read/';
+			var pair = '/pair';
 	
-			   if(verbose == true) console.log("Url requested:" + url);
+			if(verbose == true) console.log("Url requested:" + url);
 	
-			   if(url.substr(0,pair.length) == pair) {
+			if(url.substr(0,pair.length) == pair) {
 				   //Do a get request from the known aj server
 				   //for a new pairing guid
 				   var fullPairingUrl = pairingURL;
@@ -831,8 +831,8 @@ function handleServer(_req, _res) {
 						
 						serveUpFile(outdir, null, res, false, customString);
 				   }
-		  		} //end of check for pairing
-			});
+		  	} //end of check for pairing
+			
 		}); //Request end end
 	}	//end of ordinary file processing
 }
