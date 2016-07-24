@@ -518,6 +518,15 @@ function httpHttpsCreateServer(options) {
 
 function handleServer(req, res) {
 	
+	
+	req.on('error', function(err) {
+	  // This prints the error message and stack trace to `stderr`.
+	  console.error(err.stack);
+	  
+	  res.statusCode = 400;			//Error during transmission - tell the app about it
+	  res.end();
+	}).on('end', function() {
+	
 	  if (req.url === '/api/photo' && req.method === 'POST') {
 		// parse a file upload
 
@@ -528,99 +537,120 @@ function handleServer(req, res) {
 		   //Process filename of uploaded file, then move into the server's directory, and finally
 		   //copy the files into any backup directories
 
+			if(err) {
+			      	console.log("Error uploading file " + JSON.stringify(err))
+			        res.statusCode = 400;			//Error during transmission - tell the app about it
+	  			res.end();
+				return;
+			} else {
 
-			//The standard outdir is the drive from the current server script
-			var parentDir = serverParentDir();
-			if(verbose == true) console.log("This drive:" + parentDir);
-			var outdir = parentDir + outdirPhotos;
-
-   			if(verbose == true) console.log('Outdir:' + outdir);
-			  res.writeHead(200, {'content-type': 'text/plain'});
-			  res.write('Received upload successfully! Check ' + path.normalize(parentDir + outdirPhotos) + ' for your image.\n\n');
-			  res.end();
-
-   			if(verbose == true) console.log('Files ' + JSON.stringify(files, null, 4));
-			//Use original filename for name
-			if(files && files.file1 && files.file1[0]) {
-				var title = files.file1[0].originalFilename;
-
-
-				//Copy file to eg. c:/snapvolt/photos
-				var outFile = title;
-				outFile = outFile.replace('.jpg','');			//Remove jpg from filename
-				outFile = outFile.replace('.jpeg','');			//Remove jpg from filename
-
-				var words = outFile.split('-');
-
-				var finalFileName = "";
-				var outhashdir = "";
-				//Array of distinct words
-				for(var cnt = 0; cnt< words.length; cnt++) {
-					if(words[cnt].charAt(0) == '#') {
-						   var getDir = words[cnt].replace('#','');
-
-						   if(verbose == true) console.log('Comparing ' + getDir + ' with ' + globalId);
-						   if(getDir != globalId) {
-						       outhashdir = outhashdir + '/' + getDir;
-            						if(verbose == true) console.log('OutHashDir:' + outhashdir);
-        					}
-					} else {
-						//Start building back filename with hyphens between words
-						if(finalFileName.length > 0) {
-							finalFileName = finalFileName + '-';
+				//The standard outdir is the drive from the current server script
+				var parentDir = serverParentDir();
+				if(verbose == true) console.log("This drive:" + parentDir);
+				var outdir = parentDir + outdirPhotos;
+	
+	   			if(verbose == true) console.log('Outdir:' + outdir);
+				  
+	
+	   			if(verbose == true) console.log('Files ' + JSON.stringify(files, null, 4));
+				//Use original filename for name
+				if(files && files.file1 && files.file1[0]) {
+					
+					//Uploaded file exists
+					//TODO: Confirm is a valid .jpg file
+					
+					var title = files.file1[0].originalFilename;
+	
+					res.writeHead(200, {'content-type': 'text/plain'});
+				  	res.write('Received upload successfully! Check ' + path.normalize(parentDir + outdirPhotos) + ' for your image.\n\n');
+				  	res.end();
+	
+	
+					//Copy file to eg. c:/snapvolt/photos
+					var outFile = title;
+					outFile = outFile.replace('.jpg','');			//Remove jpg from filename
+					outFile = outFile.replace('.jpeg','');			//Remove jpg from filename
+	
+					var words = outFile.split('-');
+	
+					var finalFileName = "";
+					var outhashdir = "";
+					//Array of distinct words
+					for(var cnt = 0; cnt< words.length; cnt++) {
+						if(words[cnt].charAt(0) == '#') {
+							   var getDir = words[cnt].replace('#','');
+	
+							   if(verbose == true) console.log('Comparing ' + getDir + ' with ' + globalId);
+							   if(getDir != globalId) {
+							       outhashdir = outhashdir + '/' + getDir;
+	            						if(verbose == true) console.log('OutHashDir:' + outhashdir);
+	        					}
+						} else {
+							//Start building back filename with hyphens between words
+							if(finalFileName.length > 0) {
+								finalFileName = finalFileName + '-';
+							}
+							finalFileName = finalFileName + words[cnt];
 						}
-						finalFileName = finalFileName + words[cnt];
+					}  //end of loop
+	
+					//Check the directory exists, and create
+					if (!fs.existsSync(path.normalize(parentDir + outdirPhotos))){
+				   		if(verbose == true) console.log('Creating dir:' + path.normalize(parentDir + outdirPhotos));
+	
+	   					fs.mkdirSync(path.normalize(parentDir + outdirPhotos));
+				  		if(verbose == true) console.log('Created OK dir:' + path.normalize(parentDir + outdirPhotos));
+	
 					}
-				}  //end of loop
-
-				//Check the directory exists, and create
-				if (!fs.existsSync(path.normalize(parentDir + outdirPhotos))){
-			   		if(verbose == true) console.log('Creating dir:' + path.normalize(parentDir + outdirPhotos));
-
-   					fs.mkdirSync(path.normalize(parentDir + outdirPhotos));
-			  		if(verbose == true) console.log('Created OK dir:' + path.normalize(parentDir + outdirPhotos));
-
+	
+					//Create the final hash outdir
+					outdir = parentDir + outdirPhotos + outhashdir;
+					if (!fs.existsSync(path.normalize(outdir))){
+						if(verbose == true) console.log('Creating dir:' + path.normalize(outdir));
+						fs.mkdirSync(path.normalize(outdir));
+						if(verbose == true) console.log('Created OK');
+	
+					}
+	
+	
+	
+					finalFileName = finalFileName + '.jpg';
+	
+					//Move the file into the standard location of this server
+					var fullPath = outdir + '/' + finalFileName;
+					if(verbose == true) console.log("Moving " + files.file1[0].path + " to " + fullPath);
+					mv(files.file1[0].path, fullPath, {mkdirp: true},  function(err) { //path.normalize(
+						  // done. it tried fs.rename first, and then falls back to
+						  // piping the source file to the dest file and then unlinking
+						  // the source file.
+						  if(err) {
+							console.log(err);
+	
+						  } else {
+							console.log('\n' + finalFileName + ' file uploaded');
+	
+							//Ensure no admin restictions on Windows
+							ensurePhotoReadableWindows(fullPath);
+	
+							//Now copy to any other backup directories
+							if(verbose == true) console.log("Backups:");
+							var thisPath = fullPath;
+	
+							//Now backup to any directories specified in the config
+							backupFile(thisPath, outhashdir, finalFileName);
+	
+						  }
+					});
+				} else { //End of file exists
+					//No file exists
+					console.log("Error uploading file.");
+			        	res.statusCode = 400;			//Error during transmission - tell the app about it
+	  				res.end();
+					return;
 				}
-
-				//Create the final hash outdir
-				outdir = parentDir + outdirPhotos + outhashdir;
-				if (!fs.existsSync(path.normalize(outdir))){
-					if(verbose == true) console.log('Creating dir:' + path.normalize(outdir));
-					fs.mkdirSync(path.normalize(outdir));
-					if(verbose == true) console.log('Created OK');
-
-				}
-
-
-
-				finalFileName = finalFileName + '.jpg';
-
-				//Move the file into the standard location of this server
-				var fullPath = outdir + '/' + finalFileName;
-				if(verbose == true) console.log("Moving " + files.file1[0].path + " to " + fullPath);
-				mv(files.file1[0].path, fullPath, {mkdirp: true},  function(err) { //path.normalize(
-					  // done. it tried fs.rename first, and then falls back to
-					  // piping the source file to the dest file and then unlinking
-					  // the source file.
-					  if(err) {
-						console.log(err);
-
-					  } else {
-						console.log('\n' + finalFileName + ' file uploaded');
-
-						//Ensure no admin restictions on Windows
-						ensurePhotoReadableWindows(fullPath);
-
-						//Now copy to any other backup directories
-						if(verbose == true) console.log("Backups:");
-						var thisPath = fullPath;
-
-						//Now backup to any directories specified in the config
-						backupFile(thisPath, outhashdir, finalFileName);
-
-					  }
-				});
-			}
+			
+			}	//End of form no parse error
+		
 
 
 
@@ -777,7 +807,7 @@ function handleServer(req, res) {
 			   }
 	  		} //end of check for pairing
 		} //end of get request
-	
+	}); //End of end
 }
 
 
