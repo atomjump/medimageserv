@@ -395,9 +395,7 @@ function download(uri, callback){
 					      		if(verbose == true) console.log("Resp:" + JSON.stringify(resp))
 					      		if (resp.statusCode == 200) {
 					      			console.log("\nDownloaded " + createFile);
-					      			//OK - can put in a delete get request here now as a 2nd part?
-					          		
-					          		
+					      			
 							}
 						}) 
 						.on('error', function(err) {
@@ -406,21 +404,32 @@ function download(uri, callback){
 					      	 .pipe(localFile);
 					
 					stream.on('finish', function () { 
-						//Update the data transferred
-						if(uri.indexOf("atomjump.com") >= 0) {
-							var stats = fs.statSync(createFile);
- 							var fileSizeInBytes = stats["size"];
+						//If 
+						if (resp.statusCode == 200) {
+							//Update the data transferred successfully
+							if(uri.indexOf("atomjump.com") >= 0) {
+								var stats = fs.statSync(createFile);
+	 							var fileSizeInBytes = stats["size"];
+								
+								bytesTransferred += fileSizeInBytes;
 							
-							bytesTransferred += fileSizeInBytes;
-						
-							//Save the bytes transferred to atomjump.com for progress
-							checkConfigCurrent(null, function() {
+								//Save the bytes transferred to atomjump.com for progress
+								checkConfigCurrent(null, function() {
+								
+								})
+							}
 							
-							})
+							//Backup the file
+						        backupFile(createFile, "", dirFile);
+						        
+						        //Fully downloaded
+						        callback(null);		//Success!
+						} else {
+							//Failure to download fully. We will try automatically in 10 seconds
+							//anyway.
+							console("There was an error downloading. HTTP error:" + resp.statusCode);
+							callback(resp.statusCode);	//
 						}
-						
-						//Backup the file
-					        backupFile(createFile, "", dirFile);
 						
 					});
 
@@ -858,6 +867,14 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 
 	     data = JSON.parse( JSON.stringify( strData ) ); //JSON.parse(strData);
 	  }
+
+	  res.on('error', function(err) {
+	  	//Error piping out
+      		console.error(err);
+      		res.writeHead(404);
+	   	res.end(JSON.stringify(err));
+	   	return;
+    	  });
 
 	  res.writeHead(200, {'content-type': contentType, 'file-name': theFile});  
 	  res.end(data, function(err) {
