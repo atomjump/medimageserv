@@ -532,21 +532,9 @@ function handleServer(_req, _res) {
 	var res = _res;
 	var body = [];
 	
-	req.on('error', function(err) {
-	  // This prints the error message and stack trace to `stderr`.
-	  console.error(err.stack);
-	  
-	  res.statusCode = 400;			//Error during transmission - tell the app about it
-	  res.end();
-	});
 	
-	req.on('data', function(chunk) {
-		body.push(chunk);
-	});
 	
-	req.on('end', function() {
-	
-	  if (req.url === '/api/photo' && req.method === 'POST') {
+	if (req.url === '/api/photo' && req.method === 'POST') {
 		// parse a file upload
 
 		var form = new multiparty.Form();
@@ -684,151 +672,169 @@ function handleServer(_req, _res) {
 
 		return;
 
-	  } else {  //end of api upload
-		  //A get request to pull from the server
-		  // show a file upload form
-		  var url = req.url;
-		  if((url == '/') || (url == "")) {
-			  url = "/index.html";
-			  
-			  //The homepage has a custom string of the number of bytes transferred
-			  customString = formatBytes(bytesTransferred, 1);
-		  } else {
-		  	//Mainly we don't have any custom strings
-		  	customString = "";
-		  }
-
-		  var removeAfterwards = false;
-		  var read = '/read/';
-		  var pair = '/pair';
-
-		   if(verbose == true) console.log("Url requested:" + url);
-
-		   if(url.substr(0,pair.length) == pair) {
-			   //Do a get request from the known aj server
-			   //for a new pairing guid
-			   var fullPairingUrl = pairingURL;
-
-			   var queryString = url.substr(pair.length);
-			   
-			   
-			   checkConfigCurrent(null, function() {
-				   if(globalId != "") {
-				   	//We already know the global id - use it to update the passcode only
-				   	if(queryString) {
-				   		queryString = queryString + "&guid=" + globalId;
-					} else {
-						queryString = "?guid=" + globalId;
-					}
-				   }
+	} else {  //end of api upload
 	
-				   if(queryString) {
-					   fullPairingUrl = fullPairingUrl + queryString;
+		//Start ordinary error handling
+		req.on('error', function(err) {
+		  // This prints the error message and stack trace to `stderr`.
+		  console.error(err.stack);
+		  
+		  res.statusCode = 400;			//Error during transmission - tell the app about it
+		  res.end();
+		});
+		
+		req.on('data', function(chunk) {
+			body.push(chunk);
+		});
 	
-				   }
-				   console.log("Request for pairing:" + fullPairingUrl);
-	
-				   needle.get(fullPairingUrl, function(error, response) {
-					  if (!error && response.statusCode == 200) {
-						  console.log(response.body);
-	
-						   var codes = response.body.split(" ");
-						   var passcode = codes[0];
-						   globalId = codes[1];
-						   var guid = globalId;
-						   var proxyServer = codes[2].replace("\n", "");
-						   var readProx = proxyServer + "/read/" + guid;
-						   console.log("Proxy set to:" + readProx);
+		req.on('end', function() {
 	
 	
-						   //Write full proxy to config file
-						   checkConfigCurrent(readProx, function() {
+			  //A get request to pull from the server
+			  // show a file upload form
+			  var url = req.url;
+			  if((url == '/') || (url == "")) {
+				  url = "/index.html";
+				  
+				  //The homepage has a custom string of the number of bytes transferred
+				  customString = formatBytes(bytesTransferred, 1);
+			  } else {
+			  	//Mainly we don't have any custom strings
+			  	customString = "";
+			  }
 	
+			  var removeAfterwards = false;
+			  var read = '/read/';
+			  var pair = '/pair';
 	
-							   //Display passcode to user
-							   var outdir = __dirname + "/../public/passcode.html";
-							   serveUpFile(outdir, null, res, false, passcode);
-							   return;
-						   });
+			   if(verbose == true) console.log("Url requested:" + url);
 	
+			   if(url.substr(0,pair.length) == pair) {
+				   //Do a get request from the known aj server
+				   //for a new pairing guid
+				   var fullPairingUrl = pairingURL;
 	
-					  }
+				   var queryString = url.substr(pair.length);
+				   
+				   
+				   checkConfigCurrent(null, function() {
+					   if(globalId != "") {
+					   	//We already know the global id - use it to update the passcode only
+					   	if(queryString) {
+					   		queryString = queryString + "&guid=" + globalId;
+						} else {
+							queryString = "?guid=" + globalId;
+						}
+					   }
+		
+					   if(queryString) {
+						   fullPairingUrl = fullPairingUrl + queryString;
+		
+					   }
+					   console.log("Request for pairing:" + fullPairingUrl);
+		
+					   needle.get(fullPairingUrl, function(error, response) {
+						  if (!error && response.statusCode == 200) {
+							  console.log(response.body);
+		
+							   var codes = response.body.split(" ");
+							   var passcode = codes[0];
+							   globalId = codes[1];
+							   var guid = globalId;
+							   var proxyServer = codes[2].replace("\n", "");
+							   var readProx = proxyServer + "/read/" + guid;
+							   console.log("Proxy set to:" + readProx);
+		
+		
+							   //Write full proxy to config file
+							   checkConfigCurrent(readProx, function() {
+		
+		
+								   //Display passcode to user
+								   var outdir = __dirname + "/../public/passcode.html";
+								   serveUpFile(outdir, null, res, false, passcode);
+								   return;
+							   });
+		
+		
+						  }
+					   });
 				   });
-			   });
-
-
-   			} else {		//end of pair
-
-
-			  if(url.substr(0,read.length) == read) {
-				 //Get uploaded photos from coded subdir
-				 var codeDir = url.substr(read.length);
-				 var parentDir = serverParentDir();
-				 if(verbose == true) console.log("This drive:" + parentDir);
-				 if(verbose == true) console.log("Coded directory:" + codeDir);
-
-				 if(codeDir.length <= 0) {
-					 console.log("Cannot read without a directory");
-					 return;
-				 }
-
-				 var outdir = path.normalize(parentDir + outdirPhotos + '/' + codeDir);
-				 var compareWith = path.normalize(parentDir + outdirPhotos);
-
-				 if(verbose == true) console.log("Output directory to scan " + outdir + ". Must include:" + compareWith);
-				 //For security purposes the path must include the parentDir and outdiePhotos in a complete form
-				 //ie. be subdirectories. Otherwise a ../../ would allow deletion of an internal file
-				 if(outdir.indexOf(compareWith) > -1) {
-
-
-					 //Get first file in the directory list
-					 fileWalk(outdir, function(outfile, cnt) {
-
-						 if(outfile) {
-							//Get outfile - compareWith
-							var localFileName = outfile.replace(compareWith, "");
-							if(verbose == true) console.log("Local file to download via proxy as:" + localFileName);
-							if(verbose == true) console.log("About to download (eventually delete): " + outfile);
-							
-							if(req.method === "HEAD") {
-								//Get the header only
-								res.writeHead(200, {'content-type': "image/jpg", 'file-name': localFileName });
-								res.end();
+	
+	
+	   			} else {		//end of pair
+	
+	
+				  if(url.substr(0,read.length) == read) {
+					 //Get uploaded photos from coded subdir
+					 var codeDir = url.substr(read.length);
+					 var parentDir = serverParentDir();
+					 if(verbose == true) console.log("This drive:" + parentDir);
+					 if(verbose == true) console.log("Coded directory:" + codeDir);
+	
+					 if(codeDir.length <= 0) {
+						 console.log("Cannot read without a directory");
+						 return;
+					 }
+	
+					 var outdir = path.normalize(parentDir + outdirPhotos + '/' + codeDir);
+					 var compareWith = path.normalize(parentDir + outdirPhotos);
+	
+					 if(verbose == true) console.log("Output directory to scan " + outdir + ". Must include:" + compareWith);
+					 //For security purposes the path must include the parentDir and outdiePhotos in a complete form
+					 //ie. be subdirectories. Otherwise a ../../ would allow deletion of an internal file
+					 if(outdir.indexOf(compareWith) > -1) {
+	
+	
+						 //Get first file in the directory list
+						 fileWalk(outdir, function(outfile, cnt) {
+	
+							 if(outfile) {
+								//Get outfile - compareWith
+								var localFileName = outfile.replace(compareWith, "");
+								if(verbose == true) console.log("Local file to download via proxy as:" + localFileName);
+								if(verbose == true) console.log("About to download (eventually delete): " + outfile);
 								
-							} else {
-								//Now get the full file
-								serveUpFile(outfile,localFileName, res, true);
-							}
-							
-						 } else {
-							//Reply with a 'no further files' simple text response to client
-
-							if(verbose == true) {
-								console.log("No images");
-							} else {
-								process.stdout.write(".");
-							}
-							res.writeHead(200, {'content-type': 'text/html'});
-							res.end(noFurtherFiles);
-							return;
-
-						 }
-					 });
-				 } else {		//end of outdir compare
-					console.log("Security exception detected in " + outdir);
-					return;
-				 }
-
-			   } else {  //end of url read
-					//Get a front-end facing image or html file
-					var outdir = __dirname + "/../public" + url;
-					
-					
-					serveUpFile(outdir, null, res, false, customString);
-			   }
-	  		} //end of check for pairing
-		} //end of get request
-	}); //End of end
+								if(req.method === "HEAD") {
+									//Get the header only
+									res.writeHead(200, {'content-type': "image/jpg", 'file-name': localFileName });
+									res.end();
+									
+								} else {
+									//Now get the full file
+									serveUpFile(outfile,localFileName, res, true);
+								}
+								
+							 } else {
+								//Reply with a 'no further files' simple text response to client
+	
+								if(verbose == true) {
+									console.log("No images");
+								} else {
+									process.stdout.write(".");
+								}
+								res.writeHead(200, {'content-type': 'text/html'});
+								res.end(noFurtherFiles);
+								return;
+	
+							 }
+						 });
+					 } else {		//end of outdir compare
+						console.log("Security exception detected in " + outdir);
+						return;
+					 }
+	
+				   } else {  //end of url read
+						//Get a front-end facing image or html file
+						var outdir = __dirname + "/../public" + url;
+						
+						
+						serveUpFile(outdir, null, res, false, customString);
+				   }
+		  		} //end of check for pairing
+			} //end of get request
+		}); //End of end
+	}	//end of ordinary file processing
 }
 
 
