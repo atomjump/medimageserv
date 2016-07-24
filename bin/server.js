@@ -535,7 +535,7 @@ function handleServer(req, res) {
 	  
 	  res.statusCode = 400;			//Error during transmission - tell the app about it
 	  res.end();
-	}).on('end', function() {
+	}).on('finish', function() {
 	
 	  if (req.url === '/api/photo' && req.method === 'POST') {
 		// parse a file upload
