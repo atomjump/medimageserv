@@ -526,8 +526,11 @@ function httpHttpsCreateServer(options) {
 	
 }
 
-function handleServer(req, res) {
+function handleServer(_req, _res) {
 	
+	var req = _req;
+	var res = _res;
+	var body = [];
 	
 	req.on('error', function(err) {
 	  // This prints the error message and stack trace to `stderr`.
@@ -535,6 +538,10 @@ function handleServer(req, res) {
 	  
 	  res.statusCode = 400;			//Error during transmission - tell the app about it
 	  res.end();
+	});
+	
+	req.on('data', function() {
+		body.push(chunk);	
 	});
 	
 	req.on('end', function() {
