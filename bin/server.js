@@ -390,14 +390,13 @@ function download(uri, callback){
 					
 					//Now do a full get of the file, and pipe directly back
 					var localFile = fs.createWriteStream(createFile);
+					var complete = false;
 					var stream = request.get(uri)
 					      .on('response', function (resp) {
 					      		if(verbose == true) console.log("Resp:" + JSON.stringify(resp))
 					      		if (resp.statusCode == 200) {
 					      			console.log("\nDownloaded " + createFile);
-					      			//OK - can put in a delete get request here now as a 2nd part?
-					          		
-					          		
+					      			complete = true;
 							}
 						}) 
 						.on('error', function(err) {
@@ -406,21 +405,32 @@ function download(uri, callback){
 					      	 .pipe(localFile);
 					
 					stream.on('finish', function () { 
-						//Update the data transferred
-						if(uri.indexOf("atomjump.com") >= 0) {
-							var stats = fs.statSync(createFile);
- 							var fileSizeInBytes = stats["size"];
+						//If 
+						if (complete == true) {
+							//Update the data transferred successfully
+							if(uri.indexOf("atomjump.com") >= 0) {
+								var stats = fs.statSync(createFile);
+	 							var fileSizeInBytes = stats["size"];
+								
+								bytesTransferred += fileSizeInBytes;
 							
-							bytesTransferred += fileSizeInBytes;
-						
-							//Save the bytes transferred to atomjump.com for progress
-							checkConfigCurrent(null, function() {
+								//Save the bytes transferred to atomjump.com for progress
+								checkConfigCurrent(null, function() {
+								
+								})
+							}
 							
-							})
+							//Backup the file
+						        backupFile(createFile, "", dirFile);
+						        
+						        //Fully downloaded
+						        callback(null);		//Success!
+						} else {
+							//Failure to download fully. We will try automatically in 10 seconds
+							//anyway.
+							console("There was an error downloading. HTTP error:" + resp.statusCode);
+							callback(resp.statusCode);	//
 						}
-						
-						//Backup the file
-					        backupFile(createFile, "", dirFile);
 						
 					});
 
@@ -516,9 +526,15 @@ function httpHttpsCreateServer(options) {
 	
 }
 
-function handleServer(req, res) {
+function handleServer(_req, _res) {
 	
-	  if (req.url === '/api/photo' && req.method === 'POST') {
+	var req = _req;
+	var res = _res;
+	var body = [];
+	
+	
+	
+	if (req.url === '/api/photo' && req.method === 'POST') {
 		// parse a file upload
 
 		var form = new multiparty.Form();
@@ -528,99 +544,122 @@ function handleServer(req, res) {
 		   //Process filename of uploaded file, then move into the server's directory, and finally
 		   //copy the files into any backup directories
 
+			if(err) {
+			      	console.log("Error uploading file " + JSON.stringify(err))
+			        
+        			res.writeHead(400, {'content-type': 'text/plain'});
+        			res.end("Invalid request: " + err.message);
+        			return;
+     
+			} else {
 
-			//The standard outdir is the drive from the current server script
-			var parentDir = serverParentDir();
-			if(verbose == true) console.log("This drive:" + parentDir);
-			var outdir = parentDir + outdirPhotos;
-
-   			if(verbose == true) console.log('Outdir:' + outdir);
-			  res.writeHead(200, {'content-type': 'text/plain'});
-			  res.write('Received upload successfully! Check ' + path.normalize(parentDir + outdirPhotos) + ' for your image.\n\n');
-			  res.end();
-
-   			if(verbose == true) console.log('Files ' + JSON.stringify(files, null, 4));
-			//Use original filename for name
-			if(files && files.file1 && files.file1[0]) {
-				var title = files.file1[0].originalFilename;
-
-
-				//Copy file to eg. c:/snapvolt/photos
-				var outFile = title;
-				outFile = outFile.replace('.jpg','');			//Remove jpg from filename
-				outFile = outFile.replace('.jpeg','');			//Remove jpg from filename
-
-				var words = outFile.split('-');
-
-				var finalFileName = "";
-				var outhashdir = "";
-				//Array of distinct words
-				for(var cnt = 0; cnt< words.length; cnt++) {
-					if(words[cnt].charAt(0) == '#') {
-						   var getDir = words[cnt].replace('#','');
-
-						   if(verbose == true) console.log('Comparing ' + getDir + ' with ' + globalId);
-						   if(getDir != globalId) {
-						       outhashdir = outhashdir + '/' + getDir;
-            						if(verbose == true) console.log('OutHashDir:' + outhashdir);
-        					}
-					} else {
-						//Start building back filename with hyphens between words
-						if(finalFileName.length > 0) {
-							finalFileName = finalFileName + '-';
+				//The standard outdir is the drive from the current server script
+				var parentDir = serverParentDir();
+				if(verbose == true) console.log("This drive:" + parentDir);
+				var outdir = parentDir + outdirPhotos;
+	
+	   			if(verbose == true) console.log('Outdir:' + outdir);
+				  
+	
+	   			if(verbose == true) console.log('Files ' + JSON.stringify(files, null, 4));
+				//Use original filename for name
+				if(files && files.file1 && files.file1[0]) {
+					
+					//Uploaded file exists
+					//TODO: Confirm is a valid .jpg file
+					
+					var title = files.file1[0].originalFilename;
+	
+					res.writeHead(200, {'content-type': 'text/plain'});
+				  	res.write('Received upload successfully! Check ' + path.normalize(parentDir + outdirPhotos) + ' for your image.\n\n');
+				  	res.end();
+	
+	
+					//Copy file to eg. c:/snapvolt/photos
+					var outFile = title;
+					outFile = outFile.replace('.jpg','');			//Remove jpg from filename
+					outFile = outFile.replace('.jpeg','');			//Remove jpg from filename
+	
+					var words = outFile.split('-');
+	
+					var finalFileName = "";
+					var outhashdir = "";
+					//Array of distinct words
+					for(var cnt = 0; cnt< words.length; cnt++) {
+						if(words[cnt].charAt(0) == '#') {
+							   var getDir = words[cnt].replace('#','');
+	
+							   if(verbose == true) console.log('Comparing ' + getDir + ' with ' + globalId);
+							   if(getDir != globalId) {
+							       outhashdir = outhashdir + '/' + getDir;
+	            						if(verbose == true) console.log('OutHashDir:' + outhashdir);
+	        					}
+						} else {
+							//Start building back filename with hyphens between words
+							if(finalFileName.length > 0) {
+								finalFileName = finalFileName + '-';
+							}
+							finalFileName = finalFileName + words[cnt];
 						}
-						finalFileName = finalFileName + words[cnt];
+					}  //end of loop
+	
+					//Check the directory exists, and create
+					if (!fs.existsSync(path.normalize(parentDir + outdirPhotos))){
+				   		if(verbose == true) console.log('Creating dir:' + path.normalize(parentDir + outdirPhotos));
+	
+	   					fs.mkdirSync(path.normalize(parentDir + outdirPhotos));
+				  		if(verbose == true) console.log('Created OK dir:' + path.normalize(parentDir + outdirPhotos));
+	
 					}
-				}  //end of loop
-
-				//Check the directory exists, and create
-				if (!fs.existsSync(path.normalize(parentDir + outdirPhotos))){
-			   		if(verbose == true) console.log('Creating dir:' + path.normalize(parentDir + outdirPhotos));
-
-   					fs.mkdirSync(path.normalize(parentDir + outdirPhotos));
-			  		if(verbose == true) console.log('Created OK dir:' + path.normalize(parentDir + outdirPhotos));
-
+	
+					//Create the final hash outdir
+					outdir = parentDir + outdirPhotos + outhashdir;
+					if (!fs.existsSync(path.normalize(outdir))){
+						if(verbose == true) console.log('Creating dir:' + path.normalize(outdir));
+						fs.mkdirSync(path.normalize(outdir));
+						if(verbose == true) console.log('Created OK');
+	
+					}
+	
+	
+	
+					finalFileName = finalFileName + '.jpg';
+	
+					//Move the file into the standard location of this server
+					var fullPath = outdir + '/' + finalFileName;
+					if(verbose == true) console.log("Moving " + files.file1[0].path + " to " + fullPath);
+					mv(files.file1[0].path, fullPath, {mkdirp: true},  function(err) { //path.normalize(
+						  // done. it tried fs.rename first, and then falls back to
+						  // piping the source file to the dest file and then unlinking
+						  // the source file.
+						  if(err) {
+							console.log(err);
+	
+						  } else {
+							console.log('\n' + finalFileName + ' file uploaded');
+	
+							//Ensure no admin restictions on Windows
+							ensurePhotoReadableWindows(fullPath);
+	
+							//Now copy to any other backup directories
+							if(verbose == true) console.log("Backups:");
+							var thisPath = fullPath;
+	
+							//Now backup to any directories specified in the config
+							backupFile(thisPath, outhashdir, finalFileName);
+	
+						  }
+					});
+				} else { //End of file exists
+					//No file exists
+					console.log("Error uploading file. No file on server.");
+			        	res.statusCode = 400;			//Error during transmission - tell the app about it
+	  				res.end();
+					return;
 				}
-
-				//Create the final hash outdir
-				outdir = parentDir + outdirPhotos + outhashdir;
-				if (!fs.existsSync(path.normalize(outdir))){
-					if(verbose == true) console.log('Creating dir:' + path.normalize(outdir));
-					fs.mkdirSync(path.normalize(outdir));
-					if(verbose == true) console.log('Created OK');
-
-				}
-
-
-
-				finalFileName = finalFileName + '.jpg';
-
-				//Move the file into the standard location of this server
-				var fullPath = outdir + '/' + finalFileName;
-				if(verbose == true) console.log("Moving " + files.file1[0].path + " to " + fullPath);
-				mv(files.file1[0].path, fullPath, {mkdirp: true},  function(err) { //path.normalize(
-					  // done. it tried fs.rename first, and then falls back to
-					  // piping the source file to the dest file and then unlinking
-					  // the source file.
-					  if(err) {
-						console.log(err);
-
-					  } else {
-						console.log('\n' + finalFileName + ' file uploaded');
-
-						//Ensure no admin restictions on Windows
-						ensurePhotoReadableWindows(fullPath);
-
-						//Now copy to any other backup directories
-						if(verbose == true) console.log("Backups:");
-						var thisPath = fullPath;
-
-						//Now backup to any directories specified in the config
-						backupFile(thisPath, outhashdir, finalFileName);
-
-					  }
-				});
-			}
+			
+			}	//End of form no parse error
+		
 
 
 
@@ -633,151 +672,169 @@ function handleServer(req, res) {
 
 		return;
 
-	  } else {  //end of api upload
-		  //A get request to pull from the server
-		  // show a file upload form
-		  var url = req.url;
-		  if((url == '/') || (url == "")) {
-			  url = "/index.html";
-			  
-			  //The homepage has a custom string of the number of bytes transferred
-			  customString = formatBytes(bytesTransferred, 1);
-		  } else {
-		  	//Mainly we don't have any custom strings
-		  	customString = "";
-		  }
-
-		  var removeAfterwards = false;
-		  var read = '/read/';
-		  var pair = '/pair';
-
-		   if(verbose == true) console.log("Url requested:" + url);
-
-		   if(url.substr(0,pair.length) == pair) {
-			   //Do a get request from the known aj server
-			   //for a new pairing guid
-			   var fullPairingUrl = pairingURL;
-
-			   var queryString = url.substr(pair.length);
-			   
-			   
-			   checkConfigCurrent(null, function() {
-				   if(globalId != "") {
-				   	//We already know the global id - use it to update the passcode only
-				   	if(queryString) {
-				   		queryString = queryString + "&guid=" + globalId;
-					} else {
-						queryString = "?guid=" + globalId;
-					}
-				   }
+	} else {  //end of api upload
 	
-				   if(queryString) {
-					   fullPairingUrl = fullPairingUrl + queryString;
+		//Start ordinary error handling
+		req.on('error', function(err) {
+		  // This prints the error message and stack trace to `stderr`.
+		  console.error(err.stack);
+		  
+		  res.statusCode = 400;			//Error during transmission - tell the app about it
+		  res.end();
+		});
+		
+		req.on('data', function(chunk) {
+			body.push(chunk);
+		});
 	
-				   }
-				   console.log("Request for pairing:" + fullPairingUrl);
-	
-				   needle.get(fullPairingUrl, function(error, response) {
-					  if (!error && response.statusCode == 200) {
-						  console.log(response.body);
-	
-						   var codes = response.body.split(" ");
-						   var passcode = codes[0];
-						   globalId = codes[1];
-						   var guid = globalId;
-						   var proxyServer = codes[2].replace("\n", "");
-						   var readProx = proxyServer + "/read/" + guid;
-						   console.log("Proxy set to:" + readProx);
+		req.on('end', function() {
 	
 	
-						   //Write full proxy to config file
-						   checkConfigCurrent(readProx, function() {
+			//A get request to pull from the server
+			// show a file upload form
+			var url = req.url;
+			if((url == '/') || (url == "")) {
+				  url = "/index.html";
+				  
+				  //The homepage has a custom string of the number of bytes transferred
+				  customString = formatBytes(bytesTransferred, 1);
+			} else {
+			  	//Mainly we don't have any custom strings
+			  	customString = "";
+			}
 	
+			var removeAfterwards = false;
+			var read = '/read/';
+			var pair = '/pair';
 	
-							   //Display passcode to user
-							   var outdir = __dirname + "/../public/passcode.html";
-							   serveUpFile(outdir, null, res, false, passcode);
-							   return;
-						   });
+			if(verbose == true) console.log("Url requested:" + url);
 	
+			if(url.substr(0,pair.length) == pair) {
+				   //Do a get request from the known aj server
+				   //for a new pairing guid
+				   var fullPairingUrl = pairingURL;
 	
-					  }
+				   var queryString = url.substr(pair.length);
+				   
+				   
+				   checkConfigCurrent(null, function() {
+					   if(globalId != "") {
+					   	//We already know the global id - use it to update the passcode only
+					   	if(queryString) {
+					   		queryString = queryString + "&guid=" + globalId;
+						} else {
+							queryString = "?guid=" + globalId;
+						}
+					   }
+		
+					   if(queryString) {
+						   fullPairingUrl = fullPairingUrl + queryString;
+		
+					   }
+					   console.log("Request for pairing:" + fullPairingUrl);
+		
+					   needle.get(fullPairingUrl, function(error, response) {
+						  if (!error && response.statusCode == 200) {
+							  console.log(response.body);
+		
+							   var codes = response.body.split(" ");
+							   var passcode = codes[0];
+							   globalId = codes[1];
+							   var guid = globalId;
+							   var proxyServer = codes[2].replace("\n", "");
+							   var readProx = proxyServer + "/read/" + guid;
+							   console.log("Proxy set to:" + readProx);
+		
+		
+							   //Write full proxy to config file
+							   checkConfigCurrent(readProx, function() {
+		
+		
+								   //Display passcode to user
+								   var outdir = __dirname + "/../public/passcode.html";
+								   serveUpFile(outdir, null, res, false, passcode);
+								   return;
+							   });
+		
+		
+						  }
+					   });
 				   });
-			   });
-
-
-   			} else {		//end of pair
-
-
-			  if(url.substr(0,read.length) == read) {
-				 //Get uploaded photos from coded subdir
-				 var codeDir = url.substr(read.length);
-				 var parentDir = serverParentDir();
-				 if(verbose == true) console.log("This drive:" + parentDir);
-				 if(verbose == true) console.log("Coded directory:" + codeDir);
-
-				 if(codeDir.length <= 0) {
-					 console.log("Cannot read without a directory");
-					 return;
-				 }
-
-				 var outdir = path.normalize(parentDir + outdirPhotos + '/' + codeDir);
-				 var compareWith = path.normalize(parentDir + outdirPhotos);
-
-				 if(verbose == true) console.log("Output directory to scan " + outdir + ". Must include:" + compareWith);
-				 //For security purposes the path must include the parentDir and outdiePhotos in a complete form
-				 //ie. be subdirectories. Otherwise a ../../ would allow deletion of an internal file
-				 if(outdir.indexOf(compareWith) > -1) {
-
-
-					 //Get first file in the directory list
-					 fileWalk(outdir, function(outfile, cnt) {
-
-						 if(outfile) {
-							//Get outfile - compareWith
-							var localFileName = outfile.replace(compareWith, "");
-							if(verbose == true) console.log("Local file to download via proxy as:" + localFileName);
-							if(verbose == true) console.log("About to download (eventually delete): " + outfile);
-							
-							if(req.method === "HEAD") {
-								//Get the header only
-								res.writeHead(200, {'content-type': "image/jpg", 'file-name': localFileName });
-								res.end();
-								
-							} else {
-								//Now get the full file
-								serveUpFile(outfile,localFileName, res, true);
-							}
-							
-						 } else {
-							//Reply with a 'no further files' simple text response to client
-
-							if(verbose == true) {
-								console.log("No images");
-							} else {
-								process.stdout.write(".");
-							}
-							res.writeHead(200, {'content-type': 'text/html'});
-							res.end(noFurtherFiles);
-							return;
-
-						 }
-					 });
-				 } else {		//end of outdir compare
-					console.log("Security exception detected in " + outdir);
-					return;
-				 }
-
-			   } else {  //end of url read
-					//Get a front-end facing image or html file
-					var outdir = __dirname + "/../public" + url;
-					
-					
-					serveUpFile(outdir, null, res, false, customString);
-			   }
-	  		} //end of check for pairing
-		} //end of get request
 	
+	
+	   			} else {		//end of pair
+	
+	
+				  if(url.substr(0,read.length) == read) {
+					 //Get uploaded photos from coded subdir
+					 var codeDir = url.substr(read.length);
+					 var parentDir = serverParentDir();
+					 if(verbose == true) console.log("This drive:" + parentDir);
+					 if(verbose == true) console.log("Coded directory:" + codeDir);
+	
+					 if(codeDir.length <= 0) {
+						 console.log("Cannot read without a directory");
+						 return;
+					 }
+	
+					 var outdir = path.normalize(parentDir + outdirPhotos + '/' + codeDir);
+					 var compareWith = path.normalize(parentDir + outdirPhotos);
+	
+					 if(verbose == true) console.log("Output directory to scan " + outdir + ". Must include:" + compareWith);
+					 //For security purposes the path must include the parentDir and outdiePhotos in a complete form
+					 //ie. be subdirectories. Otherwise a ../../ would allow deletion of an internal file
+					 if(outdir.indexOf(compareWith) > -1) {
+	
+	
+						 //Get first file in the directory list
+						 fileWalk(outdir, function(outfile, cnt) {
+	
+							 if(outfile) {
+								//Get outfile - compareWith
+								var localFileName = outfile.replace(compareWith, "");
+								if(verbose == true) console.log("Local file to download via proxy as:" + localFileName);
+								if(verbose == true) console.log("About to download (eventually delete): " + outfile);
+								
+								if(req.method === "HEAD") {
+									//Get the header only
+									res.writeHead(200, {'content-type': "image/jpg", 'file-name': localFileName });
+									res.end();
+									
+								} else {
+									//Now get the full file
+									serveUpFile(outfile,localFileName, res, true);
+								}
+								
+							 } else {
+								//Reply with a 'no further files' simple text response to client
+	
+								if(verbose == true) {
+									console.log("No images");
+								} else {
+									process.stdout.write(".");
+								}
+								res.writeHead(200, {'content-type': 'text/html'});
+								res.end(noFurtherFiles);
+								return;
+	
+							 }
+						 });
+					 } else {		//end of outdir compare
+						console.log("Security exception detected in " + outdir);
+						return;
+					 }
+	
+				   } else {  //end of url read
+						//Get a front-end facing image or html file
+						var outdir = __dirname + "/../public" + url;
+						
+						
+						serveUpFile(outdir, null, res, false, customString);
+				   }
+		  	} //end of check for pairing
+			
+		}); //Request end end
+	}	//end of ordinary file processing
 }
 
 
@@ -832,6 +889,16 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 
 	     data = JSON.parse( JSON.stringify( strData ) ); //JSON.parse(strData);
 	  }
+
+	/* Try without an error check
+	  res.on('error', function(err) {
+	  	//Error piping out
+      		//console.error(err);
+      		res.writeHead(404);
+	   	res.end(JSON.stringify(err));
+	   	return;
+    	  });
+    	  */
 
 	  res.writeHead(200, {'content-type': contentType, 'file-name': theFile});  
 	  res.end(data, function(err) {
