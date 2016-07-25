@@ -44,6 +44,8 @@ To restart (after any config.json changes):
 pm2 restart server
 ```
 
+For logging or and any permissions issues, see the section 'Troubleshooting' below.
+
 
 
 
@@ -87,4 +89,47 @@ These are located in the file config.json.
   New Drive:\MedImage\photos 
 
 
+## Troubleshooting
+
+Once the server is running, you can check the logs with
+
+```
+pm2 logs
+```
+
+Note: the permissions and ownership of the following files/directories may need to be expanded (try with 'chmod 777' at first, and then restrict the permissions once this is working).
+
+```
+/usr/lib/node_modules/medimage/config.json    # must be writable by the sudo node script
+/usr/lib/node_modules/medimage/photos
+```
+
+```
+chmod 777 config.json
+chown nobody:ubuntu config.json           # nobody:ubuntu will vary slightly depending on platform
+chmod 777 photos
+chown nobody:ubuntu photos
+```
+
+
+## Upgrade script
+
+The usual way to upgrade medimage server:
+
+```
+sudo npm update -g medimage
+```
+
+Here is a sample script for upgrading the version, which is expanded because of a more complex permissions setup.
+
+```
+sudo npm update -g medimage
+cd /usr/lib/node_modules/medimage
+sudo chmod 777 config.json
+sudo chmod 777 photos
+chown nobody:ubuntu config.json
+chown nobody:ubuntu photos
+cp ~/backup_key/atomjump.crt .
+cp ~/backup_key/atomjump.private.pem .
+```
 
