@@ -32,11 +32,21 @@
 	 <p>
 	 	<a href="/pair"><div class="button">Pair with your phone (via AtomJump Server. 5GB free bandwidth)</div></a>
 	 </p>
-		<p>
+	<p>
 
-			<a><div onclick="return checkCall();" class="button">Server Address <input onclick="return false;" type="text" id="server" /><br/>Pair with your phone (Your private proxy server)</div></a>
+		<a onclick="checkCall();"><div onclick="checkCall();" style="cursor: pointer;" class="button">Server Address <input onclick="return false;" type="text" id="server" /><br/>Pair with your phone (Your private proxy server)</div></a>
 
-	 	</p>  
+	</p>
+		<script>
+			document.getElementById("server").addEventListener("click", function( e ){
+						    e = window.event || e;
+						    if(this === e.target) {
+						        // put your code here
+						        e.stopPropagation();
+						    }
+			});
+
+   		</script> 
 	</div>
 
 	<table>
