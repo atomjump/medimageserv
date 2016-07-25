@@ -604,6 +604,7 @@ function handleServer(_req, _res) {
 					}  //end of loop
 	
 					//Check the directory exists, and create
+					
 					if (!fs.existsSync(path.normalize(parentDir + outdirPhotos))){
 				   		if(verbose == true) console.log('Creating dir:' + path.normalize(parentDir + outdirPhotos));
 	
@@ -616,7 +617,7 @@ function handleServer(_req, _res) {
 					outdir = parentDir + outdirPhotos + outhashdir;
 					if (!fs.existsSync(path.normalize(outdir))){
 						if(verbose == true) console.log('Creating dir:' + path.normalize(outdir));
-						fs.mkdirSync(path.normalize(outdir));
+						fsExtra.mkdirsSync(path.normalize(outdir));
 						if(verbose == true) console.log('Created OK');
 	
 					}
