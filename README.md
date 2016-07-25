@@ -118,6 +118,7 @@ The usual way to upgrade medimage server:
 
 ```
 sudo npm update -g medimage
+pm2 restart server
 ```
 
 Here is a sample script for upgrading the version, which is expanded because of a more complex permissions setup.
@@ -131,5 +132,6 @@ chown nobody:ubuntu config.json
 chown nobody:ubuntu photos
 cp ~/backup_key/atomjump.crt .
 cp ~/backup_key/atomjump.private.pem .
+pm2 restart server
 ```
 
