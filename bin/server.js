@@ -48,6 +48,7 @@ var globalId = "";
 var httpsFlag = false;				//whether we are serving up https (= true) or http (= false)
 var serverOptions = {};				//default https server options (see nodejs https module)
 var bytesTransferred = 0;
+var noWin = false;				//By default we are on Windows
 
 
 //Check any command-line options
@@ -81,10 +82,7 @@ function ensurePhotoReadableWindows(fullPath, cb) {
 	//Check platform is windows
 	var platform = process.platform;
 	if(verbose == true) console.log(process.platform);
-	var isWin = false;
-	if(platform.indexOf("win") >= 0) {
-	    isWin = true;
-	}
+	var isWin = /^win/.test(platform);
 	if(verbose == true) console.log("IsWin=" + isWin);
 	if(isWin) {
 		//See: http://serverfault.com/questions/335625/icacls-granting-access-to-all-users-on-windows-7
@@ -114,10 +112,7 @@ function ensureDirectoryWritableWindows(fullPath, cb) {
 	//Check platform is windows
 	var platform = process.platform;
 	if(verbose == true) console.log(process.platform);
-	var isWin = false;
-	if(platform.indexOf("win") >= 0) {
-	    isWin = true;
-	}
+	var isWin = /^win/.test(platform);
 	if(verbose == true) console.log("IsWin=" + isWin);
 	if(isWin) {
 		//See: http://serverfault.com/questions/335625/icacls-granting-access-to-all-users-on-windows-7
