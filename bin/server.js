@@ -529,6 +529,14 @@ function trimChar(string, charToRemove) {
     return string;
 }
 
+function escapeRegExp(str) {
+    return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+}
+
+function replaceAll(str, find, replace) {
+  return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
+}
+
 
 function httpHttpsCreateServer(options) {
 	if(httpsFlag == true) {
@@ -601,7 +609,7 @@ function handleServer(_req, _res) {
 					var outFile = title;
 					outFile = outFile.replace('.jpg','');			//Remove jpg from filename
 					outFile = outFile.replace('.jpeg','');			//Remove jpg from filename
-					outFile = outFile.replace('..', '');			//Remove nasty chars
+					outFile = replaceAll(outfile, "..", "");			//Remove nasty chars
 					
 					outFile = trimChar(outFile, '/');		//Allowed directory slashes within the filename, but otherwise nothing around sides
 					outFile = trimChar(outFile,'\\');
