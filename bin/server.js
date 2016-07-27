@@ -632,17 +632,27 @@ function handleServer(_req, _res) {
 						if(words[cnt].charAt(0) == '#') {
 							   var getDir = words[cnt].replace('#','');
 	
+							   //Do some trimming of this directory name
+								getDir = trimChar(getDir, '/');
+								getDir = trimChar(getDir, '\\');
+							   
+							   
 							   if(verbose == true) console.log('Comparing ' + getDir + ' with ' + globalId);
 							   if(getDir != globalId) {
 							       outhashdir = outhashdir + '/' + getDir;
 	            						if(verbose == true) console.log('OutHashDir:' + outhashdir);
 	        					}
 						} else {
+							//Do some odd char trimming of this
+							var thisWord = words[cnt];
+							thisWord = trimChar(thisWord, '/');
+							thisWord = trimChar(thisWord, '\\');
+							
 							//Start building back filename with hyphens between words
 							if(finalFileName.length > 0) {
 								finalFileName = finalFileName + '-';
 							}
-							finalFileName = finalFileName + words[cnt];
+							finalFileName = finalFileName + thisWord;
 						}
 					}  //end of loop
 	
