@@ -517,6 +517,19 @@ function backupFile(thisPath, outhashdir, finalFileName)
 }
 
 
+function trimChar(string, charToRemove) {
+    while(string.charAt(0)==charToRemove) {
+        string = string.substring(1);
+    }
+
+    while(string.charAt(string.length-1)==charToRemove) {
+        string = string.substring(0,string.length-1);
+    }
+
+    return string;
+}
+
+
 function httpHttpsCreateServer(options) {
 	if(httpsFlag == true) {
 		console.log("Starting https server.");
@@ -529,6 +542,11 @@ function httpHttpsCreateServer(options) {
 	}
 	
 }
+
+
+
+
+
 
 function handleServer(_req, _res) {
 	
@@ -583,6 +601,12 @@ function handleServer(_req, _res) {
 					var outFile = title;
 					outFile = outFile.replace('.jpg','');			//Remove jpg from filename
 					outFile = outFile.replace('.jpeg','');			//Remove jpg from filename
+					outFile = outFile.replace('..', '');			//Remove nasty chars
+					
+					outFile = trimChar(outFile, '/');		//Allowed directory slashes within the filename, but otherwise nothing around sides
+					outFile = trimChar(outFile,'\\');
+					
+					
 	
 					var words = outFile.split('-');
 	
