@@ -8,9 +8,9 @@
   },
   "preferGlobal": "true",
   "scripts": {
-    "start" :"",
-    "stop" : "",
-    "postinstall" : ""
+    "start": "",
+    "stop": "",
+    "postinstall": ""
   },
   "dependencies": {
     "connect": "*",
@@ -18,17 +18,19 @@
     "drivelist": "*",
     "express": "*",
     "fs-extra": "*",
+    "https": "*",
+    "image-type": "^2.1.0",
     "mkdirp": "*",
     "multer": "*",
     "multiparty": "*",
     "mv": "*",
+    "needle": "*",
     "node-mv": "*",
     "node-uuid": "*",
     "path": "*",
+    "read-chunk": "^2.0.0",
     "request": "*",
-    "needle": "*",
-    "upath": "*",
-    "https": "*"
+    "upath": "*"
   },
   "main": "bin/server.js",
   "optionalDependencies": {},

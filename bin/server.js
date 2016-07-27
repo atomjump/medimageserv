@@ -30,6 +30,9 @@ var uuid = require('node-uuid');
 var fsExtra = require('fs-extra');
 var request = require("request");
 var needle = require('needle');
+var readChunk = require('read-chunk'); // npm install read-chunk 
+var imageType = require('image-type');
+
 
 
 var verbose = false;		//Set to true to display debug info
@@ -596,7 +599,10 @@ function handleServer(_req, _res) {
 				if(files && files.file1 && files.file1[0]) {
 					
 					//Uploaded file exists
-					//TODO: Confirm is a valid .jpg file
+					//Confirm is a valid .jpg file
+					var buffer = readChunk.sync(files.file1[0].path, 0, 12);
+ 
+					console.log(imageType(buffer));	//Display the file type
 					
 					var title = files.file1[0].originalFilename;
 	
@@ -611,15 +617,9 @@ function handleServer(_req, _res) {
 					outFile = outFile.replace('.jpeg','');			//Remove jpg from filename
 					outFile = replaceAll(outFile, "..", "");			//Remove nasty chars
 					
-					console.log("Outfile:" + outFile);
 					
-					outFile = trimChar(outFile, '/');		//Allowed directory slashes within the filename, but otherwise nothing around sides
-					
-					console.log("Outfile:" + outFile);
-					
+					outFile = trimChar(outFile, '/');		//Allowed directory slashes within the filename, but otherwise nothing around sides					
 					outFile = trimChar(outFile,'\\');
-					
-					console.log("Outfile:" + outFile);
 					
 					
 	
