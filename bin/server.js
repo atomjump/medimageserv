@@ -33,8 +33,8 @@ var needle = require('needle');
 
 
 var verbose = false;		//Set to true to display debug info
-var outdirDefaultParent = '/medimage';
-var outdirPhotos = '/photos';
+var outdirDefaultParent = '/medimage';		//These should have a slash before, and no slash after.
+var outdirPhotos = '/photos';			//These should have a slash before, and no slash after.
 var defaultTitle = "image";
 var currentDisks = [];
 var configFile = '/../config.json';
@@ -360,7 +360,7 @@ function download(uri, callback){
      		dirFile = dirFile.replace(globalId + '/', ''); //remove our id
 
 
-		var createFile = path.normalize(serverParentDir() + outdirPhotos + dirFile);
+		var createFile = path.normalize(serverParentDir() + trailSlash(outdirPhotos) + dirFile);
 		if(createFile) {
 			
 		        if(verbose == true) console.log("Creating file:" + createFile);
@@ -463,6 +463,17 @@ function readRemoteServer(url)
 
 }
 
+function trailSlash(str)
+{
+	if(str.slice(-1) == "/") {
+		return str;
+	} else {
+		var retStr = str + "/";
+		return retStr;
+	}
+	
+}
+
 
 function backupFile(thisPath, outhashdir, finalFileName)
 {
@@ -479,13 +490,13 @@ function backupFile(thisPath, outhashdir, finalFileName)
 			for(var cnt=0; cnt< content.backupTo.length; cnt++) {
 
 				if(outhashdir) {
-					var target = content.backupTo[cnt] + '/' + outhashdir + '/' + finalFileName;
+					var target = trailSlash(content.backupTo[cnt]) + trailSlash(outhashdir) + finalFileName;
 			    	} else {
-					var target = content.backupTo[cnt] + finalFileName;
+					var target = trailSlash(content.backupTo[cnt]) + finalFileName;
 				}
 				if(verbose == true) console.log("Backing up " + thisPath + " to:" + target);
 
-				fsExtra.ensureDir(content.backupTo[cnt] + '/' + outhashdir, function(err) {
+				fsExtra.ensureDir(trailSlash(content.backupTo[cnt]) + trailSlash(outhashdir), function(err) {
 					if(err) {
 						console.log("Warning: Could not create directory for backup: " + content.backupTo[cnt]);
 					} else {
@@ -601,7 +612,7 @@ function handleServer(_req, _res) {
 					if (!fs.existsSync(path.normalize(parentDir + outdirPhotos))){
 				   		if(verbose == true) console.log('Creating dir:' + path.normalize(parentDir + outdirPhotos));
 	
-	   					fs.mkdirSync(path.normalize(parentDir + outdirPhotos));
+	   					fsExtra.mkdirsSync(path.normalize(parentDir + outdirPhotos));
 				  		if(verbose == true) console.log('Created OK dir:' + path.normalize(parentDir + outdirPhotos));
 	
 					}
