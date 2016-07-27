@@ -609,7 +609,7 @@ function handleServer(_req, _res) {
 					var outFile = title;
 					outFile = outFile.replace('.jpg','');			//Remove jpg from filename
 					outFile = outFile.replace('.jpeg','');			//Remove jpg from filename
-					outFile = replaceAll(outfile, "..", "");			//Remove nasty chars
+					outFile = replaceAll(outFile, "..", "");			//Remove nasty chars
 					
 					outFile = trimChar(outFile, '/');		//Allowed directory slashes within the filename, but otherwise nothing around sides
 					outFile = trimChar(outFile,'\\');
