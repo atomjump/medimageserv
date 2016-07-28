@@ -956,9 +956,9 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 	     var strData = data.toString();
 	     strData = strData.replace("CUSTOMSTRING",customString);
 	     console.log(strData);
-
+	
 	     data = JSON.parse( JSON.stringify( strData ) ); //JSON.parse(strData);
-	  }
+	  
 
 	  res.on('error', function(err){
 	  	//Handle the errors here
