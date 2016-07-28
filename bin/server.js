@@ -470,7 +470,6 @@ function readRemoteServer(url)
 	setTimeout(function() {
 		process.stdout.write("'");     //Display movement to show upload pinging
 		download(url, function(){
-			  console.log('done');
 			  readRemoteServer(_url);
 		});
 
@@ -927,7 +926,13 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
   // set the content type
   var ext = path.extname(normpath);
   var contentType = 'text/html';
+  var stream = true;
 
+  if(customString) {
+  	//Likely html which we need to load in and edit before sending
+  	stream = false;		
+  	
+  }
 
   //Handle images
   if (ext === '.png') {
@@ -939,6 +944,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
   
   if(ext === '.svg') {
   	contentType = 'image/svg+xml';
+  	stream = false;		//for some reason svg doesn't like being streamed
   }
 
   if(ext === '.css') {
@@ -948,7 +954,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
   //Being preparation to send
  
   
-  if(customString) {
+  if(stream == false) {
 	//Implies we need to modify this file, and it is likely and html request - i.e. fairly rare
   	//Use the slow method:
   	fs.readFile(normpath, function (err,data) {
