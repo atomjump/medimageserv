@@ -984,8 +984,8 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 		  //Read the file from disk, then send to client
 		  var stream = fs.createReadStream(normpath);
 		  stream.on('error', function(err) {
-		  	res.writeHead(404);
-			res.end(JSON.stringify(err));
+		  	console.log(JSON.stringify(err))
+		  	
 			return;
 		  })
 		  stream.pipe(res).on('close', function() {
