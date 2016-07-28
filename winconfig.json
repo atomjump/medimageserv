@@ -1,6 +1,6 @@
 {
       "purpose": "MedImage Server Configuration File. Example readproxy http://YOURIP:5566/read/yourdir",
-      "backupTo": [ "C:/mt32/attachments" ],
+      "backupTo": [ ],
       "readProxy": null,
       "listenPort": 5566
 }
