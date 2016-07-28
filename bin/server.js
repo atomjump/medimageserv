@@ -363,8 +363,8 @@ function download(uri, callback){
 	
 				//Yes there was a new photo file to download fully.
 				var dirFile = res.headers['file-name'];
-				dirFile = dirFile.replace(globalId + '/', ''); //remove our id
-	
+				dirFile = trimchar(dirFile.replace(globalId + '/', '')); //remove our id and any slashes around it
+				
 	
 				var createFile = path.normalize(serverParentDir() + trailSlash(outdirPhotos) + dirFile);
 		
