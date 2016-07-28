@@ -343,109 +343,121 @@ function formatBytes(bytes,decimals) {
 
 
 function download(uri, callback){
-  	
- 
-  
+
+
+
   //Get a header of file first - see if there is any content (this will be pinged once every 10 seconds or so)
   request.head(uri, function(err, res, body){
     if(err) {
-	console.log("Error requesting from proxy:" + err);
-    } else {
+		console.log("Error requesting from proxy:" + err);
+		callback(err);
+    } else { //No error
     	if(verbose == true) {
 		console.log(JSON.stringify(res.headers));
 	    	console.log('content-type:', res.headers['content-type']);
 	    	console.log('content-length:', res.headers['content-length']);
 	    	console.log('file-name:', res.headers['file-name']);
-    	} 
+    	}
+    	//Check if there is a filename
         if(res.headers['file-name']) {
-		
-		//Yes there was a new photo file to download fully.
-     		var dirFile = res.headers['file-name'];
-     		dirFile = dirFile.replace(globalId + '/', ''); //remove our id
+
+			//Yes there was a new photo file to download fully.
+			var dirFile = res.headers['file-name'];
+			dirFile = dirFile.replace(globalId + '/', ''); //remove our id
 
 
-		var createFile = path.normalize(serverParentDir() + trailSlash(outdirPhotos) + dirFile);
-		if(createFile) {
-			
-		        if(verbose == true) console.log("Creating file:" + createFile);
-		        var dirCreate = path.dirname(createFile);
-		        if(verbose == true) console.log("Creating dir:" + dirCreate);
-		        //Make sure directory
-            		fsExtra.ensureDir(dirCreate, function(err) {
-		            if(err) {
-			            console.log("Warning: Could not create directory for: " + dirCreate);
-		            } else {
-		                if(verbose == true) console.log("Created dir:" + dirCreate);
-		                ensureDirectoryWritableWindows(dirCreate, function(err) {
+			var createFile = path.normalize(serverParentDir() + trailSlash(outdirPhotos) + dirFile);
+			if(createFile) {
 
-		                    if(err) {
-		                        console.log("Error processing dir:" + err);
-		                    } else {
-		                        if(verbose == true) console.log("Directory processed");
-		                        if(verbose == true) console.log("About to create local file " + createFile + " from uri:" + uri);
-					
-					
-					//Now do a full get of the file, and pipe directly back
-					var localFile = fs.createWriteStream(createFile);
-					var complete = false;
-					var stream = request.get(uri)
-					      .on('response', function (resp) {
-					      		if(verbose == true) console.log("Resp:" + JSON.stringify(resp))
-					      		if (resp.statusCode == 200) {
-					      			console.log("\nDownloaded " + createFile);
-					      			complete = true;
-							}
-						}) 
-						.on('error', function(err) {
-						    console.log("Error downloading: " + err);
-						 })
-					      	 .pipe(localFile);
-					
-					stream.on('finish', function () { 
-						//If 
-						if (complete == true) {
-							//Update the data transferred successfully
-							if(uri.indexOf("atomjump.com") >= 0) {
-								var stats = fs.statSync(createFile);
-	 							var fileSizeInBytes = stats["size"];
-								
-								bytesTransferred += fileSizeInBytes;
-							
-								//Save the bytes transferred to atomjump.com for progress
-								checkConfigCurrent(null, function() {
-								
-								})
-							}
-							
-							//Backup the file
-						        backupFile(createFile, "", dirFile);
-						        
-						        //Fully downloaded
-						        callback(null);		//Success!
+					if(verbose == true) console.log("Creating file:" + createFile);
+					var dirCreate = path.dirname(createFile);
+					if(verbose == true) console.log("Creating dir:" + dirCreate);
+					//Make sure directory
+						fsExtra.ensureDir(dirCreate, function(err) {
+						if(err) {
+							console.log("Warning: Could not create directory for: " + dirCreate);
+							callback("Warning: Could not create directory for: " + dirCreate);
 						} else {
-							//Failure to download fully. We will try automatically in 10 seconds
-							//anyway.
-							console("There was an error downloading. HTTP error:" + resp.statusCode);
-							callback(resp.statusCode);	//
+							if(verbose == true) console.log("Created dir:" + dirCreate);
+							ensureDirectoryWritableWindows(dirCreate, function(err) {
+
+								if(err) {
+									console.log("Error processing dir:" + err);
+									callback("Error processing dir:" + err);
+								} else {
+									if(verbose == true) console.log("Directory processed");
+									if(verbose == true) console.log("About to create local file " + createFile + " from uri:" + uri);
+
+
+								//Now do a full get of the file, and pipe directly back
+								var localFile = fs.createWriteStream(createFile);
+								var complete = false;
+								var stream = request.get(uri)
+									  .on('response', function (resp) {
+											if(verbose == true) console.log("Resp:" + JSON.stringify(resp))
+											if (resp.statusCode == 200) {
+												console.log("\nDownloaded " + createFile);
+												complete = true;
+										}
+									})
+									.on('error', function(err) {
+										console.log("Error downloading: " + err);
+									 })
+										 .pipe(localFile);
+
+									stream.on('finish', function () {
+									//If
+									if (complete == true) {
+										//Update the data transferred successfully
+										if(uri.indexOf("atomjump.com") >= 0) {
+											var stats = fs.statSync(createFile);
+											var fileSizeInBytes = stats["size"];
+
+											bytesTransferred += fileSizeInBytes;
+
+											//Save the bytes transferred to atomjump.com for progress
+											checkConfigCurrent(null, function() {
+
+											})
+										}
+
+										//Backup the file
+										backupFile(createFile, "", dirFile);
+
+										//Fully downloaded
+										callback(null);		//Success!
+								} else {
+									//Failure to download fully. We will try automatically in 10 seconds
+									//anyway.
+									console("There was an error downloading. HTTP error:" + resp.statusCode);
+									callback(resp.statusCode);	//
+								}
+
+						});
+
+									   }
+
+
+
+
+							}); //end of directory writable
+
 						}
-						
-					});
+					}); //end of ensuredir exists
+			} else { //end of if file exists
+        			console.log("Error: file doesn't exist.");
+        			callback("Error: file doesn't exist.");
+			}
 
-                            	   }
-
-
-
-
-		                }); //end of directory writable
-
-                    }
-                }); //end of ensuredir exists
-            } //end of if file exists
-        } //end of if file-name exists
+		} else {
+			//end of if file-name exists
+			if(verbose == true) console.log("No file to download");
+			callback(null);
+		}
      } //end of no error from proxy
   }); //end of request head
-  
-  
+
+
 }
 
 
@@ -453,20 +465,19 @@ function download(uri, callback){
 function readRemoteServer(url)
 {
 	//Every 5 seconds, read the remote server in the config file, and download images to our server.
-	if(remoteReadTimer) {
-		clearInterval(remoteReadTimer);		//ensure a clear read
-	}
+	//But pause while each request is coming in until fully downloaded.
 
-	remoteReadTimer = setInterval(function() {
+	var _url = url;
+	setTimeout(function() {
 		process.stdout.write("'");     //Display movement to show upload pinging
 		download(url, function(){
 			  console.log('done');
+			  readRemoteServer(_url);
 		});
 
 	}, 5000);
 
 }
-
 function trailSlash(str)
 {
 	if(str.slice(-1) == "/") {
@@ -974,7 +985,8 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 		  if(err) {
 	  	  	 console.log(err);
 	  	  } else {
-			 console.log("Completed sending.");  //TEMPIN
+			//success, do nothing
+			
 	   	   }
   	   });
 	 });  //End of readFile
@@ -988,10 +1000,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 		  	
 			return;
 		  })
-		  /*
-		  stream.on('data', (chunk) => {
-  			console.log("Received " + chunk.length + " bytes of data.");
-		  });*/
+
 		  stream.on('end', function() {
 		  	console.log("On end event. Completed sending.. Delete after = " + deleteAfterwards);
 		  	 if(deleteAfterwards == true) {
