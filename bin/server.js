@@ -959,8 +959,15 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 	     data = JSON.parse( JSON.stringify( strData ) ); //JSON.parse(strData);
 	  }
 
+	  res.on('error', function(err){
+	  	//Handle the errors here
+	  	res.statusCode = 400;
+    		res.end();
+	  })
 
 	  res.writeHead(200, {'content-type': contentType, 'file-name': theFile});  
+	  
+	  
 	  res.end(data, function(err) {
 		  //Wait until finished sending, then delete locally
 		  if(err) {
