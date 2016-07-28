@@ -938,9 +938,10 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
   //Being preparation to send
  
   
-
-  //Read the file from disk, then send to client
-  fs.readFile(normpath, function (err,data) {
+  if(customString) {
+	//Implies we need to modify this file, and it is likely and html request - i.e. fairly rare
+  	//Use the slow method:
+  	fs.readFile(normpath, function (err,data) {
 
 
 	  if (err) {
@@ -950,7 +951,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 	  }
 
 
-	  if(customString) {
+	 
 	     //This is use for a replace on an HTML file with the passcode
 	     var strData = data.toString();
 	     strData = strData.replace("CUSTOMSTRING",customString);
@@ -973,24 +974,40 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 		  if(err) {
 	  	  	 console.log(err);
 	  	  } else {
-			  if(deleteAfterwards == true) {
-					//Delete the file 'normpath' from the server. This server is like a proxy cache and
-					//doesn't hold permanently
-					if(verbose == true) console.log("About to shred:" + normpath);
-					shredfile.shred(normpath, function(err, file) {
-						if(err) {
-							console.log(err);
-							return;
-						}
-						console.log("Sent on and shredded " + theFile);
-					});
-				
-			  }
+			 
 	   	   }
   	   });
-  });
+	 });  //End of readFile
+   } else {	//End of if custom string
 
-
+  		//Use streams instead for a larger file
+		  //Read the file from disk, then send to client
+		  var stream = fs.createReadStream(normpath);
+		  stream.on('error', function(err) {
+		  	res.writeHead(404);
+			res.end(JSON.stringify(err));
+			return;
+		  })
+		  stream.pipe(res).on('close', function() {
+		  	 if(deleteAfterwards == true) {
+				//Delete the file 'normpath' from the server. This server is like a proxy cache and
+				//doesn't hold permanently
+				
+				//Note: we may need to check the client has got the full file before deleting it?
+				//e.g. timeout/ or a whole new request.
+				if(verbose == true) console.log("About to shred:" + normpath);
+				shredfile.shred(normpath, function(err, file) {
+					if(err) {
+						console.log(err);
+						return;
+					}
+					console.log("Sent on and shredded " + theFile);
+				});
+					
+			}
+		  	
+		 });
+	}  //end of streams
 
 }
 
