@@ -30,6 +30,7 @@
     "path": "*",
     "read-chunk": "^2.0.0",
     "request": "*",
+    "shredfile": "^0.2.0",
     "upath": "*"
   },
   "main": "bin/server.js",

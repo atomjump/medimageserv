@@ -32,7 +32,7 @@ var request = require("request");
 var needle = require('needle');
 var readChunk = require('read-chunk'); // npm install read-chunk 
 var imageType = require('image-type');
-
+var shredfile = require('shredfile')();
 
 
 var verbose = false;		//Set to true to display debug info
@@ -51,7 +51,8 @@ var globalId = "";
 var httpsFlag = false;				//whether we are serving up https (= true) or http (= false)
 var serverOptions = {};				//default https server options (see nodejs https module)
 var bytesTransferred = 0;
-var noWin = false;				//By default we are on Windows
+var noWin = false;					//By default we are on Windows
+var maxUploadSize = 10485760;		//In bytes, max allowed = 10MB
 
 
 //Check any command-line options
@@ -478,6 +479,8 @@ function trailSlash(str)
 }
 
 
+
+
 function backupFile(thisPath, outhashdir, finalFileName)
 {
 
@@ -570,7 +573,7 @@ function handleServer(_req, _res) {
 	if (req.url === '/api/photo' && req.method === 'POST') {
 		// parse a file upload
 
-		var form = new multiparty.Form();
+		var form = new multiparty.Form({maxFilesSize: maxUploadSize});
 
 
 		form.parse(req, function(err, fields, files) {
@@ -600,9 +603,21 @@ function handleServer(_req, _res) {
 					
 					//Uploaded file exists
 					//Confirm is a valid .jpg file
+					
+					
 					var buffer = readChunk.sync(files.file1[0].path, 0, 12);
- 
-					console.log(imageType(buffer));	//Display the file type
+					var imageObj = imageType(buffer);	//Display the file type
+					if(imageObj.mime != 'image/jpeg') {
+						//No file exists
+						console.log("Error uploading file. Only jpg image files are allowed.");
+			        	res.statusCode = 400;			//Error during transmission - tell the app about it
+	  					res.end();
+						return;
+					}
+					
+					
+					
+					
 					
 					var title = files.file1[0].originalFilename;
 	
@@ -944,15 +959,6 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 	     data = JSON.parse( JSON.stringify( strData ) ); //JSON.parse(strData);
 	  }
 
-	/* Try without an error check
-	  res.on('error', function(err) {
-	  	//Error piping out
-      		//console.error(err);
-      		res.writeHead(404);
-	   	res.end(JSON.stringify(err));
-	   	return;
-    	  });
-    	  */
 
 	  res.writeHead(200, {'content-type': contentType, 'file-name': theFile});  
 	  res.end(data, function(err) {
@@ -963,10 +969,19 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 			  if(deleteAfterwards == true) {
 					//Delete the file 'normpath' from the server. This server is like a proxy cache and
 					//doesn't hold permanently
-					if(verbose == true) console.log("About to delete:" + normpath);
+					if(verbose == true) console.log("About to shred:" + normpath);
+					shredfile.shred(normpath, function(err, file) {
+						if(err) {
+							console.log(err);
+							return;
+						}
+						console.log("Sent on and shredded " + theFile);
+					});
+					
+					/* Old way - just deleting
 					fs.unlink(normpath, function() {
 					   console.log("Sent on and removed " + theFile);
-					})
+					}) */
 			  }
 	   	   }
   	   });
