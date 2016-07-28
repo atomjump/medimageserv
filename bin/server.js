@@ -988,9 +988,10 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 		  	
 			return;
 		  })
+		  /*
 		  stream.on('data', (chunk) => {
   			console.log("Received " + chunk.length + " bytes of data.");
-		  });
+		  });*/
 		  
 		  stream.pipe(res).on('end', function() {
 		  	 if(deleteAfterwards == true) {
