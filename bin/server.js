@@ -332,7 +332,7 @@ function fileWalk(startDir, cb)
 //Courtesy http://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
 function formatBytes(bytes,decimals) {
    
-   console.log("Bytes: " + bytes);
+   if(verbose == true) console.log("Bytes: " + bytes);
    if(bytes == 0) return 'None';
    var k = 1000; // or 1024 for binary
    var dm = decimals + 1 || 3;
