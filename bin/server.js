@@ -988,7 +988,11 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 		  	
 			return;
 		  })
-		  stream.pipe(res).on('close', function() {
+		  stream.on('data', (chunk) => {
+  			console.log("Received " + chunk.length + " bytes of data.");
+		  });
+		  
+		  stream.pipe(res).on('end', function() {
 		  	 if(deleteAfterwards == true) {
 				//Delete the file 'normpath' from the server. This server is like a proxy cache and
 				//doesn't hold permanently
