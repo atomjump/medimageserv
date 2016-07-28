@@ -366,7 +366,7 @@ function download(uri, callback){
 				dirFile = trimChar(dirFile.replace(globalId + '/', '')); //remove our id and any slashes around it
 				
 	
-				var createFile = path.normalize(serverParentDir() + trailSlash(outdirPhotos) + dirFile);
+				var createFile = path.normalize(trailSlash(serverParentDir()) + trailSlash(outdirPhotos) + dirFile);
 		
 	
 				if(verbose == true) console.log("Creating file:" + createFile);
