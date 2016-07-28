@@ -974,7 +974,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 		  if(err) {
 	  	  	 console.log(err);
 	  	  } else {
-			 
+			 console.log("Completed sending.");  //TEMPIN
 	   	   }
   	   });
 	 });  //End of readFile
@@ -992,8 +992,8 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 		  stream.on('data', (chunk) => {
   			console.log("Received " + chunk.length + " bytes of data.");
 		  });*/
-		  
-		  stream.pipe(res).on('end', function() {
+		  stream.on('end', function() {
+		  	console.log("On end event. Completed sending.. Delete after = " + deleteAfterwards);
 		  	 if(deleteAfterwards == true) {
 				//Delete the file 'normpath' from the server. This server is like a proxy cache and
 				//doesn't hold permanently
@@ -1010,8 +1010,13 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 				});
 					
 			}
-		  	
-		 });
+		  });
+		  
+		  stream.on('finish', function() {
+		  	console.log("On finish event");	
+		  });
+		  
+		  stream.pipe(res);
 	}  //end of streams
 
 }
