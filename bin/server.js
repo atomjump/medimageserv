@@ -346,116 +346,115 @@ function download(uri, callback){
 
 
 
-  //Get a header of file first - see if there is any content (this will be pinged once every 10 seconds or so)
-  request.head(uri, function(err, res, body){
-    if(err) {
-		console.log("Error requesting from proxy:" + err);
-		callback(err);
-    } else { //No error
-    	if(verbose == true) {
-		console.log(JSON.stringify(res.headers));
-	    	console.log('content-type:', res.headers['content-type']);
-	    	console.log('content-length:', res.headers['content-length']);
-	    	console.log('file-name:', res.headers['file-name']);
-    	}
-    	//Check if there is a filename
-        if(res.headers['file-name']) {
-
-			//Yes there was a new photo file to download fully.
-			var dirFile = res.headers['file-name'];
-			dirFile = dirFile.replace(globalId + '/', ''); //remove our id
-
-
-			var createFile = path.normalize(serverParentDir() + trailSlash(outdirPhotos) + dirFile);
-			if(createFile) {
-
-					if(verbose == true) console.log("Creating file:" + createFile);
-					var dirCreate = path.dirname(createFile);
-					if(verbose == true) console.log("Creating dir:" + dirCreate);
-					//Make sure directory
-						fsExtra.ensureDir(dirCreate, function(err) {
-						if(err) {
-							console.log("Warning: Could not create directory for: " + dirCreate);
-							callback("Warning: Could not create directory for: " + dirCreate);
-						} else {
-							if(verbose == true) console.log("Created dir:" + dirCreate);
-							ensureDirectoryWritableWindows(dirCreate, function(err) {
-
-								if(err) {
-									console.log("Error processing dir:" + err);
-									callback("Error processing dir:" + err);
-								} else {
-									if(verbose == true) console.log("Directory processed");
-									if(verbose == true) console.log("About to create local file " + createFile + " from uri:" + uri);
-
-
+	//Get a header of file first - see if there is any content (this will be pinged once every 10 seconds or so)
+	request.head(uri, function(err, res, body){
+		if(err) {
+			console.log("Error requesting from proxy:" + err);
+			callback(err);
+		} else { //No error
+		    	if(verbose == true) {
+				console.log(JSON.stringify(res.headers));
+			    	console.log('content-type:', res.headers['content-type']);
+			    	console.log('content-length:', res.headers['content-length']);
+			    	console.log('file-name:', res.headers['file-name']);
+		    	}
+		    	//Check if there is a filename
+		        if(res.headers['file-name']) {
+	
+				//Yes there was a new photo file to download fully.
+				var dirFile = res.headers['file-name'];
+				dirFile = dirFile.replace(globalId + '/', ''); //remove our id
+	
+	
+				var createFile = path.normalize(serverParentDir() + trailSlash(outdirPhotos) + dirFile);
+		
+	
+				if(verbose == true) console.log("Creating file:" + createFile);
+				var dirCreate = path.dirname(createFile);
+				if(verbose == true) console.log("Creating dir:" + dirCreate);
+	
+				//Make sure the directory exists
+				fsExtra.ensureDir(dirCreate, function(err) {
+					if(err) {
+						console.log("Warning: Could not create directory for: " + dirCreate);
+						callback("Warning: Could not create directory for: " + dirCreate);
+					} else {
+						if(verbose == true) console.log("Created dir:" + dirCreate);
+						ensureDirectoryWritableWindows(dirCreate, function(err) {
+		
+							if(err) {
+								//Could not get a true directory
+								console.log("Error processing dir:" + err);
+								callback("Error processing dir:" + err);
+							} else {
+								//Got a good directory
+								if(verbose == true) console.log("Directory processed");
+								if(verbose == true) console.log("About to create local file " + createFile + " from uri:" + uri);
+		
+		
 								//Now do a full get of the file, and pipe directly back
 								var localFile = fs.createWriteStream(createFile);
 								var complete = false;
-								var stream = request.get(uri)
-									  .on('response', function (resp) {
-											if(verbose == true) console.log("Resp:" + JSON.stringify(resp))
-											if (resp.statusCode == 200) {
-												console.log("\nDownloaded " + createFile);
-												complete = true;
-										}
-									})
-									.on('error', function(err) {
-										console.log("Error downloading: " + err);
-									 })
-										 .pipe(localFile);
-
-									stream.on('finish', function () {
-									//If
+								var stream = request.get(uri).on('response', function (resp) {
+									if(verbose == true) console.log("Resp:" + JSON.stringify(resp))
+									if (resp.statusCode == 200) {
+										console.log("\nDownloaded " + createFile);
+										complete = true;
+									}
+								})
+								.on('error', function(err) {
+									console.log("Error downloading: " + err);
+								 })
+								.pipe(localFile);
+		
+								stream.on('finish', function () {
+									//If we completed  fine (i.e. when statuscode = 200 from above)
 									if (complete == true) {
 										//Update the data transferred successfully
 										if(uri.indexOf("atomjump.com") >= 0) {
 											var stats = fs.statSync(createFile);
 											var fileSizeInBytes = stats["size"];
-
+			
 											bytesTransferred += fileSizeInBytes;
-
+			
 											//Save the bytes transferred to atomjump.com for progress
 											checkConfigCurrent(null, function() {
-
+			
 											})
 										}
-
+		
 										//Backup the file
 										backupFile(createFile, "", dirFile);
-
+		
 										//Fully downloaded
 										callback(null);		//Success!
-								} else {
-									//Failure to download fully. We will try automatically in 10 seconds
-									//anyway.
-									console("There was an error downloading. HTTP error:" + resp.statusCode);
-									callback(resp.statusCode);	//
-								}
-
-						});
-
-									   }
-
-
-
-
-							}); //end of directory writable
-
-						}
-					}); //end of ensuredir exists
-			} else { //end of if file exists
-        			console.log("Error: file doesn't exist.");
-        			callback("Error: file doesn't exist.");
+									} else {
+										//Failure to download fully. We will try automatically in 10 seconds
+										//anyway.
+										console("There was an error downloading. HTTP error:" + resp.statusCode);
+										callback(resp.statusCode);	//
+									}
+				
+								});	//End of stream finish
+		
+							} //End of got a good directory
+		
+		
+		
+						}); //end of ensureDirectoryWritableWindows
+		
+					}
+				}); //end of ensuredir exists
+			
+	
+			} else {
+				//No filename in returned ping here
+				if(verbose == true) console.log("No file to download");
+				callback(null);
 			}
-
-		} else {
-			//end of if file-name exists
-			if(verbose == true) console.log("No file to download");
-			callback(null);
-		}
-     } //end of no error from proxy
-  }); //end of request head
+			
+		} //end of no error from ping of proxy
+	}); //end of request head
 
 
 }
