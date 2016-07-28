@@ -69,7 +69,12 @@ if(process.argv[2]) {
   var photoDir = upath.normalize(process.argv[2]);
   //path.posix.normalize(p)
   updateConfig(photoDir, function() {
-      
+      if(err) {
+      	 console.log("Error:" + err);
+      	
+      } else {
+      	 console.log("Set successfully.");
+      }
     
   })
   
