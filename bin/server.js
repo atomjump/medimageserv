@@ -977,11 +977,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 						}
 						console.log("Sent on and shredded " + theFile);
 					});
-					
-					/* Old way - just deleting
-					fs.unlink(normpath, function() {
-					   console.log("Sent on and removed " + theFile);
-					}) */
+				
 			  }
 	   	   }
   	   });
