@@ -53,6 +53,8 @@ var serverOptions = {};				//default https server options (see nodejs https modu
 var bytesTransferred = 0;
 var noWin = false;					//By default we are on Windows
 var maxUploadSize = 10485760;		//In bytes, max allowed = 10MB
+var readingRemoteServer = false;		//We have started reading the remote server
+
 
 
 //Check any command-line options
@@ -279,7 +281,7 @@ function checkConfigCurrent(setProxy, cb) {
 
 					//Now start any ping to read from a remote server
 					if((content.readProxy) && (content.readProxy != "")) {
-						readRemoteServer(content.readProxy);
+						startReadRemoteServer(content.readProxy);
 
 					}
 					cb(null);
@@ -360,19 +362,19 @@ function download(uri, callback){
 		    	}
 		    	//Check if there is a filename
 		        if(res.headers['file-name']) {
-	
+
 				//Yes there was a new photo file to download fully.
 				var dirFile = res.headers['file-name'];
 				dirFile = trimChar(dirFile.replace(globalId + '/', '')); //remove our id and any slashes around it
-				
-	
+
+
 				var createFile = path.normalize(trailSlash(serverParentDir()) + trailSlash(outdirPhotos) + dirFile);
-		
-	
+
+
 				if(verbose == true) console.log("Creating file:" + createFile);
 				var dirCreate = path.dirname(createFile);
 				if(verbose == true) console.log("Creating dir:" + dirCreate);
-	
+
 				//Make sure the directory exists
 				fsExtra.ensureDir(dirCreate, function(err) {
 					if(err) {
@@ -381,7 +383,7 @@ function download(uri, callback){
 					} else {
 						if(verbose == true) console.log("Created dir:" + dirCreate);
 						ensureDirectoryWritableWindows(dirCreate, function(err) {
-		
+
 							if(err) {
 								//Could not get a true directory
 								console.log("Error processing dir:" + err);
@@ -390,69 +392,64 @@ function download(uri, callback){
 								//Got a good directory
 								if(verbose == true) console.log("Directory processed");
 								if(verbose == true) console.log("About to create local file " + createFile + " from uri:" + uri);
-		
-		
-								//Now do a full get of the file, and pipe directly back
-								var localFile = fs.createWriteStream(createFile);
-								var complete = false;
-								var stream = request.get(uri).on('response', function (resp) {
-									if(verbose == true) console.log("Resp:" + JSON.stringify(resp))
-									if (resp.statusCode == 200) {
-										console.log("\nDownloaded " + createFile);
-										complete = true;
-									}
-								})
-								.on('error', function(err) {
-									console.log("Error downloading: " + err);
-								 })
-								.pipe(localFile);
-		
-								stream.on('finish', function () {
-									//If we completed  fine (i.e. when statuscode = 200 from above)
-									if (complete == true) {
+
+
+								var stream = request(uri);
+								var alreadyClosed = false;
+								stream.pipe(fs.createWriteStream(createFile)
+												.on('error', function(err) {
+													console.log("Error writing to file");
+													callback(error);
+												})
+											)
+								.on('close', function() {
+
+									console.log("Downloaded successfully!" + createFile);
+									if(alreadyClosed == false) {
+										alreadyClosed = true;
+
 										//Update the data transferred successfully
 										if(uri.indexOf("atomjump.com") >= 0) {
 											var stats = fs.statSync(createFile);
 											var fileSizeInBytes = stats["size"];
-			
+
 											bytesTransferred += fileSizeInBytes;
-			
+
 											//Save the bytes transferred to atomjump.com for progress
 											checkConfigCurrent(null, function() {
-			
+
 											})
 										}
-		
-										//Backup the file
+
+																		//Backup the file
 										backupFile(createFile, "", dirFile);
-		
-										//Fully downloaded
-										callback(null);		//Success!
+
+
+
+
+										callback(null);
 									} else {
-										//Failure to download fully. We will try automatically in 10 seconds
-										//anyway.
-										console("There was an error downloading. HTTP error:" + resp.statusCode);
-										callback(resp.statusCode);	//
+										console.log("2nd close event");
 									}
-				
-								});	//End of stream finish
-		
+								});
+
+
 							} //End of got a good directory
-		
-		
-		
+
+
+
 						}); //end of ensureDirectoryWritableWindows
-		
+
 					}
 				}); //end of ensuredir exists
-			
-	
+
+
 			} else {
 				//No filename in returned ping here
 				if(verbose == true) console.log("No file to download");
 				callback(null);
 			}
-			
+
 		} //end of no error from ping of proxy
 	}); //end of request head
 
@@ -461,21 +458,34 @@ function download(uri, callback){
 
 
 
+function startReadRemoteServer(url)
+{
+	if(readingRemoteServer == false) {
+		readingRemoteServer = true;
+		readRemoteServer(url);
+	} else {
+			//Double reading - do nothing
+			//console.log("Warning: double reading");
+	}
+}
+
 function readRemoteServer(url)
 {
 	//Every 5 seconds, read the remote server in the config file, and download images to our server.
 	//But pause while each request is coming in until fully downloaded.
 
-	var _url = url;
-	setTimeout(function() {
-		process.stdout.write("'");     //Display movement to show upload pinging
-		download(url, function(){
-			  readRemoteServer(_url);
-		});
+		var _url = url;
+		setTimeout(function() {
+			process.stdout.write("'");     //Display movement to show upload pinging
+			download(url, function(){
+				  readRemoteServer(_url);
+			});
 
-	}, 5000);
+		}, 5000);
+
 
 }
+
 function trailSlash(str)
 {
 	if(str.slice(-1) == "/") {
