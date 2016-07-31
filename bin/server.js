@@ -999,7 +999,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
 	     //This is use for a replace on an HTML file with custom strings
 	     var strData = data.toString();
 	     
-	     for (var key in customStringArray) {
+	     for (var key in customStringList) {
 	     	  strData = strData.replace(key, customStringList[key]);
   		  if(verbose == true) console.log("key " + key + " has value " + customStringList[key]);
   			
