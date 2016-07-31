@@ -834,6 +834,9 @@ function handleServer(_req, _res) {
 							   var proxyServer = codes[2].replace("\n", "");
 							   if(codes[3]) {
 							   	var country = codes[3].replace("\n", "");
+							   } else {
+							   	//Defaults to an unknown country.
+							   	var country = "[Unknown]";
 							   }
 							   var readProx = proxyServer + "/read/" + guid;
 							   console.log("Proxy set to:" + readProx);
