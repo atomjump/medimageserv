@@ -781,7 +781,7 @@ function handleServer(_req, _res) {
 			//A get request to pull from the server
 			// show a file upload form
 			var url = req.url;
-			if((url == '/') || (url == "")) {
+			if((url == '/') || (url == "") || (url == "/index.html")) {
 				  url = "/index.html";
 				  
 				  //The homepage has a custom string of the number of bytes transferred
@@ -790,7 +790,7 @@ function handleServer(_req, _res) {
 				  
 			} else {
 			  	//Mainly we don't have any custom strings
-			  	var customString = "";
+			  	var customString = null;
 			}
 	
 			var removeAfterwards = false;
