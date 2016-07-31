@@ -833,7 +833,7 @@ function handleServer(_req, _res) {
 							   var guid = globalId;
 							   var proxyServer = codes[2].replace("\n", "");
 							   if(codes[3]) {
-							   	var country = codes[3].replace("\n", "");
+							   	var country = decodeURIComponent(codes[3].replace("\n", ""));
 							   } else {
 							   	//Defaults to an unknown country.
 							   	var country = "[Unknown]";
