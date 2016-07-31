@@ -1000,8 +1000,8 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
 	     var strData = data.toString();
 	     
 	     for (var key in customStringArray) {
-	     	  strData = strData.replace(key, customStringArray[key]);
-  		  if(verbose == true) console.log("key " + key + " has value " + customStringArray[key]);
+	     	  strData = strData.replace(key, customStringList[key]);
+  		  if(verbose == true) console.log("key " + key + " has value " + customStringList[key]);
   			
 	     }
 	     
