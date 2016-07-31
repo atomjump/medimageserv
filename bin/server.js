@@ -785,7 +785,9 @@ function handleServer(_req, _res) {
 				  url = "/index.html";
 				  
 				  //The homepage has a custom string of the number of bytes transferred
-				  customString = formatBytes(bytesTransferred, 1);
+				  var formattedBytes = formatBytes(bytesTransferred, 1);
+				  var customString = { "CUSTOMSTRING": formattedBytes };
+				  
 			} else {
 			  	//Mainly we don't have any custom strings
 			  	customString = "";
@@ -830,9 +832,16 @@ function handleServer(_req, _res) {
 							   globalId = codes[1];
 							   var guid = globalId;
 							   var proxyServer = codes[2].replace("\n", "");
+							   if(codes[3]) {
+							   	var country = codes[3].replace("\n", "");
+							   }
 							   var readProx = proxyServer + "/read/" + guid;
 							   console.log("Proxy set to:" + readProx);
-		
+							   
+							   var replace = {
+							   	 "CUSTOMCODE": passcode,
+							   	 "CUSTOMCOUNTRY": country
+							   };
 		
 							   //Write full proxy to config file
 							   checkConfigCurrent(readProx, function() {
@@ -840,7 +849,7 @@ function handleServer(_req, _res) {
 		
 								   //Display passcode to user
 								   var outdir = __dirname + "/../public/passcode.html";
-								   serveUpFile(outdir, null, res, false, passcode);
+								   serveUpFile(outdir, null, res, false, replace);
 								   return;
 							   });
 		
@@ -926,8 +935,14 @@ function handleServer(_req, _res) {
 }
 
 
-function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
+function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList) {
 
+  //CustomStringList should be in format:
+  //  {
+  //     "STRINGTOREPLACE1": withValue1,
+  //     "STRINGTOREPLACE2": withValue2
+  //  }
+  }
   var normpath = path.normalize(fullFile);
 
   if(verbose == true) console.log(normpath);
@@ -938,7 +953,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
   var contentType = 'text/html';
   var stream = true;
 
-  if(customString) {
+  if(customStringList) {
   	//Likely html which we need to load in and edit before sending
   	stream = false;		
   	
@@ -978,9 +993,16 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customString) {
 
 
 	 
-	     //This is use for a replace on an HTML file with the passcode
+	     //This is use for a replace on an HTML file with custom strings
 	     var strData = data.toString();
-	     strData = strData.replace("CUSTOMSTRING",customString);
+	     
+	     for (var key in customStringArray) {
+	     	  strData = strData.replace(key, customStringArray[key]);
+  		  if(verbose == true) console.log("key " + key + " has value " + customStringArray[key]);
+  			
+	     }
+	     
+	     
 	     if(verbose == true) console.log(strData);
 	
 	     data = JSON.parse( JSON.stringify( strData ) ); //JSON.parse(strData);
