@@ -945,7 +945,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
   //     "STRINGTOREPLACE1": withValue1,
   //     "STRINGTOREPLACE2": withValue2
   //  }
-  }
+  
   var normpath = path.normalize(fullFile);
 
   if(verbose == true) console.log(normpath);
