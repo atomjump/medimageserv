@@ -790,7 +790,7 @@ function handleServer(_req, _res) {
 				  
 			} else {
 			  	//Mainly we don't have any custom strings
-			  	customString = "";
+			  	var customString = "";
 			}
 	
 			var removeAfterwards = false;
