@@ -9,6 +9,15 @@ p {
     color: #d1bfde;
 }
 
+.quickstart p {
+    color: #999;
+    
+}
+
+.quickstart li {
+    color: #999;
+}
+
 .hlink {
     color: #b5a0db;
     font-family: Arial, Helvetica, sans-serif;
