@@ -9,12 +9,12 @@ p {
     color: #d1bfde;
 }
 
-.quickstart p {
+#quickstart p {
     color: #999;
     
 }
 
-.quickstart li {
+#quickstart li {
     color: #999;
 }
 
