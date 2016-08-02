@@ -543,12 +543,12 @@ function backupFile(thisPath, outhashdir, finalFileName)
 
 
 function trimChar(string, charToRemove) {
-    while(string.substring(0,1)==charToRemove) {
+    while(string.substring(0,1) == charToRemove) {
         string = string.substring(1);
     }
 
-    while(string.substring(string.length, -1)==charToRemove) {
-        string = string.substring(0,string.length-1);
+    while(string.slice(-1) == charToRemove) {
+        string = string.slice(0, -1); 
     }
 
     return string;
