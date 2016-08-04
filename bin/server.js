@@ -40,7 +40,7 @@ var outdirDefaultParent = '/medimage';		//These should have a slash before, and 
 var outdirPhotos = '/photos';			//These should have a slash before, and no slash after.
 var defaultTitle = "image";
 var currentDisks = [];
-var configFile = '/../config.json';
+var configFile = __dirname + '/../config.json';	//Default location is one directory back
 var newConfigFile = '/../newconfig.json';	//This is for a new install generally - it will auto-create from this file
 						//if the config doesn't yet exist
 var noFurtherFiles = "none";			//This gets piped out if there are no further files in directory
@@ -63,6 +63,12 @@ var allowGettingRemotePhotos = false;	//An option to allow reading a proxy serve
 //Check any command-line options
 if((process.argv[2]) && (process.argv[2] == '-verbose')){
 	verbose = true;
+}
+
+if(process.env.npm_package_config_configFile) {
+	//This is an npm environment var set for the location of the configFile
+	configFile = process.env.npm_package_config_configFile;
+
 }
 
 
@@ -153,12 +159,12 @@ function checkConfigCurrent(setProxy, cb) {
 
 
 	//Write to a json file with the current drive.  This can be removed later manually by user, or added to
-	fs.readFile(__dirname + configFile, function read(err, data) {
+	fs.readFile(configFile, function read(err, data) {
 		if (err) {
 			
 			//Copy newconfig.json into config.json - it is likely a file that doesn't yet exist
 			//Check file exists
-			fs.stat(__dirname + configFile, function(ferr, stat) {
+			fs.stat(configFile, function(ferr, stat) {
 				    if(ferr == null) {
 				    	//File exists, perhaps a file permissions issue.
 			        	cb("Sorry, cannot read the config file! Please check your file permissions. " + ferr);
@@ -168,7 +174,7 @@ function checkConfigCurrent(setProxy, cb) {
 				        
 				        
 				        
-				        fsExtra.copy(__dirname + newConfigFile, __dirname + configFile, function (err) {
+				        fsExtra.copy(__dirname + newConfigFile, configFile, function (err) {
 					  if (err) {
 					  	return console.error(err)
 					  } else {
@@ -288,7 +294,7 @@ function checkConfigCurrent(setProxy, cb) {
 				}
 
 				//Write the file nicely formatted again
-				fs.writeFile(__dirname + configFile, JSON.stringify(content, null, 6), function(err) {
+				fs.writeFile(configFile, JSON.stringify(content, null, 6), function(err) {
 					if(err) {
 						cb(err);
 					}
@@ -526,7 +532,7 @@ function backupFile(thisPath, outhashdir, finalFileName)
 
 
 	//Read in the config file
-	fs.readFile(__dirname + configFile, function read(err, data) {
+	fs.readFile(configFile, function read(err, data) {
 		if (err) {
 			console.log("Warning: Error reading config file for backup options: " + err);
 		} else {

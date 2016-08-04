@@ -10,6 +10,10 @@
   "scripts": {
     "start": "node bin/server.js"
   },
+  "files": [
+  	"photos",
+  	"config.json"
+  ],
   "dependencies": {
     "connect": "*",
     "date-format-lite": "*",
@@ -30,6 +34,10 @@
     "request": "*",
     "shredfile": "^0.2.0",
     "upath": "*"
+  },
+  "repository" : { 
+     "type" : "git",
+     "url" : "https://github.com/atomjump/medimageserv"
   },
   "main": "bin/server.js",
   "optionalDependencies": {},
