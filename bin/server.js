@@ -539,30 +539,33 @@ function backupFile(thisPath, outhashdir, finalFileName)
 		} else {
 			var content = JSON.parse(data);
 
-			//Loop through all the backup directories
-			for(var cnt=0; cnt< content.backupTo.length; cnt++) {
 
-				if(outhashdir) {
-					var target = trailSlash(content.backupTo[cnt]) + trailSlash(outhashdir) + finalFileName;
-			    	} else {
-					var target = trailSlash(content.backupTo[cnt]) + finalFileName;
-				}
-				if(verbose == true) console.log("Backing up " + thisPath + " to:" + target);
+			if(content.backupTo) {
+				//Loop through all the backup directories
+				for(var cnt=0; cnt< content.backupTo.length; cnt++) {
 
-				fsExtra.ensureDir(trailSlash(content.backupTo[cnt]) + trailSlash(outhashdir), function(err) {
-					if(err) {
-						console.log("Warning: Could not create directory for backup: " + content.backupTo[cnt]);
-					} else {
-						try {
-							console.log("Copying " + thisPath + " to " + target);
-							fsExtra.copySync(thisPath, target);
-							ensurePhotoReadableWindows(target);
-						} catch (err) {
-							console.error('Warning: there was a problem backing up: ' + err.message);
-						}
+					if(outhashdir) {
+						var target = trailSlash(content.backupTo[cnt]) + trailSlash(outhashdir) + finalFileName;
+						} else {
+						var target = trailSlash(content.backupTo[cnt]) + finalFileName;
 					}
-				});
+					if(verbose == true) console.log("Backing up " + thisPath + " to:" + target);
 
+					fsExtra.ensureDir(trailSlash(content.backupTo[cnt]) + trailSlash(outhashdir), function(err) {
+						if(err) {
+							console.log("Warning: Could not create directory for backup: " + content.backupTo[cnt]);
+						} else {
+							try {
+								console.log("Copying " + thisPath + " to " + target);
+								fsExtra.copySync(thisPath, target);
+								ensurePhotoReadableWindows(target);
+							} catch (err) {
+								console.error('Warning: there was a problem backing up: ' + err.message);
+							}
+						}
+					});
+
+				}
 			}
 		}
 
