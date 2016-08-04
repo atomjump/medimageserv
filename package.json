@@ -10,10 +10,6 @@
   "scripts": {
     "start": "node bin/server.js"
   },
-  "files": [
-  	"photos",
-  	"config.json"
-  ],
   "dependencies": {
     "connect": "*",
     "date-format-lite": "*",
