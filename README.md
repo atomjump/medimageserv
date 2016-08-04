@@ -138,21 +138,5 @@ If you instead save your config file somewhere else first, and then run:
 ```
 npm config set medimage:configFile /path/to/your/medimage/config.json
 ```
-
-
-
-Here is a sample script for upgrading the version, which is expanded because of a more complex permissions setup.
-
-```
-pm2 stop medimage-server
-sudo npm install -g medimage
-cd "$(npm prefix -global)/lib/node_modules/medimage"
-sudo chmod 777 config.json
-sudo chmod 777 photos
-chown nobody:ubuntu config.json
-chown nobody:ubuntu photos
-cp ~/backup_key/atomjump.crt .
-cp ~/backup_key/atomjump.private.pem .
-pm2 start medimage-server
-```
+your settings will be kept between upgrades.
 
