@@ -963,6 +963,14 @@ function handleServer(_req, _res) {
 						
 						
 						serveUpFile(outdir, null, res, false, customString);
+				   } else {
+				   		if(allowPhotosLeaving != true) {
+				   			console.log("Read request detected (blocked by config.json): " + url);
+				   			res.writeHead(400, {'content-type': 'text/html'});
+							res.end("Sorry, you cannot read from this server. Please check the server's config.json.");
+				   			return;
+				   		}
+				   
 				   }
 		  	} //end of check for pairing
 			
