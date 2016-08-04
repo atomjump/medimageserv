@@ -68,6 +68,7 @@ if((process.argv[2]) && (process.argv[2] == '-verbose')){
 if(process.env.npm_package_config_configFile) {
 	//This is an npm environment var set for the location of the configFile
 	configFile = process.env.npm_package_config_configFile;
+	console.log("Using config file:" + configFile);
 
 }
 
@@ -421,7 +422,7 @@ function download(uri, callback){
 								stream.pipe(fs.createWriteStream(createFile)
 												.on('error', function(err) {
 													console.log("Error writing to file");
-													callback(error);
+													callback(err);
 												})
 											)
 								.on('close', function() {

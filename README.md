@@ -112,8 +112,16 @@ chmod 777 photos
 chown nobody:ubuntu photos
 ```
 
+If you are having problems installing the medimage software on a small machine (e.g. with 512MB RAM), please try 
+
+```
+sudo npm install -g medimage -production
+```
+
+
 
 ## Upgrade script
+
 
 The usual way to upgrade medimage server:
 
@@ -123,7 +131,15 @@ sudo npm install -g medimage
 pm2 start medimage-server
 ```
 
-But, please note, that any photos in the directories that have not been downloaded may be removed.
+But, please note, that any photos in the directories that have not been downloaded may be removed, and the config file may also be reset.
+
+If you instead save your config file somewhere else first, and then run:
+
+```
+npm config set medimage:configFile /path/to/your/medimage/config.json
+```
+
+
 
 Here is a sample script for upgrading the version, which is expanded because of a more complex permissions setup.
 
