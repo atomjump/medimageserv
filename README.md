@@ -87,7 +87,8 @@ These are located in the file config.json.
 * **httpsCert** is optional. If you are on an https server, it is required (an http server should leave this blank). It is a file path to the certificate .pem file which includes your server's ssl certificate.
 * **onStartBackupDriveDetect** is optional. If set to 'true' it autodetects new drives added when starting, and will backup your new photos to:
   New Drive:\MedImage\photos 
-
+* **allowPhotosLeaving**  If set to 'true', this allows photos to leave the machine and be downloaded by other installations of the server. Leave 'true' for proxy servers, but false for client Windows machines.
+* **allowGettingRemotePhotos**  If set to 'true', this allows photos to be downloaded from a remote proxy server. If this is a proxy server, this should be set to 'false', otherwise for client Windows machines, set to 'true'.
 
 ## Troubleshooting
 
