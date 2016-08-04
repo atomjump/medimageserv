@@ -54,6 +54,9 @@ var bytesTransferred = 0;
 var noWin = false;					//By default we are on Windows
 var maxUploadSize = 10485760;		//In bytes, max allowed = 10MB
 var readingRemoteServer = false;		//We have started reading the remote server
+var allowPhotosLeaving = false;			//An option to allow/prevent photos from leaving the server
+var allowGettingRemotePhotos = false;	//An option to allow reading a proxy server - usually the client (often Windows) will need this
+										//set to true
 
 
 
@@ -228,6 +231,19 @@ function checkConfigCurrent(setProxy, cb) {
 			 	}
 			 	
 			 }
+			 
+			 //An option to allow/prevent photos from leaving the server (local installs i.e. non 'proxy' Windows clients
+			 //should set this to false for security of the photos).
+			 if(content.allowPhotosLeaving) {
+			   allowPhotosLeaving = content.allowPhotosLeaving;
+			 }
+			 
+			 //An option to allow reading a proxy server - usually the client (often Windows) will need this
+			 //set to true, but internet based servers should have this to false, so that it cannot eg. read itself.
+			 if(content.allowGettingRemotePhotos) {
+			   allowGettingRemotePhotos = content.allowGettingRemotePhotos;
+			 }
+			 
 			 
 			 if(bytesTransferred != 0) {
 			 	//Keep this up-to-date as we download
@@ -460,6 +476,11 @@ function download(uri, callback){
 
 function startReadRemoteServer(url)
 {
+	if(allowGettingRemotePhotos == false) {
+		console.log("Error: Sorry, this server is not configured to read a remote server.");
+		return;
+	}
+
 	if(readingRemoteServer == false) {
 		readingRemoteServer = true;
 		readRemoteServer(url);
@@ -865,7 +886,7 @@ function handleServer(_req, _res) {
 	   			} else {		//end of pair
 	
 	
-				  if(url.substr(0,read.length) == read) {
+				  if((url.substr(0,read.length) == read) && (allowPhotosLeaving == true)) {
 					 //Get uploaded photos from coded subdir
 					 var codeDir = url.substr(read.length);
 					 var parentDir = serverParentDir();
@@ -925,6 +946,12 @@ function handleServer(_req, _res) {
 					 }
 	
 				   } else {  //end of url read
+				   
+				   		if(allowGettingRemotePhotos == false) {
+				   				//If we can't sync, don't try - switch off the buttons
+				   				customString.NOSYNCING = "<script>alert('No syncing from this server');</script>";
+				   		}
+				   
 						//Get a front-end facing image or html file
 						var outdir = __dirname + "/../public" + url;
 						

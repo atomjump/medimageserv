@@ -1,9 +1,11 @@
 {
-      "purpose": "MedImage Server Configuration File. Example readproxy http://YOURIP:5566/read/yourdir. ",
+      "purpose": "MedImage Server Configuration File. Example readProxy http://YOURIP:5566/read/yourdir. ",
       "backupTo": [
       ],
       "readProxy": null,
       "listenPort": 5566,
       "httpsKey" : "",
-      "httpsCert" : ""
+      "httpsCert" : "",
+      "allowPhotosLeaving": true,
+      "allowGettingRemotePhotos": false
 }
