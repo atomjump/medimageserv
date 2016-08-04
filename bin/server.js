@@ -809,6 +809,15 @@ function handleServer(_req, _res) {
 				  var formattedBytes = formatBytes(bytesTransferred, 1);
 				  var customString = { "CUSTOMSTRING": formattedBytes };
 				  
+				  if(allowGettingRemotePhotos == false) {
+				   		//If we can't sync, don't try - switch off the buttons
+				   		customString.SYNCING =  "false";
+				   			 	
+				  } else {
+				  		customString.SYNCING =  "true";
+				  }
+				  
+				  
 			} else {
 			  	//Mainly we don't have any custom strings
 			  	var customString = null;
@@ -947,10 +956,7 @@ function handleServer(_req, _res) {
 	
 				   } else {  //end of url read
 				   
-				   		if(allowGettingRemotePhotos == false) {
-				   				//If we can't sync, don't try - switch off the buttons
-				   				customString.NOSYNCING = "<script>alert('No syncing from this server');</script>";
-				   		}
+				   		
 				   
 						//Get a front-end facing image or html file
 						var outdir = __dirname + "/../public" + url;
