@@ -20,7 +20,7 @@
    	 		}
         
     	} else {
-    		alert("Sorry, this server is not configured to pair.");
+    		alert("Sorry, this server is not configured to pair. Check your config.json file.");
     	}   	
  
    	 	return false;
@@ -31,7 +31,7 @@
    		if(syncing == true) {
    			window.location = "/pair?country=" + document.getElementById('country').value;
    		} else {
-   			alert("Sorry, this server is not configured to pair.");
+   			alert("Sorry, this server is not configured to pair. Check your config.json file.");
    		}
    		return false;
    	}
