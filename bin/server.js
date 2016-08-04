@@ -9,7 +9,7 @@ and downloads from other MedImage Servers.
 Usage:  node server.js [-verbose]
 
 
-Testing https connection:    
+Testing https connection:
 openssl s_client -CApath /etc/ssl/certs -connect yourdomain.com:5566
 
 */
@@ -30,7 +30,7 @@ var uuid = require('node-uuid');
 var fsExtra = require('fs-extra');
 var request = require("request");
 var needle = require('needle');
-var readChunk = require('read-chunk'); // npm install read-chunk 
+var readChunk = require('read-chunk'); // npm install read-chunk
 var imageType = require('image-type');
 var shredfile = require('shredfile')();
 
@@ -162,7 +162,7 @@ function checkConfigCurrent(setProxy, cb) {
 	//Write to a json file with the current drive.  This can be removed later manually by user, or added to
 	fs.readFile(configFile, function read(err, data) {
 		if (err) {
-			
+
 			//Copy newconfig.json into config.json - it is likely a file that doesn't yet exist
 			//Check file exists
 			fs.stat(configFile, function(ferr, stat) {
@@ -172,28 +172,28 @@ function checkConfigCurrent(setProxy, cb) {
 				    } else if(ferr.code == 'ENOENT') {
 				        // file does not exist. Copy across a new version of newconfig.json to config.json
 				        // and re-run
-				        
-				        
-				        
+
+
+
 				        fsExtra.copy(__dirname + newConfigFile, configFile, function (err) {
 					  if (err) {
 					  	return console.error(err)
 					  } else {
 					  	//Success - try reading again
-					  	
-					  	
-					  	
+
+
+
 					  	checkConfigCurrent(setProxy, cb);
 					  	return;
 					  }
-					}) // copies file 
+					}) // copies file
 				    } else {
 				    	//Some other error. Perhaps a permissions problem
 					cb("Sorry, cannot read the config file! Please check your file permissions. " + ferr);
 				    }
 			});
-			
-		
+
+
 		} else {
 			var content = JSON.parse(data);
 
@@ -207,19 +207,19 @@ function checkConfigCurrent(setProxy, cb) {
 			 if(setProxy) {
 			   content.readProxy = setProxy;
 			 }
-	
+
 			 if(globalId) {
 			   content.globalId = globalId;
 			 }
-	
+
 			 if(content.globalId) {
 			    globalId = content.globalId;
 			 }
-	
+
 			 if(content.listenPort) {
 			   listenPort = content.listenPort;
 			 }
-			 
+
 			 if(content.httpsKey) {
 			 	//httpsKey should point to the key .pem file
 			 	httpsFlag = true;
@@ -228,7 +228,7 @@ function checkConfigCurrent(setProxy, cb) {
 			 		console.log("https key loaded");
 			 	}
 			 }
-			 
+
 			 if(content.httpsCert) {
 			 	//httpsCert should point to the cert .pem file
 			 	httpsFlag = true;
@@ -236,22 +236,22 @@ function checkConfigCurrent(setProxy, cb) {
 			 		serverOptions.cert = fs.readFileSync(content.httpsCert);
 			 		console.log("https cert loaded");
 			 	}
-			 	
+
 			 }
-			 
+
 			 //An option to allow/prevent photos from leaving the server (local installs i.e. non 'proxy' Windows clients
 			 //should set this to false for security of the photos).
 			 if(content.allowPhotosLeaving) {
 			   allowPhotosLeaving = content.allowPhotosLeaving;
 			 }
-			 
+
 			 //An option to allow reading a proxy server - usually the client (often Windows) will need this
 			 //set to true, but internet based servers should have this to false, so that it cannot eg. read itself.
 			 if(content.allowGettingRemotePhotos) {
 			   allowGettingRemotePhotos = content.allowGettingRemotePhotos;
 			 }
-			 
-			 
+
+
 			 if(bytesTransferred != 0) {
 			 	//Keep this up-to-date as we download
 			 	content.transfer = bytesTransferred;
@@ -260,7 +260,7 @@ function checkConfigCurrent(setProxy, cb) {
 			 		//Just starting server = get bytes from transfer
 			 		bytesTransferred = content.transfer;
 			 	}
-			 	
+
 			 }
 
 			//Get the current drives
@@ -356,7 +356,7 @@ function fileWalk(startDir, cb)
 
 //Courtesy http://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
 function formatBytes(bytes,decimals) {
-   
+
    if(verbose == true) console.log("Bytes: " + bytes);
    if(bytes == 0) return 'None';
    var k = 1000; // or 1024 for binary
@@ -522,7 +522,7 @@ function trailSlash(str)
 		var retStr = str + "/";
 		return retStr;
 	}
-	
+
 }
 
 
@@ -579,7 +579,7 @@ function trimChar(string, charToRemove) {
     }
 
     while(string.slice(-1) == charToRemove) {
-        string = string.slice(0, -1); 
+        string = string.slice(0, -1);
     }
 
     return string;
@@ -598,13 +598,13 @@ function httpHttpsCreateServer(options) {
 	if(httpsFlag == true) {
 		console.log("Starting https server.");
 		https.createServer(options, handleServer).listen(listenPort);
-		
-		
+
+
 	} else {
 		console.log("Starting http server.");
 		http.createServer(handleServer).listen(listenPort);
 	}
-	
+
 }
 
 
@@ -613,13 +613,13 @@ function httpHttpsCreateServer(options) {
 
 
 function handleServer(_req, _res) {
-	
+
 	var req = _req;
 	var res = _res;
 	var body = [];
-	
-	
-	
+
+
+
 	if (req.url === '/api/photo' && req.method === 'POST') {
 		// parse a file upload
 
@@ -632,29 +632,29 @@ function handleServer(_req, _res) {
 
 			if(err) {
 			      	console.log("Error uploading file " + JSON.stringify(err))
-			        
+
         			res.writeHead(400, {'content-type': 'text/plain'});
         			res.end("Invalid request: " + err.message);
         			return;
-     
+
 			} else {
 
 				//The standard outdir is the drive from the current server script
 				var parentDir = serverParentDir();
 				if(verbose == true) console.log("This drive:" + parentDir);
 				var outdir = parentDir + outdirPhotos;
-	
+
 	   			if(verbose == true) console.log('Outdir:' + outdir);
-				  
-	
+
+
 	   			if(verbose == true) console.log('Files ' + JSON.stringify(files, null, 4));
 				//Use original filename for name
 				if(files && files.file1 && files.file1[0]) {
-					
+
 					//Uploaded file exists
 					//Confirm is a valid .jpg file
-					
-					
+
+
 					var buffer = readChunk.sync(files.file1[0].path, 0, 12);
 					var imageObj = imageType(buffer);	//Display the file type
 					if(imageObj.mime != 'image/jpeg') {
@@ -664,44 +664,44 @@ function handleServer(_req, _res) {
 	  					res.end();
 						return;
 					}
-					
-					
-					
-					
-					
+
+
+
+
+
 					var title = files.file1[0].originalFilename;
-	
+
 					res.writeHead(200, {'content-type': 'text/plain'});
 				  	res.write('Received upload successfully! Check ' + path.normalize(parentDir + outdirPhotos) + ' for your image.\n\n');
 				  	res.end();
-	
-	
+
+
 					//Copy file to eg. c:/snapvolt/photos
 					var outFile = title;
 					outFile = outFile.replace('.jpg','');			//Remove jpg from filename
 					outFile = outFile.replace('.jpeg','');			//Remove jpg from filename
 					outFile = replaceAll(outFile, "..", "");			//Remove nasty chars
-					
-					
-					outFile = trimChar(outFile, '/');		//Allowed directory slashes within the filename, but otherwise nothing around sides					
+
+
+					outFile = trimChar(outFile, '/');		//Allowed directory slashes within the filename, but otherwise nothing around sides
 					outFile = trimChar(outFile,'\\');
-					
-					
-	
+
+
+
 					var words = outFile.split('-');
-	
+
 					var finalFileName = "";
 					var outhashdir = "";
 					//Array of distinct words
 					for(var cnt = 0; cnt< words.length; cnt++) {
 						if(words[cnt].charAt(0) == '#') {
 							   var getDir = words[cnt].replace('#','');
-	
+
 							   //Do some trimming of this directory name
 								getDir = trimChar(getDir, '/');
 								getDir = trimChar(getDir, '\\');
-							   
-							   
+
+
 							   if(verbose == true) console.log('Comparing ' + getDir + ' with ' + globalId);
 							   if(getDir != globalId) {
 							       outhashdir = outhashdir + '/' + getDir;
@@ -712,7 +712,7 @@ function handleServer(_req, _res) {
 							var thisWord = words[cnt];
 							thisWord = trimChar(thisWord, '/');
 							thisWord = trimChar(thisWord, '\\');
-							
+
 							//Start building back filename with hyphens between words
 							if(finalFileName.length > 0) {
 								finalFileName = finalFileName + '-';
@@ -720,30 +720,30 @@ function handleServer(_req, _res) {
 							finalFileName = finalFileName + thisWord;
 						}
 					}  //end of loop
-	
+
 					//Check the directory exists, and create
-					
+
 					if (!fs.existsSync(path.normalize(parentDir + outdirPhotos))){
 				   		if(verbose == true) console.log('Creating dir:' + path.normalize(parentDir + outdirPhotos));
-	
+
 	   					fsExtra.mkdirsSync(path.normalize(parentDir + outdirPhotos));
 				  		if(verbose == true) console.log('Created OK dir:' + path.normalize(parentDir + outdirPhotos));
-	
+
 					}
-	
+
 					//Create the final hash outdir
 					outdir = parentDir + outdirPhotos + outhashdir;
 					if (!fs.existsSync(path.normalize(outdir))){
 						if(verbose == true) console.log('Creating dir:' + path.normalize(outdir));
 						fsExtra.mkdirsSync(path.normalize(outdir));
 						if(verbose == true) console.log('Created OK');
-	
+
 					}
-	
-	
-	
+
+
+
 					finalFileName = finalFileName + '.jpg';
-	
+
 					//Move the file into the standard location of this server
 					var fullPath = outdir + '/' + finalFileName;
 					if(verbose == true) console.log("Moving " + files.file1[0].path + " to " + fullPath);
@@ -753,20 +753,20 @@ function handleServer(_req, _res) {
 						  // the source file.
 						  if(err) {
 							console.log(err);
-	
+
 						  } else {
 							console.log('\n' + finalFileName + ' file uploaded');
-	
+
 							//Ensure no admin restictions on Windows
 							ensurePhotoReadableWindows(fullPath);
-	
+
 							//Now copy to any other backup directories
 							if(verbose == true) console.log("Backups:");
 							var thisPath = fullPath;
-	
+
 							//Now backup to any directories specified in the config
 							backupFile(thisPath, outhashdir, finalFileName);
-	
+
 						  }
 					});
 				} else { //End of file exists
@@ -776,9 +776,9 @@ function handleServer(_req, _res) {
 	  				res.end();
 					return;
 				}
-			
+
 			}	//End of form no parse error
-		
+
 
 
 
@@ -792,61 +792,61 @@ function handleServer(_req, _res) {
 		return;
 
 	} else {  //end of api upload
-	
+
 		//Start ordinary error handling
 		req.on('error', function(err) {
 		  // This prints the error message and stack trace to `stderr`.
 		  console.error(err.stack);
-		  
+
 		  res.statusCode = 400;			//Error during transmission - tell the app about it
 		  res.end();
 		});
-		
+
 		req.on('data', function(chunk) {
 			body.push(chunk);
 		});
-	
+
 		req.on('end', function() {
-	
-	
+
+
 			//A get request to pull from the server
 			// show a file upload form
 			var url = req.url;
 			if((url == '/') || (url == "") || (url == "/index.html")) {
 				  url = "/index.html";
-				  
+
 				  //The homepage has a custom string of the number of bytes transferred
 				  var formattedBytes = formatBytes(bytesTransferred, 1);
 				  var customString = { "CUSTOMSTRING": formattedBytes };
-				  
+
 				  if(allowGettingRemotePhotos == false) {
 				   		//If we can't sync, don't try - switch off the buttons
 				   		customString.SYNCING =  "false";
-				   			 	
+
 				  } else {
 				  		customString.SYNCING =  "true";
 				  }
-				  
-				  
+
+
 			} else {
 			  	//Mainly we don't have any custom strings
 			  	var customString = null;
 			}
-	
+
 			var removeAfterwards = false;
 			var read = '/read/';
 			var pair = '/pair';
-	
+
 			if(verbose == true) console.log("Url requested:" + url);
-	
+
 			if(url.substr(0,pair.length) == pair) {
 				   //Do a get request from the known aj server
 				   //for a new pairing guid
 				   var fullPairingUrl = pairingURL;
-	
+
 				   var queryString = url.substr(pair.length);
-				   
-				   
+
+
 				   checkConfigCurrent(null, function() {
 					   if(globalId != "") {
 					   	//We already know the global id - use it to update the passcode only
@@ -856,17 +856,17 @@ function handleServer(_req, _res) {
 							queryString = "?guid=" + globalId;
 						}
 					   }
-		
+
 					   if(queryString) {
 						   fullPairingUrl = fullPairingUrl + queryString;
-		
+
 					   }
 					   console.log("Request for pairing:" + fullPairingUrl);
-		
+
 					   needle.get(fullPairingUrl, function(error, response) {
 						  if (!error && response.statusCode == 200) {
 							  console.log(response.body);
-		
+
 							   var codes = response.body.split(" ");
 							   var passcode = codes[0];
 							   globalId = codes[1];
@@ -880,84 +880,84 @@ function handleServer(_req, _res) {
 							   }
 							   var readProx = proxyServer + "/read/" + guid;
 							   console.log("Proxy set to:" + readProx);
-							   
+
 							   var replace = {
 							   	 "CUSTOMCODE": passcode,
 							   	 "CUSTOMCOUNTRY": country
 							   };
-		
+
 							   //Write full proxy to config file
 							   checkConfigCurrent(readProx, function() {
-		
-		
+
+
 								   //Display passcode to user
 								   var outdir = __dirname + "/../public/passcode.html";
 								   serveUpFile(outdir, null, res, false, replace);
 								   return;
 							   });
-		
-		
+
+
 						  }
 					   });
 				   });
-	
-	
+
+
 	   			} else {		//end of pair
-	
-	
+
+
 				  if(url.substr(0,read.length) == read) {
-				  
+
 				  	 if(allowPhotosLeaving != true) {
-				  	 
+
 				  	 		console.log("Read request detected (blocked by config.json): " + url);
 				   			res.writeHead(400, {'content-type': 'text/html'});
 							res.end("Sorry, you cannot read from this server. Please check the server's config.json.");
 				   			return;
 				   	  }
-				  	 
-				  
+
+
 					 //Get uploaded photos from coded subdir
 					 var codeDir = url.substr(read.length);
 					 var parentDir = serverParentDir();
 					 if(verbose == true) console.log("This drive:" + parentDir);
 					 if(verbose == true) console.log("Coded directory:" + codeDir);
-	
+
 					 if(codeDir.length <= 0) {
 						 console.log("Cannot read without a directory");
 						 return;
 					 }
-	
+
 					 var outdir = path.normalize(parentDir + outdirPhotos + '/' + codeDir);
 					 var compareWith = path.normalize(parentDir + outdirPhotos);
-	
+
 					 if(verbose == true) console.log("Output directory to scan " + outdir + ". Must include:" + compareWith);
 					 //For security purposes the path must include the parentDir and outdiePhotos in a complete form
 					 //ie. be subdirectories. Otherwise a ../../ would allow deletion of an internal file
 					 if(outdir.indexOf(compareWith) > -1) {
-	
-	
+
+
 						 //Get first file in the directory list
 						 fileWalk(outdir, function(outfile, cnt) {
-	
+
 							 if(outfile) {
 								//Get outfile - compareWith
 								var localFileName = outfile.replace(compareWith, "");
 								if(verbose == true) console.log("Local file to download via proxy as:" + localFileName);
 								if(verbose == true) console.log("About to download (eventually delete): " + outfile);
-								
+
 								if(req.method === "HEAD") {
 									//Get the header only
 									res.writeHead(200, {'content-type': "image/jpg", 'file-name': localFileName });
 									res.end();
-									
+
 								} else {
 									//Now get the full file
 									serveUpFile(outfile,localFileName, res, true);
 								}
-								
+
 							 } else {
 								//Reply with a 'no further files' simple text response to client
-	
+
 								if(verbose == true) {
 									console.log("No images");
 								} else {
@@ -966,27 +966,27 @@ function handleServer(_req, _res) {
 								res.writeHead(200, {'content-type': 'text/html'});
 								res.end(noFurtherFiles);
 								return;
-	
+
 							 }
 						 });
 					 } else {		//end of outdir compare
 						console.log("Security exception detected in " + outdir);
 						return;
 					 }
-	
-				   } else {  //end of url read
-				   
 
-				   			
-				   
+				   } else {  //end of url read
+
+
+
+
 						//Get a front-end facing image or html file
 						var outdir = __dirname + "/../public" + url;
-						
-						
+
+
 						serveUpFile(outdir, null, res, false, customString);
-				   } 
+				   }
 		  	} //end of check for pairing
-			
+
 		}); //Request end end
 	}	//end of ordinary file processing
 }
@@ -999,7 +999,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
   //     "STRINGTOREPLACE1": withValue1,
   //     "STRINGTOREPLACE2": withValue2
   //  }
-  
+
   var normpath = path.normalize(fullFile);
 
   if(verbose == true) console.log(normpath);
@@ -1012,8 +1012,8 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
 
   if(customStringList) {
   	//Likely html which we need to load in and edit before sending
-  	stream = false;		
-  	
+  	stream = false;
+
   }
 
   //Handle images
@@ -1023,7 +1023,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
   if (ext === '.jpg') {
 	 contentType = 'image/jpg';
   }
-  
+
   if(ext === '.svg') {
   	contentType = 'image/svg+xml';
   	stream = false;		//for some reason svg doesn't like being streamed
@@ -1034,8 +1034,8 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
   }
 
   //Being preparation to send
- 
-  
+
+
   if(stream == false) {
 	//Implies we need to modify this file, and it is likely and html request - i.e. fairly rare
   	//Use the slow method:
@@ -1049,21 +1049,21 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
 	  }
 
 
-	 
+
 	     //This is use for a replace on an HTML file with custom strings
 	     var strData = data.toString();
-	     
+
 	     for (var key in customStringList) {
 	     	  strData = strData.replace(key, customStringList[key]);
   		  if(verbose == true) console.log("key " + key + " has value " + customStringList[key]);
-  			
+
 	     }
-	     
-	     
+
+
 	     if(verbose == true) console.log(strData);
-	
+
 	     data = JSON.parse( JSON.stringify( strData ) ); //JSON.parse(strData);
-	  
+
 
 	  res.on('error', function(err){
 	  	//Handle the errors here
@@ -1071,36 +1071,40 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
     		res.end();
 	  })
 
-	  res.writeHead(200, {'content-type': contentType, 'file-name': theFile});  
-	  
-	  
+	  res.writeHead(200, {'content-type': contentType, 'file-name': theFile});
+
+
 	  res.end(data, function(err) {
 		  //Wait until finished sending, then delete locally
 		  if(err) {
 	  	  	 console.log(err);
 	  	  } else {
 			//success, do nothing
-			
+
 	   	   }
   	   });
 	 });  //End of readFile
    } else {	//End of if custom string
 
   		//Use streams instead for a larger file
+
+  	     //Still pipe a mime type back
+  	     res.writeHead(200, {'content-type': contentType, 'file-name': theFile});
+
 		  //Read the file from disk, then send to client
 		  var stream = fs.createReadStream(normpath);
 		  stream.on('error', function(err) {
 		  	console.log(JSON.stringify(err))
-		  	
+
 			return;
 		  })
 
 		  stream.on('end', function() {
-		  	
+
 		  	 if(deleteAfterwards == true) {
 				//Delete the file 'normpath' from the server. This server is like a proxy cache and
 				//doesn't hold permanently
-				
+
 				//Note: we may need to check the client has got the full file before deleting it?
 				//e.g. timeout/ or a whole new request.
 				if(verbose == true) console.log("About to shred:" + normpath);
@@ -1111,14 +1115,14 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
 					}
 					console.log("Sent on and shredded " + theFile);
 				});
-					
+
 			}
 		  });
-		  
+
 		  stream.on('finish', function() {
-		  	console.log("On finish event");	
+		  	console.log("On finish event");
 		  });
-		  
+
 		  stream.pipe(res);
 	}  //end of streams
 

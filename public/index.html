@@ -5,27 +5,35 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<meta charset="utf-8">
 	<link rel="stylesheet" href="style.css" type="text/css" media="screen">
+	<script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
+	<script language="javascript">
+	    /* IE11 Fix for SP2010 */
+	    if (typeof(UserAgentInfo) != 'undefined' && !window.addEventListener)
+	    {
+	        UserAgentInfo.strBrowser=1;
+	    }
+	</script>
    <script>
-   
+
     var syncing = SYNCING;
-    
-   
-   
+
+
+
    	function checkCall()
    	{
    		if(syncing == true) {
-      	 	if(document.getElementById('server').value != "") { 
+      	 	if(document.getElementById('server').value != "") {
 				var address= '/pair?proxyServer=' + encodeURIComponent(document.getElementById('server').value);
 				window.location.href = address;
    	 		}
-        
+
     	} else {
     		alert("Sorry, this server is not configured to pair. Check your config.json file.");
-    	}   	
- 
+    	}
+
    	 	return false;
    	}
-   	
+
    	function pair()
    	{
    		if(syncing == true) {
@@ -35,21 +43,24 @@
    		}
    		return false;
    	}
-   	
+
    </script>
 
 </head>
 <body>
    <div>
 
-	
+
 
 
 	 <p>
 	 	<div class="button">Pair with your phone via Wifi (ready, and free, always)</div>
 	 </p>
 	 <p>
-	 	<a onclick=""><div onclick="pair();" class="button" style="cursor: pointer;">Pair with your phone (via an AtomJump Server)<br/><small>AtomJump server preferably based in</small> <select onclick="return false;" id="country">
+	 	<div onclick="return pair();" class="button"  style="cursor: pointer;">
+	 		Pair with your phone (via an AtomJump Server)<br/>
+	 		<small>AtomJump server preferably based in</small>
+<select id="country">
 	<option value="AF">Afghanistan</option>
 	<option value="AX">Åland Islands</option>
 	<option value="AL">Albania</option>
@@ -299,40 +310,36 @@
 	<option value="YE">Yemen</option>
 	<option value="ZM">Zambia</option>
 	<option value="ZW">Zimbabwe</option>
-</select><br/><small style="color:#EEE;">5GB free initial bandwidth</small></div></a>
+</select><br/>
+<small style="color:#EEE;">5GB free initial bandwidth</small>
+		</div>
 	 </p>
 	<p>
 
-		<a onclick=""><div onclick="checkCall();" style="cursor: pointer;" class="button">Pair with your phone (via your private server)<br/><small>Server Address <input onclick="return false;" type="text" id="server" /></small></div></a>
+		<div onclick="return checkCall();" style="cursor: pointer;" class="button">Pair with your phone (via your private server)<br/><small>Server Address <input onclick="return false;" type="text" id="server" /></small></div>
 
 	</p>
 		<script>
-			document.getElementById("server").addEventListener("click", function( e ){
-				    e = window.event || e;
-				    if(this === e.target) {
-				        // put your code here
-				        e.stopPropagation();
-				    }
-			});
-			
-			document.getElementById("country").addEventListener("click", function( e ){
-				    e = window.event || e;
-				    if(this === e.target) {
-				        // put your code here
-				        e.stopPropagation();
-				    }
+			$("#server").click(function(e) {
+			   //do something
+			   e.stopPropagation();
 			});
 
-   		</script> 
+			$("#country").click(function(e) {
+			   //do something
+			   e.stopPropagation();
+			});
+
+   		</script>
 	</div>
 
 	<table>
 		<tr>
-			<td><a  href="http://medimage.atomjump.com"><img border="0" src="medimage-www-logo.svg" width="512" height="512"></a></td>
+			<td valign="top"><a  href="http://medimage.atomjump.com"><img border="0" src="medimage-www-logo.svg" width="600" height="600"></a></td>
 			<td>
 				<h1><a class="hlink" href="http://medimage.atomjump.com">Server</a></h1>
-				
-				<a class="standardlink" href="javascript:" onclick="document.getElementById('quickstart').style.display='block'; return false;">Quick Start Information</a>
+
+				<a class="standardlink" href="javascript:" onclick="$('#quickstart').slideToggle(); return false;">Quick Start Information</a>
 				<div id="quickstart" style="display: none;">
 					<p>MedImage Server offers a choice of three ways to connect to your computer. You can add new phones by pressing one of the option buttons above, and if you come back later, you can add more phones with the same option.
 					<ul>
@@ -342,9 +349,9 @@
 						<li>
 							<b>Use our servers</b>. Usage charges apply after an initial 5GB of free bandwidth (note: this is the total free bandwidth, not a monthly figure), but are <a class="contrastlink" href="http://medimage.atomjump.com/medimage.php#purchase">very reasonable</a>.
 						</li>
-						
+
 						<li>
-							<b>Use your own web server</b>. See the <a class="contrastlink" href="http://medimage.atomjump.com/medimage.php#proxy">'Proxy server' setup</a> for instructions.	
+							<b>Use your own web server</b>. See the <a class="contrastlink" href="http://medimage.atomjump.com/medimage.php#proxy">'Proxy server' setup</a> for instructions.
 						</li>
 					</ul>
 				</div>
@@ -358,11 +365,11 @@
 				</p>
 			</td>
 		</tr>
-		
-	</table>
-	
 
-	
+	</table>
+
+
+
 
 	 <div style="display: none" onclick="this.display.visible='block';">You can try an upload of a .jpg file from here directly to diagnose any issues:
 
