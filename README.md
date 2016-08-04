@@ -17,8 +17,8 @@ Then:
 
 ```
 sudo npm install pm2@latest -g
-npm install medimage -g
-pm2 start /usr/lib/node_modules/medimage/bin/server.js   (check your medimage is installed there)
+sudo npm install medimage -g
+pm2 start "$(npm prefix -global)/lib/node_modules/medimage/medimage-server.sh"
 pm2 save
 pm2 startup     (and run the command it outputs, to get autostart at boot-up)
 ```
@@ -31,17 +31,17 @@ sudo ufw allow 5566/tcp
 
 To start MedImage server
 ```
-pm2 start server
+pm2 start medimage-server
 ```
 
 To stop MedImage server:
 ```
-pm2 stop server
+pm2 stop medimage-server
 ```
 
 To restart (after any config.json changes):
 ```
-pm2 restart server
+pm2 restart medimage-server
 ```
 
 For logging or and any permissions issues, see the section 'Troubleshooting' below.
@@ -117,23 +117,25 @@ chown nobody:ubuntu photos
 The usual way to upgrade medimage server:
 
 ```
-pm2 stop server
+pm2 stop medimage-server
 sudo npm install -g medimage
-pm2 start server
+pm2 start medimage-server
 ```
+
+But, please note, that any photos in the directories that have not been downloaded may be removed.
 
 Here is a sample script for upgrading the version, which is expanded because of a more complex permissions setup.
 
 ```
-pm2 stop server
+pm2 stop medimage-server
 sudo npm install -g medimage
-cd /usr/lib/node_modules/medimage
+cd "$(npm prefix -global)/lib/node_modules/medimage"
 sudo chmod 777 config.json
 sudo chmod 777 photos
 chown nobody:ubuntu config.json
 chown nobody:ubuntu photos
 cp ~/backup_key/atomjump.crt .
 cp ~/backup_key/atomjump.private.pem .
-pm2 start server
+pm2 start medimage-server
 ```
 
