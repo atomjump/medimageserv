@@ -128,7 +128,7 @@ The usual way to upgrade medimage server:
 ```
 pm2 stop medimage-server
 sudo npm install -g medimage
-pm2 start medimage-server
+pm2 start "$(npm prefix -global)/lib/node_modules/medimage/medimage-server.sh"
 ```
 
 But, please note, that any photos in the directories that have not been downloaded may be removed, and the config file may also be reset.
