@@ -123,20 +123,28 @@ sudo npm install -g medimage -production
 ## Upgrade script
 
 
-The usual way to upgrade medimage server:
+The current way to upgrade medimage server:
 
 ```
 pm2 stop medimage-server
+sudo mv "$(npm prefix -global)/lib/node_modules/medimage/config.json" /var/tmp
+sudo mv "$(npm prefix -global)/lib/node_modules/medimage/photos" /var/tmp
 sudo npm install -g medimage
+sudo mv /var/tmp/config.json "$(npm prefix -global)/lib/node_modules/medimage/" 
+sudo rm -rf "$(npm prefix -global)/lib/node_modules/medimage/photos"
+sudo mv /var/tmp/photos "$(npm prefix -global)/lib/node_modules/medimage/"
 pm2 start "$(npm prefix -global)/lib/node_modules/medimage/medimage-server.sh"
 ```
 
-But, please note, that any photos in the directories that have not been downloaded may be removed, and the config file may also be reset.
+But, please note, that any files in the lib/node_modules/medimage/ directory may be removed,
+during the 'npm install' command. If you store any other files such as keys, ensure you
+copy them out as above.
 
-If you instead save your config file somewhere else first, and then run:
+You also may wish to save your config file somewhere else first, and then run:
 
 ```
 npm config set medimage:configFile /path/to/your/medimage/config.json
 ```
-your settings will be kept between upgrades.
+Your settings will be kept between upgrades, provided the config.json is out of your global medimage directory,
+without having to copy them out.
 
