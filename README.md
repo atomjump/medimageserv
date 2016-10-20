@@ -1,6 +1,6 @@
 # MedImage Server
 
-The MedImage Server is a companion product to the MedImage apps on smart-phones. See http://medimage.atomjump.com
+The MedImage Server is a companion product to the MedImage apps on smart-phones. See http://medimage.co.nz
 
 The combined product enables the medical practitioner to take a photo of a patient with their mobile phone, and have the image transferred directly into a specific folder on their PC or server.  The image is tagged with a patient id immediately before the photo is taken.
 
@@ -55,7 +55,7 @@ Note: this proxy daemon is always on, but the images are only kept on this machi
 
 ## 2. On your Windows PC/local server
 
-Download and run the installable MedImageServer.exe from http://medimage.atomjump.com
+Download and run the installable MedImageServer.exe from http://medimage.co.nz
 
 If you have installed your own proxy using npm, above, enter the URL of your proxy server eg. 'https://myproxy.mycompany.com:5566' into the third large button. You will be given a 4 digit pairing code.
 
