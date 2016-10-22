@@ -991,6 +991,11 @@ function handleServer(_req, _res) {
 							  
 							//Check uploaded photo exists from coded subdir
 							var codeFile = url.substr(read.length);
+							
+							
+							
+							
+							 
 							var parentDir = serverParentDir();
 							if(verbose == true) console.log("This drive:" + parentDir);
 							if(verbose == true) console.log("Coded directory:" + codeFile);
@@ -1004,7 +1009,7 @@ function handleServer(_req, _res) {
 							  
 							//Check file exists async
 							fs.stat(checkFile, function(ferr, stat) {
-								if(ferr == null) {
+								if((ferr == null)&&(stat.isFile() == true)) {		//Note: it must be a full filename, to prevent bulk checks for the directories
 									//File exists
 									res.writeHead(200, {'content-type': 'text/html'});
 									res.end("true");
