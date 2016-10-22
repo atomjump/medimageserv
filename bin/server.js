@@ -1056,7 +1056,7 @@ function handleServer(_req, _res) {
 							}
 
 							var checkFile = getFileFromUserStr(codeFile);
-							var checkFile = path.normalize(parentDir + outdirPhotos + '/' + codeFile);
+							console.log("Checking file:" + checkFile);
 							  
 							//Check file exists async
 							fs.stat(checkFile, function(ferr, stat) {
@@ -1064,12 +1064,14 @@ function handleServer(_req, _res) {
 									//File exists
 									res.writeHead(200, {'content-type': 'text/html'});
 									res.end("true");
+									console.log("true");
 									return;
 									
 								} else {
 									//File doesn't exist
 									res.writeHead(200, {'content-type': 'text/html'});
 									res.end("false");
+									console.log("false");
 									return;
 								}
 							});
