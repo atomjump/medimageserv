@@ -612,6 +612,7 @@ function httpHttpsCreateServer(options) {
 
 function getFileFromUserStr(inFile)
 {
+		console.log("getFileFromUserStr:" + inFile);
 		var outFile = inFile;
 
 		outFile = outFile.replace('.jpg','');			//Remove jpg from filename
@@ -625,6 +626,8 @@ function getFileFromUserStr(inFile)
 
 
 		var words = outFile.split('-');
+
+		console.log("words:" + JSON.Stringify(words));
 
 		var finalFileName = "";
 		var outhashdir = "";
@@ -641,8 +644,8 @@ function getFileFromUserStr(inFile)
 				   if(verbose == true) console.log('Comparing ' + getDir + ' with ' + globalId);
 				   if(getDir != globalId) {
 					   outhashdir = outhashdir + '/' + getDir;
-							if(verbose == true) console.log('OutHashDir:' + outhashdir);
-					}
+					   if(verbose == true) console.log('OutHashDir:' + outhashdir);
+				    }
 			} else {
 				//Do some odd char trimming of this
 				var thisWord = words[cnt];
