@@ -995,7 +995,7 @@ function handleServer(_req, _res) {
 							if(verbose == true) console.log("This drive:" + parentDir);
 							if(verbose == true) console.log("Coded directory:" + codeFile);
 
-							if(codeDir.length <= 0) {
+							if(codeFile.length <= 0) {
 							   console.log("Cannot read without a directory");
 							   return;
 							}
