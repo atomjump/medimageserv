@@ -610,6 +610,56 @@ function httpHttpsCreateServer(options) {
 
 
 
+function getFileFromUserStr(inFile)
+{
+		var outFile = inFile;
+
+		outFile = outFile.replace('.jpg','');			//Remove jpg from filename
+		outFile = outFile.replace('.jpeg','');			//Remove jpg from filename
+		outFile = replaceAll(outFile, "..", "");			//Remove nasty chars
+
+
+		outFile = trimChar(outFile, '/');		//Allowed directory slashes within the filename, but otherwise nothing around sides
+		outFile = trimChar(outFile,'\\');
+
+
+
+		var words = outFile.split('-');
+
+		var finalFileName = "";
+		var outhashdir = "";
+		//Array of distinct words
+		for(var cnt = 0; cnt< words.length; cnt++) {
+			if(words[cnt].charAt(0) == '#') {
+				   var getDir = words[cnt].replace('#','');
+
+				   //Do some trimming of this directory name
+					getDir = trimChar(getDir, '/');
+					getDir = trimChar(getDir, '\\');
+
+
+				   if(verbose == true) console.log('Comparing ' + getDir + ' with ' + globalId);
+				   if(getDir != globalId) {
+					   outhashdir = outhashdir + '/' + getDir;
+							if(verbose == true) console.log('OutHashDir:' + outhashdir);
+					}
+			} else {
+				//Do some odd char trimming of this
+				var thisWord = words[cnt];
+				thisWord = trimChar(thisWord, '/');
+				thisWord = trimChar(thisWord, '\\');
+
+				//Start building back filename with hyphens between words
+				if(finalFileName.length > 0) {
+					finalFileName = finalFileName + '-';
+				}
+				finalFileName = finalFileName + thisWord;
+			}
+		}  //end of loop
+	
+		finalFileName = finalFileName + '.jpg';
+		return path.normalize(outhashdir + '/' + finalFileName);
+}
 
 
 function handleServer(_req, _res) {
@@ -1005,6 +1055,7 @@ function handleServer(_req, _res) {
 							   return;
 							}
 
+							var checkFile = getFileFromUserStr(codeFile);
 							var checkFile = path.normalize(parentDir + outdirPhotos + '/' + codeFile);
 							  
 							//Check file exists async
