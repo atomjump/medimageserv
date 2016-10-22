@@ -1030,6 +1030,8 @@ function handleServer(_req, _res) {
 
 				   } else {  //end of url read
 
+
+						console.log("url:" + url);		//REMOVE ME
 						if(url.substr(0,check.length) == check) {
 							
 							//Right, do a check to see if the photo file exists already on the server
@@ -1043,9 +1045,9 @@ function handleServer(_req, _res) {
 							  }
 							  
 							//Check uploaded photo exists from coded subdir
-							var codeFile = url.substr(read.length);
+							var codeFile = url.substr(check.length);
 							
-							
+							console.log("codeFile:" + codeFile);		//REMOVE ME
 							
 							
 							 
