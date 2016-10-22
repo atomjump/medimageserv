@@ -627,7 +627,7 @@ function getFileFromUserStr(inFile)
 
 		var words = outFile.split('-');
 
-		console.log("words:" + JSON.Stringify(words));
+		console.log("words:" + JSON.stringify(words));
 
 		var finalFileName = "";
 		var outhashdir = "";
