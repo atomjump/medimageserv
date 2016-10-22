@@ -836,6 +836,7 @@ function handleServer(_req, _res) {
 			var removeAfterwards = false;
 			var read = '/read/';
 			var pair = '/pair';
+			var check = '/check/';
 
 			if(verbose == true) console.log("Url requested:" + url);
 
@@ -935,7 +936,7 @@ function handleServer(_req, _res) {
 					 //ie. be subdirectories. Otherwise a ../../ would allow deletion of an internal file
 					 if(outdir.indexOf(compareWith) > -1) {
 
-
+						
 						 //Get first file in the directory list
 						 fileWalk(outdir, function(outfile, cnt) {
 
@@ -976,14 +977,58 @@ function handleServer(_req, _res) {
 
 				   } else {  //end of url read
 
+						if((url.substr(0,check.length) == check) {
+							
+							//Right, do a check to see if the photo file exists already on the server
+							//The request would be e.g. /check/hfghhgm34gd/path/file.jpg
+							
+							if(allowPhotosLeaving != true) {
+									console.log("Read request detected (blocked by config.json): " + url);
+									res.writeHead(400, {'content-type': 'text/html'});
+									res.end("Sorry, you cannot read from this server. Please check the server's config.json.");
+									return;
+							  }
+							  
+							//Check uploaded photo exists from coded subdir
+							var codeFile = url.substr(read.length);
+							var parentDir = serverParentDir();
+							if(verbose == true) console.log("This drive:" + parentDir);
+							if(verbose == true) console.log("Coded directory:" + codeFile);
+
+							if(codeDir.length <= 0) {
+							   console.log("Cannot read without a directory");
+							   return;
+							}
+
+							var checkFile = path.normalize(parentDir + outdirPhotos + '/' + codeFile);
+							  
+							//Check file exists async
+							fs.stat(checkFile, function(ferr, stat) {
+								if(ferr == null) {
+									//File exists
+									res.writeHead(200, {'content-type': 'text/html'});
+									res.end("true");
+									return;
+									
+								} else {
+									//File doesn't exist
+									res.writeHead(200, {'content-type': 'text/html'});
+									res.end("false");
+									return;
+								}
+							});
+							
+							
+						
+						} else {	//end of check read
 
 
+							//Get a front-end facing image or html file
+							var outdir = __dirname + "/../public" + url;
 
-						//Get a front-end facing image or html file
-						var outdir = __dirname + "/../public" + url;
 
-
-						serveUpFile(outdir, null, res, false, customString);
+							serveUpFile(outdir, null, res, false, customString);
+						}
 				   }
 		  	} //end of check for pairing
 
