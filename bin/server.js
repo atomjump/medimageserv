@@ -977,7 +977,7 @@ function handleServer(_req, _res) {
 
 				   } else {  //end of url read
 
-						if((url.substr(0,check.length) == check) {
+						if(url.substr(0,check.length) == check) {
 							
 							//Right, do a check to see if the photo file exists already on the server
 							//The request would be e.g. /check/hfghhgm34gd/path/file.jpg
