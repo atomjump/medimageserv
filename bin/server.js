@@ -57,7 +57,7 @@ var readingRemoteServer = false;		//We have started reading the remote server
 var allowPhotosLeaving = false;			//An option to allow/prevent photos from leaving the server
 var allowGettingRemotePhotos = false;	//An option to allow reading a proxy server - usually the client (often Windows) will need this
 										//set to true
-
+var changeReadUrl = "";					//If we've changed the readingUrl, we must change the existing reading loop
 
 
 //Check any command-line options
@@ -492,8 +492,9 @@ function startReadRemoteServer(url)
 		readingRemoteServer = true;
 		readRemoteServer(url);
 	} else {
-			//Double reading - do nothing
-			//console.log("Warning: double reading");
+		//Double reading - switch over the readRemoteServer already existing to the new url
+		changeReadUrl = url;
+			
 	}
 }
 
@@ -501,6 +502,12 @@ function readRemoteServer(url)
 {
 	//Every 5 seconds, read the remote server in the config file, and download images to our server.
 	//But pause while each request is coming in until fully downloaded.
+
+		//If it already exists we need to be able to change this ping
+		if(changeReadUrl != "") {
+			url = changeReadUrl;
+			changeReadUrl = "";
+		}
 
 		var _url = url;
 		setTimeout(function() {
