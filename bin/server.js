@@ -872,7 +872,7 @@ function handleServer(_req, _res) {
 			// show a file upload form
 			var url = req.url;
 			if((url == '/') || (url == "") || (url == "/index.html")) {
-				  url = "/index.html";
+				  url = "/pages/index.html";
 
 				  //The homepage has a custom string of the number of bytes transferred
 				  var formattedBytes = formatBytes(bytesTransferred, 1);
@@ -964,7 +964,7 @@ function handleServer(_req, _res) {
 
 
 								   //Display passcode to user
-								   var outdir = __dirname + "/../public/passcode.html";
+								   var outdir = __dirname + "/../public/pages/passcode.html";
 								   serveUpFile(outdir, null, res, false, replace);
 								   return;
 							   });
