@@ -889,9 +889,10 @@ function handleServer(_req, _res) {
 			var removeAfterwards = false;
 			var read = '/read/';
 			var pair = '/pair';
-			var check = '/check/';
+			var check = '/check=';
 
 			if(verbose == true) console.log("Url requested:" + url);
+			console.log("Url requested:" + url);
 
 			if(url.substr(0,pair.length) == pair) {
 				   //Do a get request from the known aj server
@@ -1031,7 +1032,7 @@ function handleServer(_req, _res) {
 				   } else {  //end of url read
 
 
-						console.log("url:" + url);		//REMOVE ME
+						
 						if(url.substr(0,check.length) == check) {
 							
 							//Right, do a check to see if the photo file exists already on the server
