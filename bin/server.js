@@ -1062,7 +1062,7 @@ function handleServer(_req, _res) {
 							}
 
 							var checkFile = getFileFromUserStr(codeFile);
-							var fullCheck = parentDir + checkFile;
+							var fullCheck = parentDir + outdirPhotos + checkFile;
 							console.log("Checking file:" + fullCheck);
 							  
 							//Check file exists async
