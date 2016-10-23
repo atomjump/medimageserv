@@ -891,7 +891,6 @@ function handleServer(_req, _res) {
 			var check = '/check=';
 
 			if(verbose == true) console.log("Url requested:" + url);
-			console.log("Url requested:" + url);
 
 			if(url.substr(0,pair.length) == pair) {
 				   //Do a get request from the known aj server
@@ -1055,7 +1054,7 @@ function handleServer(_req, _res) {
 							if(verbose == true) console.log("Coded file:" + codeFile);
 
 							if(codeFile.length <= 0) {
-							   console.log("Cannot read without a directory");
+							   console.log("Cannot read without a file");
 							   return;
 							}
 
