@@ -612,7 +612,7 @@ function httpHttpsCreateServer(options) {
 
 function getFileFromUserStr(inFile)
 {
-		console.log("getFileFromUserStr:" + inFile);
+		if(verbose == true) console.log("getFileFromUserStr:" + inFile);
 		var outFile = inFile;
 
 		outFile = outFile.replace('.jpg','');			//Remove jpg from filename
@@ -627,7 +627,6 @@ function getFileFromUserStr(inFile)
 
 		var words = outFile.split('-');
 
-		console.log("words:" + JSON.stringify(words));
 
 		var finalFileName = "";
 		var outhashdir = "";
@@ -1048,13 +1047,12 @@ function handleServer(_req, _res) {
 							//Check uploaded photo exists from coded subdir
 							var codeFile = decodeURIComponent(url.substr(check.length));
 							
-							console.log("codeFile:" + codeFile);		//REMOVE ME
 							
 							
 							 
 							var parentDir = serverParentDir();
 							if(verbose == true) console.log("This drive:" + parentDir);
-							if(verbose == true) console.log("Coded directory:" + codeFile);
+							if(verbose == true) console.log("Coded file:" + codeFile);
 
 							if(codeFile.length <= 0) {
 							   console.log("Cannot read without a directory");
@@ -1063,7 +1061,7 @@ function handleServer(_req, _res) {
 
 							var checkFile = getFileFromUserStr(codeFile);
 							var fullCheck = parentDir + outdirPhotos + checkFile;
-							console.log("Checking file:" + fullCheck);
+							if(verbose == true) console.log("Checking file:" + fullCheck);
 							  
 							//Check file exists async
 							fs.stat(fullCheck, function(ferr, stat) {
@@ -1071,14 +1069,14 @@ function handleServer(_req, _res) {
 									//File exists
 									res.writeHead(200, {'content-type': 'text/html'});
 									res.end("true");
-									console.log("true");
+									if(verbose == true) console.log("true");
 									return;
 									
 								} else {
 									//File doesn't exist
 									res.writeHead(200, {'content-type': 'text/html'});
 									res.end("false");
-									console.log("false");
+									if(verbose == true) console.log("false");
 									return;
 								}
 							});
