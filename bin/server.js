@@ -1127,7 +1127,9 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
   //     "STRINGTOREPLACE2": withValue2
   //  }
 
-  var normpath = path.normalize(fullFile);
+  
+  var sections = path.normalize(fullFile).split("?");
+  var normpath = sections[0];		//Ignore any query parameters to the right	
 
   if(verbose == true) console.log(normpath);
 
