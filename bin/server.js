@@ -897,17 +897,30 @@ function handleServer(_req, _res) {
 				   //for a new pairing guid
 				   var fullPairingUrl = pairingURL;
 
-				   var queryString = url.substr(pair.length);
+				   var queryString = url.substr(pair.length);		
 
 
 				   checkConfigCurrent(null, function() {
+					   
+					   //Split the url into separate vars for a post below
+					   var data = {};
+					   var vars = queryString.split('&');
+					   for (var i = 0; i < vars.length; i++) {
+							var pair = vars[i].split('=');
+							data.pair[0] = decodeURIComponent(pair[1]);
+							
+					   }
+					   
+					   
 					   if(globalId != "") {
 					   	//We already know the global id - use it to update the passcode only
-					   	if(queryString) {
+					   	data.guid = globalId;
+					   	/*if(queryString) {
 					   		queryString = queryString + "&guid=" + globalId;
+							
 						} else {
 							queryString = "?guid=" + globalId;
-						}
+						}*/
 					   }
 
 					   if(queryString) {
@@ -916,7 +929,7 @@ function handleServer(_req, _res) {
 					   }
 					   console.log("Request for pairing:" + fullPairingUrl);
 
-					   needle.get(fullPairingUrl, function(error, response) {
+					   needle.post(fullPairingUrl, data, function(error, response) {
 						  if (!error && response.statusCode == 200) {
 							  console.log(response.body);
 
