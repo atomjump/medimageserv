@@ -1046,7 +1046,7 @@ function handleServer(_req, _res) {
 							  }
 							  
 							//Check uploaded photo exists from coded subdir
-							var codeFile = url.substr(check.length);
+							var codeFile = decodeURIComponent(url.substr(check.length));
 							
 							console.log("codeFile:" + codeFile);		//REMOVE ME
 							
