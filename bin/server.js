@@ -1062,10 +1062,11 @@ function handleServer(_req, _res) {
 							}
 
 							var checkFile = getFileFromUserStr(codeFile);
-							console.log("Checking file:" + checkFile);
+							var fullCheck = parentDir + '/' + checkFile;
+							console.log("Checking file:" + fullCheck);
 							  
 							//Check file exists async
-							fs.stat(checkFile, function(ferr, stat) {
+							fs.stat(fullCheck, function(ferr, stat) {
 								if((ferr == null)&&(stat.isFile() == true)) {		//Note: it must be a full filename, to prevent bulk checks for the directories
 									//File exists
 									res.writeHead(200, {'content-type': 'text/html'});
