@@ -71,9 +71,11 @@ if(process.argv[2]) {
   updateConfig(photoDir, function(err) {
       if(err) {
       	 console.log("Error:" + err);
+      	 process.exit(1);
       	
       } else {
       	 console.log("Set successfully.");
+      	 process.exit(0);
       }
     
   })
