@@ -28,6 +28,7 @@ var exec = require('child_process').exec;
 var drivelist = require('drivelist');
 var uuid = require('node-uuid');
 var fsExtra = require('fs-extra');
+var klaw = require('klaw');
 var request = require("request");
 var needle = require('needle');
 var readChunk = require('read-chunk'); // npm install read-chunk
@@ -338,7 +339,7 @@ function fileWalk(startDir, cb)
 
    if (fsExtra.existsSync(path.normalize(startDir))){
        try {
-           var walk = fsExtra.walk(startDir);
+           var walk = klaw(startDir);
 
 	        walk.on('data', function (item) {
 	                	if(verbose == true) console.log("Found:" + item.path);
