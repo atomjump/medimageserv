@@ -20,7 +20,7 @@ sudo npm install pm2@latest -g
 sudo npm install medimage -g
 cd "$(npm prefix -global)/lib/node_modules/medimage/" 
 pm2 start npm --name "medimage-server" -- start
-./medimage-server.sh"; cd ~
+./medimage-server.sh; cd ~
 pm2 save
 pm2 startup     (and run the command it outputs, to get autostart at boot-up)
 ```
