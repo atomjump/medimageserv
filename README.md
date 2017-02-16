@@ -20,7 +20,7 @@ sudo npm install pm2@latest -g
 sudo npm install medimage -g
 cd "$(npm prefix -global)/lib/node_modules/medimage/" 
 pm2 start npm --name "medimage-server" -- start
-./medimage-server.sh"
+./medimage-server.sh"; cd ~
 pm2 save
 pm2 startup     (and run the command it outputs, to get autostart at boot-up)
 ```
@@ -128,7 +128,7 @@ sudo npm install -g medimage -production
 The current way to upgrade medimage server:
 
 ```
-pm2 stop medimage-server
+pm2 delete medimage-server
 sudo mv "$(npm prefix -global)/lib/node_modules/medimage/config.json" /var/tmp
 sudo mv "$(npm prefix -global)/lib/node_modules/medimage/photos" /var/tmp
 sudo npm install -g medimage
@@ -137,6 +137,7 @@ sudo rm -rf "$(npm prefix -global)/lib/node_modules/medimage/photos"
 sudo mv /var/tmp/photos "$(npm prefix -global)/lib/node_modules/medimage/"
 cd "$(npm prefix -global)/lib/node_modules/medimage/" 
 pm2 start npm --name "medimage-server" -- start
+cd ~
 ```
 
 But, please note, that any files in the lib/node_modules/medimage/ directory may be removed,
