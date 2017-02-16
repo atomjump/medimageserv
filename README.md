@@ -18,7 +18,9 @@ Then:
 ```
 sudo npm install pm2@latest -g
 sudo npm install medimage -g
-pm2 start "$(npm prefix -global)/lib/node_modules/medimage/medimage-server.sh"
+cd "$(npm prefix -global)/lib/node_modules/medimage/" 
+pm2 start npm --name "medimage-server" -- start
+./medimage-server.sh"
 pm2 save
 pm2 startup     (and run the command it outputs, to get autostart at boot-up)
 ```
@@ -133,7 +135,8 @@ sudo npm install -g medimage
 sudo mv /var/tmp/config.json "$(npm prefix -global)/lib/node_modules/medimage/" 
 sudo rm -rf "$(npm prefix -global)/lib/node_modules/medimage/photos"
 sudo mv /var/tmp/photos "$(npm prefix -global)/lib/node_modules/medimage/"
-pm2 start "$(npm prefix -global)/lib/node_modules/medimage/medimage-server.sh"
+cd "$(npm prefix -global)/lib/node_modules/medimage/" 
+pm2 start npm --name "medimage-server" -- start
 ```
 
 But, please note, that any files in the lib/node_modules/medimage/ directory may be removed,

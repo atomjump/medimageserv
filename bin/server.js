@@ -60,6 +60,17 @@ var allowGettingRemotePhotos = false;	//An option to allow reading a proxy serve
 var changeReadUrl = "";					//If we've changed the readingUrl, we must change the existing reading loop
 
 
+//Handle a process sigint to quit smoothly
+process.on('SIGINT', function() {
+   console.log("Requesting a shutdown.");
+   setTimeout(function() {
+    // 100ms later the process kill it self to allow a restart
+    console.log("Clean exit.");
+    process.exit(0);
+  }, 100);
+});
+
+
 //Check any command-line options
 if((process.argv[2]) && (process.argv[2] == '-verbose')){
 	verbose = true;
