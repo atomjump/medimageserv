@@ -387,7 +387,7 @@ function download(uri, callback){
 
 
 	//Get a header of file first - see if there is any content (this will be pinged once every 10 seconds or so)
-	request.head({url: uri, pool: separateReqPool }, function(err, res, body){
+	request.head({url: uri, pool: separateReqPool, forever: true }, function(err, res, body){
 		if(err) {
 			console.log("Error requesting from proxy:" + err);
 			callback(err);
@@ -432,7 +432,7 @@ function download(uri, callback){
 								if(verbose == true) console.log("About to create local file " + createFile + " from uri:" + uri);
 
 
-								var stream = request({url: uri, pool: separateReqPool });
+								var stream = request({url: uri, pool: separateReqPool, forever: true });
 								var alreadyClosed = false;
 								stream.pipe(fs.createWriteStream(createFile)
 												.on('error', function(err) {
@@ -885,8 +885,7 @@ function handleServer(_req, _res) {
 			if(flapSimulation == true) {
 				if(flapState == true) {
 					flapState = false;
-					res.writeHead(500, {'content-type': 'text/html'});
-					res.end("Flapping simulation - error state.");
+					
 					return;			//Exit here prematurely to simulate flapping
 				} else {
 					flapState = true;
