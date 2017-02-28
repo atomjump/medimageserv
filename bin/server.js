@@ -60,7 +60,7 @@ var allowPhotosLeaving = false;			//An option to allow/prevent photos from leavi
 var allowGettingRemotePhotos = false;	//An option to allow reading a proxy server - usually the client (often Windows) will need this
 										//set to true
 var changeReadUrl = "";					//If we've changed the readingUrl, we must change the existing reading loop
-var flapSimulation = true;			//Simulate service flapping from e.g. a faulty load balancer. Usually 'false' unless testing
+var flapSimulation = false;			//Simulate service flapping from e.g. a faulty load balancer. Usually 'false' unless testing
 var flapState = false;
 
 
