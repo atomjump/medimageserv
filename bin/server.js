@@ -885,7 +885,7 @@ function handleServer(_req, _res) {
 			if(flapSimulation == true) {
 				if(flapState == true) {
 					flapState = false;
-					res.writeHead(400, {'content-type': 'text/html'});
+					res.writeHead(500, {'content-type': 'text/html'});
 					res.end("Flapping simulation - error state.");
 					return;			//Exit here prematurely to simulate flapping
 				} else {
