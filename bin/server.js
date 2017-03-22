@@ -62,7 +62,8 @@ var allowGettingRemotePhotos = false;	//An option to allow reading a proxy serve
 var changeReadUrl = "";					//If we've changed the readingUrl, we must change the existing reading loop
 var flapSimulation = false;			//Simulate service flapping from e.g. a faulty load balancer. Usually 'false' unless testing
 var flapState = false;
-var webProxy = null;
+var webProxy = null;				//For download requests from the internet, use a local proxy server at this URL
+									//See: http://stackoverflow.com/questions/23585371/proxy-authentication-in-node-js-with-module-request
 
 
 //Handle a process sigint to quit smoothly
@@ -396,7 +397,7 @@ function download(uri, callback){
 
 
 	//Get a header of file first - see if there is any content (this will be pinged once every 10 seconds or so)
-	request.head({url: uri, pool: separateReqPool, forever: true }, function(err, res, body){
+	request.head({url: uri, pool: separateReqPool, forever: true, proxy: webProxy }, function(err, res, body){
 		if(err) {
 			console.log("Error requesting from proxy:" + err);
 			callback(err);
