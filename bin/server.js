@@ -62,6 +62,7 @@ var allowGettingRemotePhotos = false;	//An option to allow reading a proxy serve
 var changeReadUrl = "";					//If we've changed the readingUrl, we must change the existing reading loop
 var flapSimulation = false;			//Simulate service flapping from e.g. a faulty load balancer. Usually 'false' unless testing
 var flapState = false;
+var webProxy = null;
 
 
 //Handle a process sigint to quit smoothly
@@ -252,6 +253,14 @@ function checkConfigCurrent(setProxy, cb) {
 			 		console.log("https cert loaded");
 			 	}
 
+			 }
+			 
+			 if(content.webProxy) {
+			 	//There is a web proxy server used for download requests from the web.
+			 	//Format: "http://" + user + ":" + password + "@" + host + ":" + port
+			 	//      or "http://" + host + ":" + port
+			    webProxy = content.webProxy;
+			 
 			 }
 
 			 //An option to allow/prevent photos from leaving the server (local installs i.e. non 'proxy' Windows clients

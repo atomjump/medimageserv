@@ -4,5 +4,6 @@
       "readProxy": null,
       "listenPort": 5566,
       "allowPhotosLeaving": false,
-      "allowGettingRemotePhotos": true
+      "allowGettingRemotePhotos": true,
+      "webProxy": null
 }

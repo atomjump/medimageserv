@@ -6,5 +6,6 @@
       "httpsKey" : "",
       "httpsCert" : "",
       "allowPhotosLeaving": true,
-      "allowGettingRemotePhotos": false
+      "allowGettingRemotePhotos": false,
+      "webProxy": null
 }
