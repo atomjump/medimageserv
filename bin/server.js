@@ -971,8 +971,13 @@ function handleServer(_req, _res) {
 
 					   }
 					   console.log("Request for pairing:" + fullPairingUrl);
+					   
+					   var options = {};
+					   if(webProxy) {
+					   	 options.proxy = webProxy;
+					   }
 
-					   needle.post(fullPairingUrl, data, function(error, response) {
+					   needle.post(fullPairingUrl, data, options, function(error, response) {
 						  if (!error && response.statusCode == 200) {
 							  console.log(response.body);
 
