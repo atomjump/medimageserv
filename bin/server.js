@@ -473,7 +473,7 @@ function download(uri, callback){
 																		//Backup the file
 										backupFile(createFile, "", dirFile);
 
-
+										addOns("photoWritten", createFile);
 
 
 										callback(null);
@@ -914,7 +914,7 @@ function handleServer(_req, _res) {
 							//Now backup to any directories specified in the config
 							backupFile(thisPath, outhashdir, finalFileName);
 							
-							addOns("photoWritten", thisPath);
+							
 
 						  }
 					});
