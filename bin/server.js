@@ -654,6 +654,38 @@ function addOns(eventType, param1, param2, param3)
 					}
 		
 				break;
+				
+				case "urlRequest":
+					if(content.events.urlRequest) {
+						
+							var evs = content.events.urlRequest;
+							for(var cnt = 0; cnt< evs.length; evs++) {
+								if(evs[cnt].active == true) {
+									//Run the command off the system - passing in the URL query string directly as a single url encoded string 								
+									var cmdLine = evs[cnt].runProcess;
+									cmdLine = cmdLine.replace("param1", encodeURIComponent(param1));
+									console.log("Running addon line: " + cmdLine);
+								
+									exec(cmdLine, (err, stdout, stderr) => {
+									  if (err) {
+										// node couldn't execute the command
+										console.log("There was a problem running the addon. Error:" + err);
+										return;
+									  }
+
+									  // the *entire* stdout and stderr (buffered)
+									  console.log(`stdout: ${stdout}`);
+									  console.log(`stderr: ${stderr}`);
+									});
+								}
+						
+							}
+					
+						}
+					
+				
+				break;
+				
 		
 				case "displayMenu":
 					//TODO: This is another example: display additional items on the main server menu
@@ -997,6 +1029,7 @@ function handleServer(_req, _res) {
 			var read = '/read/';
 			var pair = '/pair';
 			var check = '/check=';
+			var addonreq = '/addon/';
 
 			if(verbose == true) console.log("Url requested:" + url);
 
@@ -1211,11 +1244,20 @@ function handleServer(_req, _res) {
 						} else {	//end of check read
 
 
-							//Get a front-end facing image or html file
-							var outdir = __dirname + "/../public" + url;
+							if(url.substr(0,addonreq.length) == addonreq) {
+								//So it is an addon's request
+								//Read the addon config, and determine what to do
+								var queryString = url.substr(addonreq.length);
+								addOns("urlRequest", queryString);		
+								
+							} else {
+
+								//Get a front-end facing image or html file
+								var outdir = __dirname + "/../public" + url;
 
 
-							serveUpFile(outdir, null, res, false, customString);
+								serveUpFile(outdir, null, res, false, customString);
+							}
 						}
 				   }
 		  	} //end of check for pairing

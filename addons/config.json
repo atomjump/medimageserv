@@ -12,6 +12,15 @@
 				"active": false
 			}		
 		],
+		"urlRequest": [
+			{
+				"addon": "Wound Analysis",
+				"scriptURLName": "grab-colour",
+				"runProcess": "node addons/wound/hue-due.js param1",
+				"active": false
+			},
+		
+		]
 		"displayMenu": [
 		
 		
