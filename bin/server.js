@@ -1248,7 +1248,8 @@ function handleServer(_req, _res) {
 								//So it is an addon's request
 								//Read the addon config, and determine what to do
 								var queryString = url.substr(addonreq.length);
-								addOns("urlRequest", queryString);		
+								addOns("urlRequest", queryString);
+								return;		
 								
 							} else {
 
