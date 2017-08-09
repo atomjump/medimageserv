@@ -639,7 +639,7 @@ function addOns(eventType, param1, param2, param3)
 								exec(cmdLine, (err, stdout, stderr) => {
 								  if (err) {
 									// node couldn't execute the command
-									console.log("There was a problem running the addon " + evs[cnt].addon + ". Error:" + err);
+									console.log("There was a problem running the addon. Error:" + err);
 									return;
 								  }
 
