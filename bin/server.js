@@ -45,6 +45,7 @@ var currentDisks = [];
 var configFile = __dirname + '/../config.json';	//Default location is one directory back
 var newConfigFile = '/../newconfig.json';	//This is for a new install generally - it will auto-create from this file
 						//if the config doesn't yet exist
+var addonsConfigFile = __dirname + '/../addons/config.json';
 var noFurtherFiles = "none";			//This gets piped out if there are no further files in directory
 var pairingURL = "https://atomjump.com/med-genid.php";
 var listenPort = 5566;
@@ -605,6 +606,68 @@ function backupFile(thisPath, outhashdir, finalFileName)
 }
 
 
+//Handle 3rd party and our own add-ons
+function addOns(eventType, param1, param2, param3) 
+{
+	//Read in any add-ons that exist in the config?, or in the 'addons' folder.
+	
+	//Read in the config file
+	fs.readFile(addonsConfigFile, function read(err, data) {
+		if (err) {
+			console.log("Warning: Error reading addons config file: " + err);
+		} else {
+			var content = JSON.parse(data);
+
+
+	
+			switch(eventType)
+			{
+				case "photoWritten":
+					//param1 is the full path of the new photo in the home directory (not the backed up copy)
+					if(content.events.photoWritten) {
+						
+						var evs = content.events.photoWritten;
+						for(var cnt = 0; cnt< evs.length; evs++) {
+							if(evs[cnt].active == true) {
+								//Run the command off the system 								
+								var cmdLine = evs[cnt].runProcess;
+								cmdLine = cmdLine.replace("param1", param1);
+								cmdLine = cmdLine.replace("param2", param2);
+								cmdLine = cmdLine.replace("param3", param3);
+								console.log("Running addon line: " + cmdLine);
+								
+								exec(cmdLine, (err, stdout, stderr) => {
+								  if (err) {
+									// node couldn't execute the command
+									console.log("There was a problem running the addon " + evs[cnt].addon + ". Error:" + err);
+									return;
+								  }
+
+								  // the *entire* stdout and stderr (buffered)
+								  console.log(`stdout: ${stdout}`);
+								  console.log(`stderr: ${stderr}`);
+								});
+							}
+						
+						}
+					
+					}
+		
+				break;
+		
+				case "displayMenu":
+					//TODO: This is another example: display additional items on the main server menu
+				break;
+		
+			};
+		}
+	});
+
+	return;
+
+}
+
+
 function trimChar(string, charToRemove) {
     while(string.substring(0,1) == charToRemove) {
         string = string.substring(1);
@@ -850,6 +913,8 @@ function handleServer(_req, _res) {
 
 							//Now backup to any directories specified in the config
 							backupFile(thisPath, outhashdir, finalFileName);
+							
+							addOns("photoWritten", thisPath);
 
 						  }
 					});
