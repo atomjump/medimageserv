@@ -671,7 +671,7 @@ function addOns(eventType, param1, param2, param3)
 										
 										var queryString = encodeURIComponent(param1.replace(scriptChk,""));
 										
-										cmdLine = cmdLine.replace("param1", param1);
+										cmdLine = cmdLine.replace("param1", queryString);
 										console.log("Running addon line: " + cmdLine);
 								
 										exec(cmdLine, (err, stdout, stderr) => {
