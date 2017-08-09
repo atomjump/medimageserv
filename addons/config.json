@@ -3,7 +3,7 @@
 		"photoWritten": [
 			{
 				"addon": "Wound Analysis",
-				"runProcess": "node ../addons/wound/wound-size.js param1",
+				"runProcess": "node addons/wound/wound-size.js param1",
 				"active": true
 			},
 			{
