@@ -669,7 +669,7 @@ function addOns(eventType, param1, param2, param3)
 										//Run the command off the system - passing in the URL query string directly as a single url encoded string 								
 										var cmdLine = evs[cnt].runProcess;
 										
-										var queryString = encodeURIComponent(param1.replace(scriptChk,""));
+										var queryString = encodeURIComponent(param1.replace(scriptChk + "?",""));
 										
 										cmdLine = cmdLine.replace("param1", queryString);
 										console.log("Running addon line: " + cmdLine);
