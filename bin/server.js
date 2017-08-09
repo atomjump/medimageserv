@@ -656,27 +656,33 @@ function addOns(eventType, param1, param2, param3)
 				break;
 				
 				case "urlRequest":
+					console.log("URL request of " + param1);
 					if(content.events.urlRequest) {
 						
 							var evs = content.events.urlRequest;
 							for(var cnt = 0; cnt< evs.length; evs++) {
-								if(evs[cnt].active == true) {
-									//Run the command off the system - passing in the URL query string directly as a single url encoded string 								
-									var cmdLine = evs[cnt].runProcess;
-									cmdLine = cmdLine.replace("param1", encodeURIComponent(param1));
-									console.log("Running addon line: " + cmdLine);
 								
-									exec(cmdLine, (err, stdout, stderr) => {
-									  if (err) {
-										// node couldn't execute the command
-										console.log("There was a problem running the addon. Error:" + err);
-										return;
-									  }
+								//Check if script in param1 starts with the scriptURLName
+								scriptChk = evs[cnt].scriptURLName;
+								if(param1.substr(0,scriptChk.length) == scriptChk) {
+									if(evs[cnt].active == true) {
+										//Run the command off the system - passing in the URL query string directly as a single url encoded string 								
+										var cmdLine = evs[cnt].runProcess;
+										cmdLine = cmdLine.replace("param1", encodeURIComponent(param1));
+										console.log("Running addon line: " + cmdLine);
+								
+										exec(cmdLine, (err, stdout, stderr) => {
+										  if (err) {
+											// node couldn't execute the command
+											console.log("There was a problem running the addon. Error:" + err);
+											return;
+										  }
 
-									  // the *entire* stdout and stderr (buffered)
-									  console.log(`stdout: ${stdout}`);
-									  console.log(`stderr: ${stderr}`);
-									});
+										  // the *entire* stdout and stderr (buffered)
+										  console.log(`stdout: ${stdout}`);
+										  console.log(`stderr: ${stderr}`);
+										});
+									}
 								}
 						
 							}
