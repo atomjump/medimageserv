@@ -697,7 +697,9 @@ function addOns(eventType, cb, param1, param2, param3)
 											if(waitForIt) {
 											   returnparams = "returnParams:";
 											   var params = "";
+											   console.log(stdout);
 											   if(stdout.substr(0,returnparams.length) == returnparams) {
+											   		console.log("Params returned=" + params);
 											   		params = returnparams.replace(returnparams,"");
 											   }
 											   
