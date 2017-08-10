@@ -698,10 +698,12 @@ function addOns(eventType, cb, param1, param2, param3)
 											   returnparams = "returnParams:";
 											   var params = "";
 											   console.log("Stdout:" + stdout);
-											   if(stdout.substr(0,returnparams.length) == returnparams) {
+											   returnStart = stdout.indexOf(returnparams);
+											   if(returnStart > 0) {
 											   		
-											   		params = stdout.replace(returnparams,"");
-											   		params = params.replace("?","");		//remove questions
+											   		params = stdout.substr(returnStart);	//get everything after returnparams code
+											   		params = params.replace("returnParams:?","");		//remove questions
+											   		params = params.replace("returnParams:","");		//remove questions
 											   		console.log("Params returned=" + params);
 											   }
 											   
