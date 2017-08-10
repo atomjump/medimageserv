@@ -473,7 +473,7 @@ function download(uri, callback){
 																		//Backup the file
 										backupFile(createFile, "", dirFile);
 
-										addOns("photoWritten", createFile);
+										addOns("photoWritten", function() {}, createFile);
 
 
 										callback(null);
@@ -607,7 +607,7 @@ function backupFile(thisPath, outhashdir, finalFileName)
 
 
 //Handle 3rd party and our own add-ons
-function addOns(eventType, param1, param2, param3) 
+function addOns(eventType, cb, param1, param2, param3) 
 {
 	//Read in any add-ons that exist in the config?, or in the 'addons' folder.
 	
@@ -689,11 +689,11 @@ function addOns(eventType, param1, param2, param3)
 										});
 										
 										console.log("Checking after request:" + evs[cnt].afterRequest);
-										if(evs[cnt].afterRequest) {
+										if(evs[cnt].afterRequest != ) {
 											//Forward on to this page afterwards
-										  	 return evs[cnt].afterRequest;
+										  	 cb(evs[cnt].afterRequest);
 										} else {
-											return "";
+											cb("");
 										}
 									}
 								}
@@ -1268,20 +1268,22 @@ function handleServer(_req, _res) {
 								//Read the addon config, and determine what to do
 								var queryString = url.substr(addonreq.length);
 								var newLocation = "";
-								newLocation = addOns("urlRequest", queryString);
+								addOns("urlRequest", function(newLocation) {
 								
-								console.log("New location=" + newLocation);
+									//Close off the request to the browser
+									if(newLocation != "") {
 								
-								//Close off the request to the browser
-								if(newLocation != "") {
+										var outdir = __dirname + "/../public/pages/" + newLocation;
+										serveUpFile(outdir, null, res, false, null);
+									} else {
+										//Just complete the browser request
+										res.writeHead(200, {'content-type': 'text/html'});
+										res.end();
+									}
 								
-									var outdir = __dirname + "/../public/pages/" + newLocation;
-								    serveUpFile(outdir, null, res, false, null);
-								} else {
-									//Just complete the browser request
-									res.writeHead(200, {'content-type': 'text/html'});
-									res.end();
-								}
+								
+								}, queryString);
+								
 								return;		
 								
 							} else {
