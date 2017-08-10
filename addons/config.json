@@ -19,6 +19,13 @@
 				"runProcess": "node addons/wound/hue-due.js param1",
 				"afterRequest": "photo-zoomed.html",
 				"active": true
+			},
+			{
+				"addon": "Wound Analysis",
+				"scriptURLName": "regenerate-analysis",
+				"runProcess": "node addons/wound/wound-size.js param1",
+				"afterRequest": "photo-analysis.html",
+				"active": true
 			}
 		
 		],
