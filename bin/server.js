@@ -685,11 +685,15 @@ function addOns(eventType, param1, param2, param3)
 										  console.log(`stdout: ${stdout}`);
 										  console.log(`stderr: ${stderr}`);
 										  
-										  if(evs[cnt].afterRequest) {
-										  	
 										  
-										  }
 										});
+										
+										if(evs[cnt].afterRequest) {
+											//Forward on to this page afterwards
+										  	 return evs[cnt].afterRequest;
+										} else {
+											return;
+										}
 									}
 								}
 						
