@@ -699,12 +699,17 @@ function addOns(eventType, cb, param1, param2, param3)
 										  
 										});
 										
-										console.log("Checking after request:" + evs[cnt].afterRequest);
-										if(evs[cnt].afterRequest) {
-											//Forward on to this page afterwards
-										  	 cb(evs[cnt].afterRequest);
+										if(evs[cnt].waitForRequestFinish) {
+											//Waiting for completion
 										} else {
-											cb("");
+										
+											console.log("Checking after request:" + evs[cnt].afterRequest);
+											if(evs[cnt].afterRequest) {
+												//Forward on to this page afterwards
+												 cb(evs[cnt].afterRequest);
+											} else {
+												cb("");
+											}
 										}
 									}
 								}
