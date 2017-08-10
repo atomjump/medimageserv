@@ -1293,7 +1293,7 @@ function handleServer(_req, _res) {
 								var newLocation = "";
 								
 								
-								var replace = queryString.parse(decodeURIComponent(queryString));
+								var replace = queryString.parse(decodeURIComponent(thisQueryString));
 								/*E.g. var replace = {
 							   	 "CUSTOMIMAGE": "yo/10-Aug-2017-09-21-45.jpg",
 							   	 "CUSTOMWOUNDIMAGE": "yo/10-Aug-2017-09-21-45.wound-view.jpg",
