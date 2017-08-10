@@ -149,18 +149,24 @@
 
 							<form action="/addon/grab-colour">
 								<input type="hidden" name="photo" value="yo/10-Aug-2017-09-21-45.jpg">
-								<input type="hidden" name="lowRange" value="false">
-								<input type="hidden" name="type" value="wound">
-								<input type="hidden" name="master" value="false">
+								<select name="lowRange">
+									<opt value="true" selected="selected">Lower end of Range</opt>
+									<opt value="false">Upper end of Range</opt>
+								</select>
+								<select name="type">
+									<opt value="wound" selected="selected">Wound</opt>
+									<opt value="sticker">Sticker</opt>
+								</select>
+								Apply to
+								<select name="master">
+									<opt value="false" selected="selected">Just this photo</opt>
+									<opt value="true">All new photos</opt>
+								</select>
 								<input type="hidden" name="width" value="800">
 								<input type="hidden" name="height" value="600">
 								<input type="image" src="http://104.131.151.99/html/medimageservtest/photos/yo/10-Aug-2017-09-21-45.jpg" width="800" height="600" ismap>
 							</form>
-							<!--
-							<a href="/addon/grab-colour?photo=yo/10-Aug-2017-09-21-45.jpg&lowRange=false&type=wound&master=false&width=800&height=600&ixy=">
-								<img src="http://104.131.151.99/html/medimageservtest/photos/yo/10-Aug-2017-09-21-45.jpg" width="800" height="600" ismap>
-							</a>
-							-->
+							
 
 							
 							<p><a class="standardlink" href="index.html">Return</a></p>
