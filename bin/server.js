@@ -1258,6 +1258,10 @@ function handleServer(_req, _res) {
 								//Read the addon config, and determine what to do
 								var queryString = url.substr(addonreq.length);
 								addOns("urlRequest", queryString);
+								
+								//Close off the request to the browser
+								res.writeHead(200, {'content-type': 'text/html'});
+								res.end("true");
 								return;		
 								
 							} else {
