@@ -38,7 +38,7 @@
 				"addon": "Wound Analysis",
 				"scriptURLName": "show-adjust-colour",
 				"runProcess": "node addons/wound/show-adjust-colours.js param1",
-				"waitForRequestFinish": "photo-analysis.html",
+				"waitForRequestFinish": "photo-zoomed.html",
 				"active": true
 			}
 		
