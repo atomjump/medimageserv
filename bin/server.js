@@ -1288,8 +1288,8 @@ function handleServer(_req, _res) {
 								
 								
 								var replace = {
-							   	 "CUSTOMIMAGE": "yo/10-Aug-2017-09-21-45.jpg";
-							   	 "CUSTOMWOUNDIMAGE": "yo/10-Aug-2017-09-21-45.wound-view.jpg";
+							   	 "CUSTOMIMAGE": "yo/10-Aug-2017-09-21-45.jpg",
+							   	 "CUSTOMWOUNDIMAGE": "yo/10-Aug-2017-09-21-45.wound-view.jpg"
 							   };
 								
 								
