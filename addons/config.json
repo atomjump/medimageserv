@@ -33,6 +33,13 @@
 				"runProcess": "node addons/wound/show-wound-size.js param1",
 				"waitForRequestFinish": "photo-analysis.html",
 				"active": true
+			},
+			{
+				"addon": "Wound Analysis",
+				"scriptURLName": "show-adjust-colour",
+				"runProcess": "node addons/wound/show-adjust-colours.js param1",
+				"waitForRequestFinish": "photo-analysis.html",
+				"active": true
 			}
 		
 		],
