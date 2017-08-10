@@ -684,6 +684,11 @@ function addOns(eventType, param1, param2, param3)
 										  // the *entire* stdout and stderr (buffered)
 										  console.log(`stdout: ${stdout}`);
 										  console.log(`stderr: ${stderr}`);
+										  
+										  if(evs[cnt].afterRequest) {
+										  	
+										  
+										  }
 										});
 									}
 								}
@@ -1257,11 +1262,19 @@ function handleServer(_req, _res) {
 								//So it is an addon's request
 								//Read the addon config, and determine what to do
 								var queryString = url.substr(addonreq.length);
-								addOns("urlRequest", queryString);
+								var newLocation = "";
+								newLocation = addOns("urlRequest", queryString);
 								
 								//Close off the request to the browser
-								res.writeHead(200, {'content-type': 'text/html'});
-								res.end();
+								if(newLocation) {
+								
+									var outdir = __dirname + "/../public/pages/" + newLocation;
+								    serveUpFile(outdir, null, res, false, replace);
+								} else {
+									//Just complete the browser request
+									res.writeHead(200, {'content-type': 'text/html'});
+									res.end();
+								}
 								return;		
 								
 							} else {

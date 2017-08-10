@@ -17,6 +17,7 @@
 				"addon": "Wound Analysis",
 				"scriptURLName": "grab-colour",
 				"runProcess": "node addons/wound/hue-due.js param1",
+				"afterRequest": "photo-zoomed.html",
 				"active": true
 			}
 		
