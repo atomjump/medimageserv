@@ -696,12 +696,12 @@ function addOns(eventType, cb, param1, param2, param3)
 										
 											if(waitForIt) {
 											   returnparams = "returnParams:";
-											   var append = "";
+											   var params = "";
 											   if(stdout.substr(0,returnparams.length) == returnparams) {
-											   		append = returnparams.replace(returnparams,"");
+											   		params = returnparams.replace(returnparams,"");
 											   }
 											   
-											   cb(waitForIt + append);
+											   cb(waitForIt, params);
 											}
 										  
 										});
@@ -1293,7 +1293,7 @@ function handleServer(_req, _res) {
 								var newLocation = "";
 								
 								
-								var replace = queryStringLib.parse(thisQueryString);
+								
 								/*E.g. var replace = {
 							   	 "CUSTOMIMAGE": "yo/10-Aug-2017-09-21-45.jpg",
 							   	 "CUSTOMWOUNDIMAGE": "yo/10-Aug-2017-09-21-45.wound-view.jpg",
@@ -1301,11 +1301,12 @@ function handleServer(_req, _res) {
 							   };*/
 								
 								
-								addOns("urlRequest", function(newLocation) {
+								addOns("urlRequest", function(newLocation, params) {
 								
 									//Close off the request to the browser
 									if(newLocation != "") {
 								
+										var replace = queryStringLib.parse(params);
 										var outdir = __dirname + "/../public/pages/" + newLocation;
 										serveUpFile(outdir, null, res, false, replace);
 									} else {
