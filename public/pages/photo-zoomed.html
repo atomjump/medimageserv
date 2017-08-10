@@ -146,7 +146,7 @@
                       
 							<h1>Adjust Colour Ranges of CUSTOMIMAGE</h1>
 
-							<p>Select your parameters and then click a point in the photo to set this colour as the dark or light section. Then click refresh to re-analyse the photo.</p>
+							<p>Select your parameters and then click a point in the photo to set this colour as the dark (lower end) or light (upper end) section. Then click refresh to re-analyse the photo.</p>
 							<form action="/addon/regenerate-analysis">
 								<input type="hidden" name="photo" value="CUSTOMIMAGE">
 								
@@ -154,6 +154,7 @@
 								<input type="hidden" name="height" value="600">
 								<input type="submit" value="Refresh Analysis">
 							</form>
+							
 							
 							<form action="/addon/grab-colour">
 								<input type="hidden" name="photo" value="CUSTOMIMAGE">
@@ -176,6 +177,7 @@
 								</select>
 								<input type="hidden" name="width" value="800">
 								<input type="hidden" name="height" value="600">
+								<p>&nbsp;</p>
 								<input type="image" src="http://104.131.151.99/html/medimageservtest/photos/CUSTOMIMAGE" width="800" height="600" ismap>
 							</form>
 							
