@@ -692,7 +692,7 @@ function addOns(eventType, param1, param2, param3)
 											//Forward on to this page afterwards
 										  	 return evs[cnt].afterRequest;
 										} else {
-											return;
+											return "";
 										}
 									}
 								}
@@ -1269,11 +1269,13 @@ function handleServer(_req, _res) {
 								var newLocation = "";
 								newLocation = addOns("urlRequest", queryString);
 								
+								console.log("New location=" + newLocation);
+								
 								//Close off the request to the browser
-								if(newLocation) {
+								if(newLocation != "") {
 								
 									var outdir = __dirname + "/../public/pages/" + newLocation;
-								    serveUpFile(outdir, null, res, false, replace);
+								    serveUpFile(outdir, null, res, false, null);
 								} else {
 									//Just complete the browser request
 									res.writeHead(200, {'content-type': 'text/html'});
