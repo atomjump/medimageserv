@@ -35,7 +35,7 @@ var needle = require('needle');
 var readChunk = require('read-chunk'); // npm install read-chunk
 var imageType = require('image-type');
 var shredfile = require('shredfile')();
-var queryString = require('querystring');
+var queryStringLib = require('querystring');
 
 
 var verbose = false;		//Set to true to display debug info
@@ -1293,7 +1293,7 @@ function handleServer(_req, _res) {
 								var newLocation = "";
 								
 								
-								var replace = queryString.parse(decodeURIComponent(thisQueryString));
+								var replace = queryStringLib.parse(decodeURIComponent(thisQueryString));
 								/*E.g. var replace = {
 							   	 "CUSTOMIMAGE": "yo/10-Aug-2017-09-21-45.jpg",
 							   	 "CUSTOMWOUNDIMAGE": "yo/10-Aug-2017-09-21-45.wound-view.jpg",
