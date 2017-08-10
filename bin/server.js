@@ -35,6 +35,7 @@ var needle = require('needle');
 var readChunk = require('read-chunk'); // npm install read-chunk
 var imageType = require('image-type');
 var shredfile = require('shredfile')();
+var queryString = require('querystring');
 
 
 var verbose = false;		//Set to true to display debug info
@@ -1282,16 +1283,16 @@ function handleServer(_req, _res) {
 							if(url.substr(0,addonreq.length) == addonreq) {
 								//So it is an addon's request
 								//Read the addon config, and determine what to do
-								var queryString = url.substr(addonreq.length);
+								var thisQueryString = url.substr(addonreq.length);
 								var newLocation = "";
 								
 								
-								
-								var replace = {
+								var replace = queryString.parse(decodeURIComponent(queryString));
+								/*E.g. var replace = {
 							   	 "CUSTOMIMAGE": "yo/10-Aug-2017-09-21-45.jpg",
 							   	 "CUSTOMWOUNDIMAGE": "yo/10-Aug-2017-09-21-45.wound-view.jpg",
 							   	 "CUSTOMAREA": "123456"
-							   };
+							   };*/
 								
 								
 								addOns("urlRequest", function(newLocation) {
@@ -1308,7 +1309,7 @@ function handleServer(_req, _res) {
 									}
 								
 								
-								}, queryString);
+								}, thisQueryString);
 								
 								return;		
 								
