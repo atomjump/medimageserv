@@ -1261,7 +1261,7 @@ function handleServer(_req, _res) {
 								
 								//Close off the request to the browser
 								res.writeHead(200, {'content-type': 'text/html'});
-								res.end("true");
+								res.end();
 								return;		
 								
 							} else {
