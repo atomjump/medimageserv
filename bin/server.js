@@ -701,6 +701,7 @@ function addOns(eventType, cb, param1, param2, param3)
 											   if(stdout.substr(0,returnparams.length) == returnparams) {
 											   		
 											   		params = stdout.replace(returnparams,"");
+											   		params = params.replace("?","");		//remove questions
 											   		console.log("Params returned=" + params);
 											   }
 											   
