@@ -695,7 +695,13 @@ function addOns(eventType, cb, param1, param2, param3)
 										  
 										
 											if(waitForIt) {
-											   cb(waitForIt);
+											   returnparams = "returnParams:";
+											   var append = "";
+											   if(stdout.substr(0,returnparams.length) == returnparams) {
+											   		append = returnparams.replace(returnparams,"");
+											   }
+											   
+											   cb(waitForIt + append);
 											}
 										  
 										});
