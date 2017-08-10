@@ -706,6 +706,7 @@ function addOns(eventType, cb, param1, param2, param3)
 											   		params = stdout.substr(returnStart);
 											   		params = params.replace("returnParams:?","");		//remove questions
 											   		params = params.replace("returnParams:","");		//remove questions
+											   		params = params.trim();		//remove newlines at the end
 											   		console.log("Params returned=" + params);
 											   }
 											   
