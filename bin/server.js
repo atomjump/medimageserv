@@ -663,7 +663,8 @@ function addOns(eventType, cb, param1, param2, param3)
 							for(var cnt = 0; cnt< evs.length; evs++) {
 								
 								//Check if script in param1 starts with the scriptURLName
-								scriptChk = evs[cnt].scriptURLName;
+								var scriptChk = evs[cnt].scriptURLName;
+								console.log("Checking against:" + scriptChk);
 								if(param1.substr(0,scriptChk.length) == scriptChk) {
 									if(evs[cnt].active == true) {
 										//Run the command off the system - passing in the URL query string directly as a single url encoded string 								
