@@ -676,6 +676,11 @@ function addOns(eventType, cb, param1, param2, param3)
 										cmdLine = cmdLine.replace("param1", queryString);
 										console.log("Running addon line: " + cmdLine);
 								
+										if(evs[cnt].waitForRequestFinish) {
+											//Forward on to this page afterwards
+										  	 var waitForIt = evs[cnt].waitForRequestFinish;
+										} 
+								
 										exec(cmdLine, (err, stdout, stderr) => {
 										  if (err) {
 											// node couldn't execute the command
@@ -686,7 +691,11 @@ function addOns(eventType, cb, param1, param2, param3)
 										  // the *entire* stdout and stderr (buffered)
 										  console.log(`stdout: ${stdout}`);
 										  console.log(`stderr: ${stderr}`);
-										  
+										  console.log("Checking after request:" + evs[cnt].afterRequest);
+										
+											if(waitForIt) {
+											   cb(waitForIt);
+											}
 										  
 										});
 										

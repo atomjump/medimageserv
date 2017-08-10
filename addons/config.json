@@ -24,7 +24,7 @@
 				"addon": "Wound Analysis",
 				"scriptURLName": "regenerate-analysis",
 				"runProcess": "node addons/wound/wound-size.js param1",
-				"afterRequest": "photo-analysis.html",
+				"waitForRequestFinish": "photo-analysis.html",
 				"active": true
 			}
 		
