@@ -691,7 +691,7 @@ function addOns(eventType, cb, param1, param2, param3)
 										  // the *entire* stdout and stderr (buffered)
 										  console.log(`stdout: ${stdout}`);
 										  console.log(`stderr: ${stderr}`);
-										  console.log("Checking after request:" + evs[cnt].afterRequest);
+										  
 										
 											if(waitForIt) {
 											   cb(waitForIt);
