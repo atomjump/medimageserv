@@ -699,12 +699,13 @@ function addOns(eventType, cb, param1, param2, param3)
 											   var params = "";
 											   console.log("Stdout:" + stdout);
 											   var returnStart = stdout.indexOf(returnparams);
+											   
 											   console.log("Return start:" + returnStart);
-											   if(returnStart > 0) {
+											   if(returnStart > -1) {
 											   		
-											   		
-											   		params = returnStart.replace("returnParams:?","");		//remove questions
-											   		params = returnStart.replace("returnParams:","");		//remove questions
+											   		params = stdout.substr(returnStart);
+											   		params = params.replace("returnParams:?","");		//remove questions
+											   		params = params.replace("returnParams:","");		//remove questions
 											   		console.log("Params returned=" + params);
 											   }
 											   
