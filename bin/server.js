@@ -661,8 +661,7 @@ function addOns(eventType, cb, param1, param2, param3)
 					if(content.events.urlRequest) {
 							
 							var evs = content.events.urlRequest;
-							console.log("Events legnth:" + evs.length);
-							for(var cnt = 0; cnt< evs.length; evs++) {
+							for(var cnt = 0; cnt< evs.length; cnt++) {
 								
 								//Check if script in param1 starts with the scriptURLName
 								var scriptChk = evs[cnt].scriptURLName;
