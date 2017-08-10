@@ -1284,13 +1284,22 @@ function handleServer(_req, _res) {
 								//Read the addon config, and determine what to do
 								var queryString = url.substr(addonreq.length);
 								var newLocation = "";
+								
+								
+								
+								var replace = {
+							   	 "CUSTOMIMAGE": "yo/10-Aug-2017-09-21-45.jpg";
+							   	 "CUSTOMWOUNDIMAGE": "yo/10-Aug-2017-09-21-45.wound-view.jpg";
+							   };
+								
+								
 								addOns("urlRequest", function(newLocation) {
 								
 									//Close off the request to the browser
 									if(newLocation != "") {
 								
 										var outdir = __dirname + "/../public/pages/" + newLocation;
-										serveUpFile(outdir, null, res, false, null);
+										serveUpFile(outdir, null, res, false, replace);
 									} else {
 										//Just complete the browser request
 										res.writeHead(200, {'content-type': 'text/html'});
