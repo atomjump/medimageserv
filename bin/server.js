@@ -1409,7 +1409,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
 	     var strData = data.toString();
 
 	     for (var key in customStringList) {
-	     	  strData = strData.replace(key, customStringList[key]);
+	     	  strData = strData.replace(new RegExp(key, 'g'), customStringList[key]);
   		  if(verbose == true) console.log("key " + key + " has value " + customStringList[key]);
 
 	     }
