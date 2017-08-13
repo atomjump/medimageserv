@@ -1414,6 +1414,8 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
 
   //Being preparation to send
 
+  console.log("Extension: " + ext + " stream = " + stream);		//TESTING IN	
+
 
   if(stream == false) {
 	//Implies we need to modify this file, and it is likely and html request - i.e. fairly rare
