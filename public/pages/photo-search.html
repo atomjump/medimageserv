@@ -76,7 +76,7 @@
 	
 		 jQuery(document).ready(function(){
 		 
-			 jQuery( "#dir" ).autocomplete({
+			 jQuery("#dir").autocomplete({
 				source: "/get-photos/",
 				minLength: 1,//search after one characters
 				select: function(event,ui){
@@ -164,10 +164,11 @@
                       
 							<h1>Photo Search</h1>
 
-							<p>Enter a directory/photofile.jpg of your image for analysis</p>
+							<p>Enter a patient ID or photo name for analysis</p>
 							<form id="search-dir" action="/addon/show-analysis">
-								<input id="dir" type="text" name="photo" value="">
+								<input id="dir" type="text" name="photo" value="" placeholder="Enter a photo or patient ID" autocomplete="off">
 								
+								The first word is a folder
 								<input type="checkbox" id="folder-first-word" name="folder-first-word" checked="checked">
 								
 								<input type="submit" value="Search">
