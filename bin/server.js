@@ -1344,7 +1344,7 @@ function handleServer(_req, _res) {
 										}
 										var outdir = __dirname + "/../public/pages/" + newLocation;
 										console.log("Serving up file:" + outdir + " Replace:" + JSON.stringify(replace));
-										serveUpFile(outdir, null, res, false, replace);
+										//TEMPOUT!!serveUpFile(outdir, null, res, false, replace);
 									} else {
 										//Just complete the browser request
 										res.writeHead(200, {'content-type': 'text/html'});
