@@ -1404,6 +1404,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
   //Handle images
   if (ext === '.png') {
 	 contentType = 'image/png';
+	 stream = false;
   }
   if (ext === '.jpg') {
 	 contentType = 'image/jpeg';
@@ -1436,15 +1437,15 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
 	   	return;
 	  }
 
-
+	  console.log("Content type:" + contentType);	
 	  if((contentType != 'image/jpeg')&&
 	     (contentType != 'image/png')) {
 	     //This is use for a replace on an HTML file with custom strings
 	     var strData = data.toString();
 
 	     for (var key in customStringList) {
-	     	  strData = strData.replace(new RegExp(key, 'g'), customStringList[key]);
-  		  if(verbose == true) console.log("key " + key + " has value " + customStringList[key]);
+	     	 strData = strData.replace(new RegExp(key, 'g'), customStringList[key]);
+  		  	 if(verbose == true) console.log("key " + key + " has value " + customStringList[key]);
 
 	     }
 
@@ -1457,7 +1458,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
 	  res.on('error', function(err){
 	  	//Handle the errors here
 	  	res.statusCode = 400;
-    		res.end();
+    	res.end();
 	  })
 
 	  res.writeHead(200, {'content-type': contentType, 'file-name': theFile});
