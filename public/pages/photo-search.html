@@ -86,8 +86,8 @@
 					
 					 jQuery.get("/addon/get-photos/?term=" + request.term, function(err, data) {
 					 		resp(data);
-					 }) 
-				}
+					 }); 
+				},
 				minLength: 1,//search after one characters
 				select: function(event,ui){
 					//do something
