@@ -712,7 +712,7 @@ function addOns(eventType, cb, param1, param2, param3)
 											   
 											   cb(waitForIt, params);
 											} else {
-												//There is the option of providing a raw file from the photo directory here.
+												//There is the option of providing a raw file from the photo directory here. Include a blank ""
 												returnPhotoFile = "returnPhotoFile:";
 												var params = "";
 											    console.log("Stdout:" + stdout);
@@ -737,7 +737,7 @@ function addOns(eventType, cb, param1, param2, param3)
 										  
 										});
 										
-										if(evs[cnt].waitForRequestFinish) {
+										if((evs[cnt].waitForRequestFinish)||(evs[cnt].waitForRequestFinish == "") {
 											//Waiting for completion
 										} else {
 										
