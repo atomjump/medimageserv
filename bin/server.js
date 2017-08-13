@@ -737,7 +737,7 @@ function addOns(eventType, cb, param1, param2, param3)
 										  
 										});
 										
-										if((evs[cnt].waitForRequestFinish)||(evs[cnt].waitForRequestFinish == "") {
+										if((evs[cnt].waitForRequestFinish)||(evs[cnt].waitForRequestFinish == "")) {
 											//Waiting for completion
 										} else {
 										
