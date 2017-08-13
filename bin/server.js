@@ -1387,7 +1387,6 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
   var normpath = sections[0];		//Ignore any query parameters to the right	
 
   if(verbose == true) console.log(normpath);
-	console.log("Normalized path:" + normpath);	  //TEMPIN
 	
 	
 	
@@ -1423,7 +1422,6 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
 
   //Being preparation to send
 
-  console.log("Extension: " + ext + " stream = " + stream);		//TESTING IN	
 
 
   if(stream == false) {
@@ -1441,9 +1439,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
 	  
 	  if((contentType != 'image/jpeg')&&
 	     (contentType != 'image/png')) {
-	     
-	     console.log("HTML string processing");
-	     
+	     	     
 	     //This is use for a replace on an HTML file with custom strings
 	     var strData = data.toString();
 

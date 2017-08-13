@@ -37,12 +37,61 @@
     
     <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
 
-			
+	<!-- For the dropdown autocomplete -->
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+	<script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>		
     
 
 </head>
 
 <body>
+
+	<script>
+		function newDir(input) {
+
+			origStr = document.getElementById(input).value;
+			str = origStr.replace(/\s+/g, '');		//remove spaces?  TODO check this
+			str = str.replace(/[^a-z0-9]/gi, '');	//only allow certain chars TODO check this
+
+
+			if(jQuery("#folder-first-word").is(":checked")) {
+				str = "#" + str;
+			
+			}
+
+			if(str == origStr) {
+				//Straightforward redirect
+				window.location = '/get-photos/' + str;
+			} else {
+				window.location = '/get-photos/' + str;
+
+
+			}
+
+			return false;
+
+		}
+	
+	
+	
+		 jQuery(document).ready(function(){
+		 
+			 jQuery( "#dir" ).autocomplete({
+				source: "/get-photos/",
+				minLength: 1,//search after one characters
+				select: function(event,ui){
+					//do something
+					jQuery('#dir').val(ui.item.value);
+					
+					//Action the photo now
+					newDir("dir");
+				}
+			});
+		});
+
+	
+	</script>
+
 
     <div id="wrapper">
 
@@ -116,8 +165,10 @@
 							<h1>Photo Search</h1>
 
 							<p>Enter a directory/photofile.jpg of your image for analysis</p>
-							<form action="/addon/show-analysis">
-								<input type="text" name="photo" value="">
+							<form id="search-dir" action="/addon/show-analysis">
+								<input id="dir" type="text" name="photo" value="">
+								
+								<input type="checkbox" id="folder-first-word" name="folder-first-word" checked="checked">
 								
 								<input type="submit" value="Search">
 							</form>
