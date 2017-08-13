@@ -1386,8 +1386,10 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
   var normpath = sections[0];		//Ignore any query parameters to the right	
 
   if(verbose == true) console.log(normpath);
-
-
+	console.log("Normalized path:" + normpath);	  //TEMPIN
+	
+	
+	
   // set the content type
   var ext = path.extname(normpath);
   var contentType = 'text/html';
