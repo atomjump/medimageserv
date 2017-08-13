@@ -1354,7 +1354,7 @@ function handleServer(_req, _res) {
 								
 								}, thisQueryString);
 								
-								return;		
+								//Try taking this out??? :return;		
 								
 							} else {
 
