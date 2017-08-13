@@ -1437,9 +1437,12 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
 	   	return;
 	  }
 
-	  console.log("Content type:" + contentType);	
+	  
 	  if((contentType != 'image/jpeg')&&
 	     (contentType != 'image/png')) {
+	     
+	     console.log("HTML string processing");
+	     
 	     //This is use for a replace on an HTML file with custom strings
 	     var strData = data.toString();
 
@@ -1461,7 +1464,9 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
     	res.end();
 	  })
 
-	  res.writeHead(200, {'content-type': contentType, 'file-name': theFile});
+	  console.log("Content type:" + contentType);	
+
+	  res.writeHead(200, {'Content-Type': contentType, 'file-name': theFile});		//Trying with cap Content-Type, was content-type
 
 
 	  res.end(data, function(err) {
