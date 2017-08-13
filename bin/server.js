@@ -1436,7 +1436,8 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
 	  }
 
 
-
+	  if((contentType != 'image/jpeg')&&
+	     (contentType != 'image/png')) {
 	     //This is use for a replace on an HTML file with custom strings
 	     var strData = data.toString();
 
@@ -1450,7 +1451,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
 	     if(verbose == true) console.log(strData);
 
 	     data = JSON.parse( JSON.stringify( strData ) ); //JSON.parse(strData);
-
+	  }
 
 	  res.on('error', function(err){
 	  	//Handle the errors here
