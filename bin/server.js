@@ -698,7 +698,7 @@ function addOns(eventType, cb, param1, param2, param3)
 											   returnparams = "returnParams:";
 											   var params = "";
 											   console.log("Stdout:" + stdout);
-											   var returnStart = stdout.indexOf(returnparams);
+											   var returnStart = stdout.lastIndexOf(returnparams);
 											   
 											   console.log("Return start:" + returnStart);
 											   if(returnStart > -1) {
