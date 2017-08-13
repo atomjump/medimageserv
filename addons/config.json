@@ -40,6 +40,13 @@
 				"runProcess": "node addons/wound/show-adjust-colours.js param1",
 				"waitForRequestFinish": "photo-zoomed.html",
 				"active": true
+			},
+			{
+				"addon": "Wound Analysis",
+				"scriptURLName": "show-photo",
+				"runProcess": "node addons/wound/show-photo.js param1",
+				"waitForRequestFinish": "",
+				"active": true
 			}
 		
 		],

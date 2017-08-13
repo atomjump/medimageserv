@@ -700,7 +700,7 @@ function addOns(eventType, cb, param1, param2, param3)
 											   console.log("Stdout:" + stdout);
 											   var returnStart = stdout.lastIndexOf(returnparams);
 											   
-											   console.log("Return start:" + returnStart);
+											  
 											   if(returnStart > -1) {
 											   		
 											   		params = stdout.substr(returnStart);
@@ -711,6 +711,28 @@ function addOns(eventType, cb, param1, param2, param3)
 											   }
 											   
 											   cb(waitForIt, params);
+											} else {
+												//There is the option of providing a raw file from the photo directory here.
+												returnPhotoFile = "returnPhotoFile:";
+												var params = "";
+											    console.log("Stdout:" + stdout);
+											    var returnStart = stdout.lastIndexOf(returnPhotoFile);
+											    
+											    if(returnStart > -1) {
+											   		
+											   		params = stdout.substr(returnStart);
+											   		params = params.replace("returnPhotoFile:?","");		//remove questions
+											   		params = params.replace("returnPhotoFile:","");		//remove questions
+											   		params = params.trim();		//remove newlines at the end
+											   		console.log("Photo file returned=" + params);
+											   		
+											   		
+											   		cb(params, null);		//This will actually serve up this file.
+											   		
+											   	}
+											   
+											   	
+											
 											}
 										  
 										});
