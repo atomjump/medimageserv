@@ -52,7 +52,7 @@
 				"addon": "Wound Analysis",
 				"scriptURLName": "get-photos",
 				"runProcess": "node addons/wound/get-photos.js param1",
-				"waitForRequestFinish": "",
+				"waitForRequestFinish": "snippet.html",
 				"active": true
 			}
 		

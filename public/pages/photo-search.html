@@ -78,7 +78,7 @@
 		 
 			 jQuery("#dir").autocomplete({
 				source: "/addon/get-photos/",
-				minLength: 0,//search after one characters
+				minLength: 1,//search after one characters
 				select: function(event,ui){
 					//do something
 					jQuery('#dir').val(ui.item.value);
