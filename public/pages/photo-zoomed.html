@@ -36,40 +36,7 @@
     <![endif]-->
     
     <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
-    
-      <script>
-			var syncing = SYNCING;
-
-			function checkCall()
-			{
-				if(syncing == true) {
-					var serv = document.getElementById('server').value;
-					if((serv != "")&&(serv != "https://")) {
-						var address= '/pair?proxyServer=' + encodeURIComponent(document.getElementById('server').value);
-						window.location.href = address;
-					} else {
-						alert("Please enter your MedImage server address first.");
-						$('#private-details').slideDown();
-					}
-
-				} else {
-					alert("Sorry, this server is not configured to pair. Check your config.json file.");
-				}
-
-				return false;
-			}
-
-			function pair()
-			{
-				if(syncing == true) {
-					window.location = "/pair?country=" + document.getElementById('country').value;
-				} else {
-					alert("Sorry, this server is not configured to pair. Check your config.json file.");
-				}
-				return false;
-			}
-   		</script>
-    
+        
 
 </head>
 
