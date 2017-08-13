@@ -1339,7 +1339,7 @@ function handleServer(_req, _res) {
 								
 										var replace = queryStringLib.parse(params);
 										var outdir = __dirname + "/../public/pages/" + newLocation;
-										console.log("Serving up file:" + outdir);
+										console.log("Serving up file:" + outdir + " Replace:" + replace);
 										serveUpFile(outdir, null, res, false, replace);
 									} else {
 										//Just complete the browser request
