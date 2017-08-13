@@ -632,9 +632,9 @@ function addOns(eventType, cb, param1, param2, param3)
 							if(evs[cnt].active == true) {
 								//Run the command off the system 								
 								var cmdLine = evs[cnt].runProcess;
-								cmdLine = cmdLine.replace("param1", param1);
-								cmdLine = cmdLine.replace("param2", param2);
-								cmdLine = cmdLine.replace("param3", param3);
+								cmdLine = cmdLine.replace(/param1/g, param1);
+								cmdLine = cmdLine.replace(/param2/g, param2);
+								cmdLine = cmdLine.replace(/param3/g, param3);
 								console.log("Running addon line: " + cmdLine);
 								
 								exec(cmdLine, (err, stdout, stderr) => {
