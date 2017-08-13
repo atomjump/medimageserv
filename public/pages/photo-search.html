@@ -61,9 +61,9 @@
 
 			if(str == origStr) {
 				//Straightforward redirect
-				window.location = '/get-photos/' + str;
+				window.location = '/addon/get-photos/' + str;
 			} else {
-				window.location = '/get-photos/' + str;
+				window.location = '/addon/get-photos/' + str;
 
 
 			}
@@ -77,7 +77,7 @@
 		 jQuery(document).ready(function(){
 		 
 			 jQuery("#dir").autocomplete({
-				source: "/get-photos/",
+				source: "/addon/get-photos/",
 				minLength: 1,//search after one characters
 				select: function(event,ui){
 					//do something
