@@ -1406,7 +1406,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
 	 contentType = 'image/png';
   }
   if (ext === '.jpg') {
-	 contentType = 'image/jpg';
+	 contentType = 'image/jpeg';
   }
 
   if(ext === '.svg') {
