@@ -81,10 +81,10 @@
 					
 					var finalTerm = request.term;
 					if(jQuery("#folder-first-word").is(":checked")) {
-						finalTerm = "%23" + finalTerm;
+						finalTerm = "%23" + finalTerm;  //add a hash, uri encoded 
 			
 					}
-					var uri = "/addon/get-photos/?term=" + finalTerm;
+					var uri = "/addon/get-photos/";
 					
 					
 					 jQuery.ajax({
