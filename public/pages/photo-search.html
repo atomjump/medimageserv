@@ -47,26 +47,12 @@
 <body>
 
 	<script>
-		function newDir(input) {
+		function newDir(input, str) {
 
-			origStr = document.getElementById(input).value;
 			str = origStr.replace(/\s+/g, '');		//remove spaces?  TODO check this
 			str = str.replace(/[^a-z0-9]/gi, '');	//only allow certain chars TODO check this
 
-
-			if(jQuery("#folder-first-word").is(":checked")) {
-				str = "#" + str;
-			
-			}
-
-			if(str == origStr) {
-				//Straightforward redirect
-				window.location = '/addon/get-photos/' + str;
-			} else {
-				window.location = '/addon/get-photos/' + str;
-
-
-			}
+			window.location = '/addon/show-photo/' + str;
 
 			return false;
 
@@ -101,10 +87,10 @@
 				minLength: 1,//search after one characters
 				select: function(event,ui){
 					//do something
-					jQuery('#dir').val(ui.item.value);
+					
 					
 					//Action the photo now
-					newDir("dir");
+					newDir("dir", ui.item.value);
 				}
 			});
 		});
