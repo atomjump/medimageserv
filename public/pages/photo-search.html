@@ -83,10 +83,11 @@
 			
 					}
 					var uri = "/addon/get-photos/?term=" + (request.term);
-					alert(uri);
 					
 					
-					 jQuery.get(uri, function(err, data) {
+					
+					 jQuery.get(uri, function(data) {
+					 		
 					 		resp(data);
 					 }); 
 				},
