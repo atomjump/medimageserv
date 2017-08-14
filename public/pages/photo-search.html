@@ -87,8 +87,9 @@
 					var myResp = resp;
 					
 					 jQuery.get(uri, function(data) {
-					 		alert(data);
-					 		myResp(data);
+					 		
+					 		var myobj = JSON.parse(data);
+					 		myResp(myobj);
 					 }); 
 				},
 				minLength: 1,//search after one characters
