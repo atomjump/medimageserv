@@ -81,7 +81,7 @@
 					
 					var finalTerm = request.term;
 					if(jQuery("#folder-first-word").is(":checked")) {
-						finalTerm = "%23" + finalTerm;  //add a hash, uri encoded 
+						finalTerm = "#" + finalTerm;  //add a hash, uri encoded 
 			
 					}
 					var uri = "/addon/get-photos/";
