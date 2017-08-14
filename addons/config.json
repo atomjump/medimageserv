@@ -4,7 +4,7 @@
 			{
 				"addon": "Wound Analysis",
 				"runProcess": "node addons/wound/wound-size.js param1",
-				"active": false
+				"active": true
 			},
 			{
 				"addon": "MedTech",
