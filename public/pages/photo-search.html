@@ -82,10 +82,11 @@
 						request.term = "#" + request.term;
 			
 					}
-					alert(JSON.stringify(request));
+					var uri = "/addon/get-photos/?term=" + encodeURIComponent(request.term);
+					alert(uri);
 					
 					
-					 jQuery.get("/addon/get-photos/?term=" + encodeURIComponent(request.term), function(err, data) {
+					 jQuery.get(uri, function(err, data) {
 					 		resp(data);
 					 }); 
 				},
