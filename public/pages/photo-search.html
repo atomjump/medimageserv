@@ -47,7 +47,7 @@
 <body>
 
 	<script>
-		function newDir(input, str) {
+		function newDir(str) {
 
 			str = origStr.replace(/\s+/g, '');		//remove spaces?  TODO check this
 			str = str.replace(/[^a-z0-9]/gi, '');	//only allow certain chars TODO check this
@@ -87,10 +87,10 @@
 				minLength: 1,//search after one characters
 				select: function(event,ui){
 					//do something
-					
+					alert(ui.item.value);
 					
 					//Action the photo now
-					newDir("dir", ui.item.value);
+					newDir(ui.item.value);
 				}
 			});
 		});
