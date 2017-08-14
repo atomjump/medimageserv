@@ -84,11 +84,11 @@
 					}
 					var uri = "/addon/get-photos/?term=" + (request.term);
 					
-					
+					var myResp = resp;
 					
 					 jQuery.get(uri, function(data) {
 					 		alert(data);
-					 		resp(data);
+					 		myResp(data);
 					 }); 
 				},
 				minLength: 1,//search after one characters
