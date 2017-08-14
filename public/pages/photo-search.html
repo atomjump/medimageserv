@@ -78,8 +78,10 @@
 		 
 			 jQuery("#dir").autocomplete({
 				source: function(request, resp) {
+					
+					
 					if(jQuery("#folder-first-word").is(":checked")) {
-						request.term = "#" + request.term;
+						request.term = "%23" + request.term;
 			
 					}
 					var uri = "/addon/get-photos/?term=" + request.term;
