@@ -66,10 +66,9 @@
 				source: function(request, resp) {
 					
 					var finalTerm = request.term;
-					if(jQuery("#folder-first-word").is(":checked")) {
+					//if(jQuery("#folder-first-word").is(":checked")) {
 						finalTerm = "#" + finalTerm;  //add a hash, uri encoded 
-			
-					}
+					//}
 					var uri = "/addon/get-photos/";
 					
 					
@@ -173,10 +172,10 @@
 
 							<p>Enter a patient ID or photo name for analysis</p>
 							<form id="search-dir" action="/addon/show-analysis">
-								<input id="dir" type="text" name="photo" value="" placeholder="Enter a photo or patient ID" autocomplete="off">
+								<input style="width: 100px;" id="dir" type="text" name="photo" value="" placeholder="Enter a photo or patient ID" autocomplete="off">
 								<input type="submit" value="Search">
-								<br>The first word is a folder
-								<input type="checkbox" id="folder-first-word" name="folder-first-word" checked="checked">
+								<!--<br>The first word is a folder-->
+								<!--<input type="checkbox" id="folder-first-word" name="folder-first-word" checked="checked">-->
 								
 								
 							</form>
