@@ -1345,6 +1345,11 @@ function handleServer(_req, _res) {
 										} else {
 											var replace = null;
 										}
+										
+										if(replace.CHANGELOCATION) {
+											newLocation = replace.CHANGELOCATION;
+										
+										}
 										var outdir = __dirname + "/../public/pages/" + newLocation;
 										console.log("Serving up file:" + outdir + " Replace:" + JSON.stringify(replace));
 										serveUpFile(outdir, null, res, false, replace);
