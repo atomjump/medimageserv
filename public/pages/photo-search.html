@@ -87,8 +87,8 @@
 					var uri = "/addon/get-photos/?term=" + finalTerm;
 					
 					
+					 jQuery.ajax(uri, { term: finalTerm }, function(data) {
 					
-					 jQuery.get(uri, function(data) {
 					 		
 					 		var myobj = JSON.parse(data);
 					 		resp(myobj);
