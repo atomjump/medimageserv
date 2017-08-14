@@ -52,7 +52,7 @@
 			//str = origStr.replace(/\s+/g, '');		//remove spaces?  TODO check this
 			//str = str.replace(/[^a-z0-9]/gi, '');	//only allow certain chars TODO check this
 
-			window.location = '/addon/show-photo/' + str;
+			window.location = '/addon/show-analysis/' + str;
 
 			return false;
 
@@ -87,10 +87,11 @@
 				minLength: 1,//search after one characters
 				select: function(event,ui){
 					//do something
-					alert(ui.item.value);
+					
 					
 					//Action the photo now
 					newDir(ui.item.value);
+					
 				}
 			});
 		});
