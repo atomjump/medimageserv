@@ -87,7 +87,7 @@
 				select: function(event,ui){
 					//do something
 					
-					
+					jQuery("#dir").val("");		//keep clear
 					//Action the photo now
 					newDir(ui.item.value);
 					
@@ -172,7 +172,7 @@
 
 							<p>Enter a patient ID or photo name for analysis</p>
 							<form id="search-dir" action="/addon/show-analysis">
-								<input style="width: 100px;" id="dir" type="text" name="photo" value="" placeholder="Enter a photo or patient ID" autocomplete="off">
+								<input style="width: 300px;" id="dir" type="text" name="photo" value="" placeholder="Enter a photo or patient ID" autocomplete="off">
 								<input type="submit" value="Search">
 								<!--<br>The first word is a folder-->
 								<!--<input type="checkbox" id="folder-first-word" name="folder-first-word" checked="checked">-->
