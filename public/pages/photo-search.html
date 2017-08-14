@@ -85,7 +85,7 @@
 					alert(JSON.stringify(request));
 					
 					
-					 jQuery.get("/addon/get-photos/?term=" + request.term, function(err, data) {
+					 jQuery.get("/addon/get-photos/?term=" + encodeURIComponent(request.term), function(err, data) {
 					 		resp(data);
 					 }); 
 				},
