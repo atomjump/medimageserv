@@ -82,14 +82,14 @@
 						request.term = "#" + request.term;
 			
 					}
-					var uri = "/addon/get-photos/?term=" + (request.term);
+					var uri = "/addon/get-photos/?term=" + request.term;
 					
-					var myResp = resp;
+					
 					
 					 jQuery.get(uri, function(data) {
 					 		
 					 		var myobj = JSON.parse(data);
-					 		myResp(myobj);
+					 		resp(myobj);
 					 }); 
 				},
 				minLength: 1,//search after one characters
