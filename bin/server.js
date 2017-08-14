@@ -672,7 +672,7 @@ function addOns(eventType, cb, param1, param2, param3)
 										//Run the command off the system - passing in the URL query string directly as a single url encoded string 								
 										var cmdLine = evs[cnt].runProcess;
 										
-										param1 = param1.replace("%23", "#");		//allow hashes to be sent in the url - reverse code them. TODO Would this affect e.g. %2345 ?
+										param1 = param1.replace("%20", " ");		//allow spaces to be sent in the url - reverse code them. TODO Would this affect e.g. %2345 ?
 										var queryString = encodeURIComponent(param1.replace(scriptChk + "?",""));
 										
 										cmdLine = cmdLine.replace(/param1/g, queryString);
