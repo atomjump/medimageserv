@@ -1346,7 +1346,7 @@ function handleServer(_req, _res) {
 											var replace = null;
 										}
 										
-										if(replace.CHANGELOCATION) {
+										if((replace) && (replace.CHANGELOCATION)) {
 											newLocation = replace.CHANGELOCATION;
 										
 										}
