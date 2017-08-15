@@ -21,14 +21,15 @@ STANDARDHEADER
 							<h1>Adjust Colour Ranges <span style="color: #666"><small>CUSTOMIMAGE</small></span></h1>
 
 							<p>Select your parameters and then click a point in the photo to set this colour as the dark (lower end) or light (upper end) section. Then click refresh to re-analyse the photo.</p>
-							<form action="/addon/regenerate-analysis">
-								<input type="hidden" name="photo" value="CUSTOMIMAGE">
+							<p>
+								<form action="/addon/regenerate-analysis">
+									<input type="hidden" name="photo" value="CUSTOMIMAGE">
 								
-								<input type="hidden" name="width" value="800">
-								<input type="hidden" name="height" value="600">
-								<input class="btn btn-success" type="submit" value="Refresh Analysis">
-							</form>
-							
+									<input type="hidden" name="width" value="800">
+									<input type="hidden" name="height" value="600">
+									<input class="btn btn-success" type="submit" value="Refresh Analysis">
+								</form>
+							</p>
 							
 							<form action="/addon/grab-colour" role="form">
 								<div class="row">
@@ -45,6 +46,7 @@ STANDARDHEADER
 												<option value="wound" selected="selected">Wound</option>
 												<option value="sticker">Sticker</option>
 											</select>
+										</div>
 										<div class="col-lg-2">
 											<label>Apply to</label>
 											<select class="form-control" name="master">
