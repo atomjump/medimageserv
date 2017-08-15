@@ -1514,7 +1514,6 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
     	res.end();
 	  })
 
-	  console.log("Content type:" + contentType);	
 
 	  res.writeHead(200, {'Content-Type': contentType, 'file-name': theFile});		//Trying with cap Content-Type, was content-type
 
