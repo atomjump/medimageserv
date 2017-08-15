@@ -47,6 +47,8 @@ var configFile = __dirname + '/../config.json';	//Default location is one direct
 var newConfigFile = '/../newconfig.json';	//This is for a new install generally - it will auto-create from this file
 						//if the config doesn't yet exist
 var addonsConfigFile = __dirname + '/../addons/config.json';
+var htmlHeaderFile = __dirname + '/../public/components/header.html';
+var htmlHeaderCode = "";				//This is loaded from disk on startup
 var noFurtherFiles = "none";			//This gets piped out if there are no further files in directory
 var pairingURL = "https://atomjump.com/med-genid.php";
 var listenPort = 5566;
@@ -170,6 +172,23 @@ function ensureDirectoryWritableWindows(fullPath, cb) {
 	}
 }
 
+
+function readHTMLHeader(cb) {
+	//Read the HTML standard header for pages. Returns the HTML code to the cb function, which includes the menu.
+	//This is retained in memory as it is frequently accessed.
+	
+	fs.readFile(htmlHeaderFile, function read(err, data) {
+		if (err) {
+			
+			cb("Sorry, cannot read the header file " + htmlHeaderFile, null);
+			return;
+		} else {
+			htmlHeaderCode = data;		//Set the global
+			cb(null, data);		
+		}
+	});
+
+}
 
 
 function checkConfigCurrent(setProxy, cb) {
@@ -798,15 +817,24 @@ function replaceAll(str, find, replace) {
 
 
 function httpHttpsCreateServer(options) {
-	if(httpsFlag == true) {
-		console.log("Starting https server.");
-		https.createServer(options, handleServer).listen(listenPort);
+	
+	//Get the common HTML header here now
+	readHTMLHeader(function(err) {
+		if(err) {
+			console.log(err);
+		} else {
+	
+			if(httpsFlag == true) {
+				console.log("Starting https server.");
+				https.createServer(options, handleServer).listen(listenPort);
 
 
-	} else {
-		console.log("Starting http server.");
-		http.createServer(handleServer).listen(listenPort);
-	}
+			} else {
+				console.log("Starting http server.");
+				http.createServer(handleServer).listen(listenPort);
+			}
+		}
+	});
 
 }
 
@@ -1350,6 +1378,10 @@ function handleServer(_req, _res) {
 											newLocation = replace.CHANGELOCATION;
 										
 										}
+										
+										replace.STANDARDHEADER = htmlHeaderCode;		//Set the header to the startup header code
+										
+																				
 										var outdir = __dirname + "/../public/pages/" + newLocation;
 										console.log("Serving up file:" + outdir + " Replace:" + JSON.stringify(replace));
 										serveUpFile(outdir, null, res, false, replace);
@@ -1370,6 +1402,7 @@ function handleServer(_req, _res) {
 								//Get a front-end facing image or html file
 								var outdir = __dirname + "/../public" + url;
 
+								customString.STANDARDHEADER = htmlHeaderCode;		//Set the header to the startup header code
 
 								serveUpFile(outdir, null, res, false, customString);
 							}
