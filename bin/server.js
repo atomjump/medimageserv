@@ -1406,7 +1406,8 @@ function handleServer(_req, _res) {
 								if(customString) {
 									customString.STANDARDHEADER = htmlHeaderCode;		//Set the header to the startup header code
 								} else {
-									if(url.endsWith(".html")) {
+									
+									if((url.endsWith(".html"))&&(url !== "snippet.html")) {		//We don't want to continually pass this header data around snippets
 										//Yes, will likely need the standard header
 										var customString = {};
 										customString.STANDARDHEADER = htmlHeaderCode;
