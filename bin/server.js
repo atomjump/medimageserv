@@ -1379,8 +1379,9 @@ function handleServer(_req, _res) {
 										
 										}
 										
-										replace.STANDARDHEADER = htmlHeaderCode;		//Set the header to the startup header code
-										
+										if(replace) {
+											replace.STANDARDHEADER = htmlHeaderCode;		//Set the header to the startup header code
+										}
 																				
 										var outdir = __dirname + "/../public/pages/" + newLocation;
 										console.log("Serving up file:" + outdir + " Replace:" + JSON.stringify(replace));
@@ -1395,7 +1396,7 @@ function handleServer(_req, _res) {
 								
 								}, thisQueryString);
 								
-								//Try taking this out??? :return;		
+									
 								
 							} else {
 
@@ -1407,7 +1408,8 @@ function handleServer(_req, _res) {
 								} else {
 									if(url.endsWith(".html")) {
 										//Yes, will likely need the standard header
-										var customString.STANDARDHEADER = htmlHeaderCode;
+										var customString = {};
+										customString.STANDARDHEADER = htmlHeaderCode;
 									
 									}
 								}
