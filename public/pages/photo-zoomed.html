@@ -1,0 +1,125 @@
+STANDARDHEADER
+
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+					&nbsp;
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                     <!-- /.panel -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-eyedropper fa-fw"></i> Wound Analysis
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                      
+							<h1>Adjust Colour Ranges <span style="color: #666"><small>CUSTOMIMAGE</small></span></h1>
+
+							<p>Select your parameters and then click a point in the photo to set this colour as the dark (lower end) or light (upper end) section. Then click refresh to re-analyse the photo.</p>
+							<p>
+								<form action="/addon/regenerate-analysis">
+									<input type="hidden" name="photo" value="CUSTOMIMAGE">
+								
+									<input type="hidden" name="width" value="800">
+									<input type="hidden" name="height" value="600">
+									<input class="btn btn-success" type="submit" value="Refresh Analysis">
+								</form>
+							</p>
+							
+							<form action="/addon/grab-colour" role="form">
+								<div class="row">
+									<div class="form-group">
+										<input type="hidden" name="photo" value="CUSTOMIMAGE">
+										<div class="col-lg-3">
+											<select class="form-control" name="lowRange">
+												<option value="true" selected="selected">Lower end of Range</option>
+												<option value="false">Upper end of Range</option>
+											</select>
+										</div>
+										<div class="col-lg-2">
+											<select class="form-control" name="type">
+												<option value="wound" selected="selected">Wound</option>
+												<option value="sticker">Sticker</option>
+											</select>
+										</div>
+										<div class="col-lg-1">
+											<label>Apply to</label>
+										</div>
+										<div class="col-lg-2">
+											<select class="form-control" name="master">
+												<option value="false" selected="selected">Just this photo</option>
+												<option value="true">All new photos</option>
+											</select>
+										</div>
+										<div class="col-lg-3">
+											<select class="form-control" name="keep">
+												<option value="true" selected="selected">Keep other colour ranges</option>
+												<option value="false">Clear other colour ranges</option>
+											</select>
+										</div>
+									</div>
+								</div>
+								<input type="hidden" name="width" value="800">
+								<input type="hidden" name="height" value="600">
+								<p>&nbsp;</p>
+								<table>
+									<tr>
+										<td> <!--  Works: http://104.131.151.99/html/medimageservtest/photos/CUSTOMIMAGE --> 
+											<input type="image" src="/addon/show-photo/CUSTOMWEBIMAGE" width="800" height="600" ismap>
+										</td>
+										<td style="padding-left: 10px; vertical-align:top">
+											<h2>Colours</h2>
+											CUSTOMCOLOURS
+										</td>
+									</tr>
+								</table>
+										
+							</form>
+							
+							
+							<br/><br/>
+							<p><a class="standardlink" href="/addon/show-analysis?photo=CUSTOMIMAGE">Return</a></p>
+					  
+                    
+                    	 </div>
+                    
+                    
+                    
+                   </div>
+                
+            </div>
+ 
+ 		</div>
+ 		<!-- /page-wrapper -->
+            
+            
+ 
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- jQuery -->
+    <script src="../vendor/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="../vendor/metisMenu/metisMenu.min.js"></script>
+
+    <!-- Morris Charts JavaScript -->
+    <script src="../vendor/raphael/raphael.min.js"></script>
+    <script src="../vendor/morrisjs/morris.min.js"></script>
+    <script src="../data/morris-data.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="../dist/js/sb-admin-2.js"></script>
+
+</body>
+
+</html>

@@ -35,6 +35,7 @@ var needle = require('needle');
 var readChunk = require('read-chunk'); // npm install read-chunk
 var imageType = require('image-type');
 var shredfile = require('shredfile')();
+var queryStringLib = require('querystring');
 
 
 var verbose = false;		//Set to true to display debug info
@@ -46,6 +47,8 @@ var configFile = __dirname + '/../config.json';	//Default location is one direct
 var newConfigFile = '/../newconfig.json';	//This is for a new install generally - it will auto-create from this file
 						//if the config doesn't yet exist
 var addonsConfigFile = __dirname + '/../addons/config.json';
+var htmlHeaderFile = __dirname + '/../public/components/header.html';
+var htmlHeaderCode = "";				//This is loaded from disk on startup
 var noFurtherFiles = "none";			//This gets piped out if there are no further files in directory
 var pairingURL = "https://atomjump.com/med-genid.php";
 var listenPort = 5566;
@@ -169,6 +172,23 @@ function ensureDirectoryWritableWindows(fullPath, cb) {
 	}
 }
 
+
+function readHTMLHeader(cb) {
+	//Read the HTML standard header for pages. Returns the HTML code to the cb function, which includes the menu.
+	//This is retained in memory as it is frequently accessed.
+	
+	fs.readFile(htmlHeaderFile, function read(err, data) {
+		if (err) {
+			
+			cb("Sorry, cannot read the header file " + htmlHeaderFile, null);
+			return;
+		} else {
+			htmlHeaderCode = data;		//Set the global
+			cb(null, data);		
+		}
+	});
+
+}
 
 
 function checkConfigCurrent(setProxy, cb) {
@@ -473,7 +493,7 @@ function download(uri, callback){
 																		//Backup the file
 										backupFile(createFile, "", dirFile);
 
-										addOns("photoWritten", createFile);
+										addOns("photoWritten", function() {}, createFile);
 
 
 										callback(null);
@@ -607,7 +627,7 @@ function backupFile(thisPath, outhashdir, finalFileName)
 
 
 //Handle 3rd party and our own add-ons
-function addOns(eventType, param1, param2, param3) 
+function addOns(eventType, cb, param1, param2, param3) 
 {
 	//Read in any add-ons that exist in the config?, or in the 'addons' folder.
 	
@@ -631,10 +651,10 @@ function addOns(eventType, param1, param2, param3)
 							if(evs[cnt].active == true) {
 								//Run the command off the system 								
 								var cmdLine = evs[cnt].runProcess;
-								cmdLine = cmdLine.replace("param1", param1);
-								cmdLine = cmdLine.replace("param2", param2);
-								cmdLine = cmdLine.replace("param3", param3);
-								console.log("Running addon line: " + cmdLine);
+								cmdLine = cmdLine.replace(/param1/g, param1);
+								cmdLine = cmdLine.replace(/param2/g, param2);
+								cmdLine = cmdLine.replace(/param3/g, param3);
+								if(verbose == true) console.log("Running addon line: " + cmdLine);
 								
 								exec(cmdLine, (err, stdout, stderr) => {
 								  if (err) {
@@ -644,8 +664,8 @@ function addOns(eventType, param1, param2, param3)
 								  }
 
 								  // the *entire* stdout and stderr (buffered)
-								  console.log(`stdout: ${stdout}`);
-								  console.log(`stderr: ${stderr}`);
+								  if(verbose == true) console.log(`stdout: ${stdout}`);
+								  if(verbose == true) console.log(`stderr: ${stderr}`);
 								});
 							}
 						
@@ -654,6 +674,114 @@ function addOns(eventType, param1, param2, param3)
 					}
 		
 				break;
+				
+				case "urlRequest":
+					if(verbose == true) console.log("URL request of " + param1);
+					
+					if(content.events.urlRequest) {
+							
+							var evs = content.events.urlRequest;
+							for(var cnt = 0; cnt< evs.length; cnt++) {
+								
+								//Check if script in param1 starts with the scriptURLName
+								var scriptChk = evs[cnt].scriptURLName;
+								if(verbose == true) console.log("Checking against:" + scriptChk);
+								
+								if(param1.substr(0,scriptChk.length) == scriptChk) {
+									if(evs[cnt].active == true) {
+										//Run the command off the system - passing in the URL query string directly as a single url encoded string 								
+										var cmdLine = evs[cnt].runProcess;
+										
+										param1 = param1.replace("%23", "#");		//allow hashes to be sent in the url - reverse code them. TODO Would this affect e.g. %2345 ?
+										param1 = param1.replace("%20", " ");		//allow spaces to be sent in the url - reverse code them. TODO Would this affect e.g. %2345 ?
+										
+										var queryString = encodeURIComponent(param1.replace(scriptChk + "?",""));
+										
+										cmdLine = cmdLine.replace(/param1/g, queryString);
+										if(verbose == true) console.log("Running addon line: " + cmdLine);
+								
+										if(evs[cnt].waitForRequestFinish) {
+											//Forward on to this page afterwards
+										  	 var waitForIt = evs[cnt].waitForRequestFinish;
+										} 
+								
+										exec(cmdLine, (err, stdout, stderr) => {
+										  if (err) {
+											// node couldn't execute the command
+											console.log("There was a problem running the addon. Error:" + err);
+											return;
+										  }
+
+										  // the *entire* stdout and stderr (buffered)
+										  if(verbose == true) console.log(`stdout: ${stdout}`);
+										  if(verbose == true) console.log(`stderr: ${stderr}`);
+										  
+										
+											if(waitForIt) {
+											   returnparams = "returnParams:";
+											   var params = "";
+											   if(verbose == true) console.log("Stdout:" + stdout);
+											   var returnStart = stdout.lastIndexOf(returnparams);
+											   
+											  
+											   if(returnStart > -1) {
+											   		
+											   		params = stdout.substr(returnStart);
+											   		params = params.replace("returnParams:?","");		//remove questions
+											   		params = params.replace("returnParams:","");		//remove questions
+											   		params = params.trim();		//remove newlines at the end
+											   		if(verbose == true) console.log("Params returned=" + params);
+											   }
+											   
+											   cb(waitForIt, params);
+											} else {
+												//There is the option of providing a raw file from the photo directory here. Include a blank ""
+												returnPhotoFile = "returnPhotoFile:";
+												var params = "";
+											    if(verbose == true) console.log("Stdout:" + stdout);
+											    var returnStart = stdout.lastIndexOf(returnPhotoFile);
+											    
+											    if(returnStart > -1) {
+											   		
+											   		params = stdout.substr(returnStart);
+											   		params = params.replace("returnPhotoFile:?","");		//remove questions
+											   		params = params.replace("returnPhotoFile:","");		//remove questions
+											   		params = params.trim();		//remove newlines at the end
+											   		if(verbose == true) console.log("Photo file returned=" + params);
+											   		
+											   		
+											   		cb(params, null);		//This will actually serve up this file.
+											   		
+											   	}
+											   
+											   	
+											
+											}
+										  
+										});
+										
+										if((evs[cnt].waitForRequestFinish)||(evs[cnt].waitForRequestFinish == "")) {
+											//Waiting for completion
+										} else {
+										
+											if(verbose == true) console.log("Checking after request:" + evs[cnt].afterRequest);
+											if(evs[cnt].afterRequest) {
+												//Forward on to this page afterwards
+												 cb(evs[cnt].afterRequest);
+											} else {
+												cb("");
+											}
+										}
+									}
+								}
+						
+							}
+					
+						}
+					
+				
+				break;
+				
 		
 				case "displayMenu":
 					//TODO: This is another example: display additional items on the main server menu
@@ -690,15 +818,24 @@ function replaceAll(str, find, replace) {
 
 
 function httpHttpsCreateServer(options) {
-	if(httpsFlag == true) {
-		console.log("Starting https server.");
-		https.createServer(options, handleServer).listen(listenPort);
+	
+	//Get the common HTML header here now
+	readHTMLHeader(function(err) {
+		if(err) {
+			console.log(err);
+		} else {
+	
+			if(httpsFlag == true) {
+				console.log("Starting https server.");
+				https.createServer(options, handleServer).listen(listenPort);
 
 
-	} else {
-		console.log("Starting http server.");
-		http.createServer(handleServer).listen(listenPort);
-	}
+			} else {
+				console.log("Starting http server.");
+				http.createServer(handleServer).listen(listenPort);
+			}
+		}
+	});
 
 }
 
@@ -997,6 +1134,7 @@ function handleServer(_req, _res) {
 			var read = '/read/';
 			var pair = '/pair';
 			var check = '/check=';
+			var addonreq = '/addon/';
 
 			if(verbose == true) console.log("Url requested:" + url);
 
@@ -1211,11 +1349,75 @@ function handleServer(_req, _res) {
 						} else {	//end of check read
 
 
-							//Get a front-end facing image or html file
-							var outdir = __dirname + "/../public" + url;
+							if(url.substr(0,addonreq.length) == addonreq) {
+								//So it is an addon's request
+								//Read the addon config, and determine what to do
+								var thisQueryString = url.substr(addonreq.length);
+								var newLocation = "";
+								
+								
+								
+								/*E.g. var replace = {
+							   	 "CUSTOMIMAGE": "yo/10-Aug-2017-09-21-45.jpg",
+							   	 "CUSTOMWOUNDIMAGE": "yo/10-Aug-2017-09-21-45.wound-view.jpg",
+							   	 "CUSTOMAREA": "123456"
+							   };*/
+								
+								
+								addOns("urlRequest", function(newLocation, params) {
+								
+									//Close off the request to the browser
+									if(newLocation != "") {
+								
+										if(params) {
+											var replace = queryStringLib.parse(params);
+										} else {
+											var replace = null;
+										}
+										
+										if((replace) && (replace.CHANGELOCATION)) {
+											newLocation = replace.CHANGELOCATION;
+										
+										}
+										
+										if(replace) {
+											replace.STANDARDHEADER = htmlHeaderCode;		//Set the header to the startup header code
+										}
+																				
+										var outdir = __dirname + "/../public/pages/" + newLocation;
+										if(verbose == true) console.log("Serving up file:" + outdir + " Replace:" + JSON.stringify(replace));
+										serveUpFile(outdir, null, res, false, replace);
+									} else {
+										//Just complete the browser request
+										if(verbose == true) console.log("Completing browser request");
+										res.writeHead(200, {'content-type': 'text/html'});
+										res.end();
+									}
+								
+								
+								}, thisQueryString);
+								
+									
+								
+							} else {
 
+								//Get a front-end facing image or html file
+								var outdir = __dirname + "/../public" + url;
 
-							serveUpFile(outdir, null, res, false, customString);
+								if(customString) {
+									customString.STANDARDHEADER = htmlHeaderCode;		//Set the header to the startup header code
+								} else {
+									
+									if((url.endsWith(".html"))&&(url !== "snippet.html")) {		//We don't want to continually pass this header data around snippets
+										//Yes, will likely need the standard header
+										var customString = {};
+										customString.STANDARDHEADER = htmlHeaderCode;
+									
+									}
+								}
+								
+								serveUpFile(outdir, null, res, false, customString);
+							}
 						}
 				   }
 		  	} //end of check for pairing
@@ -1238,8 +1440,9 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
   var normpath = sections[0];		//Ignore any query parameters to the right	
 
   if(verbose == true) console.log(normpath);
-
-
+	
+	
+	
   // set the content type
   var ext = path.extname(normpath);
   var contentType = 'text/html';
@@ -1254,9 +1457,11 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
   //Handle images
   if (ext === '.png') {
 	 contentType = 'image/png';
+	 stream = false;
   }
   if (ext === '.jpg') {
-	 contentType = 'image/jpg';
+	 contentType = 'image/jpeg';
+	 stream = false;
   }
 
   if(ext === '.svg') {
@@ -1271,6 +1476,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
   //Being preparation to send
 
 
+
   if(stream == false) {
 	//Implies we need to modify this file, and it is likely and html request - i.e. fairly rare
   	//Use the slow method:
@@ -1283,14 +1489,16 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
 	   	return;
 	  }
 
-
-
+	  
+	  if((contentType != 'image/jpeg')&&
+	     (contentType != 'image/png')) {
+	     	     
 	     //This is use for a replace on an HTML file with custom strings
 	     var strData = data.toString();
 
 	     for (var key in customStringList) {
-	     	  strData = strData.replace(key, customStringList[key]);
-  		  if(verbose == true) console.log("key " + key + " has value " + customStringList[key]);
+	     	 strData = strData.replace(new RegExp(key, 'g'), customStringList[key]);
+  		  	 if(verbose == true) console.log("key " + key + " has value " + customStringList[key]);
 
 	     }
 
@@ -1298,15 +1506,16 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
 	     if(verbose == true) console.log(strData);
 
 	     data = JSON.parse( JSON.stringify( strData ) ); //JSON.parse(strData);
-
+	  }
 
 	  res.on('error', function(err){
 	  	//Handle the errors here
 	  	res.statusCode = 400;
-    		res.end();
+    	res.end();
 	  })
 
-	  res.writeHead(200, {'content-type': contentType, 'file-name': theFile});
+
+	  res.writeHead(200, {'Content-Type': contentType, 'file-name': theFile});		//Trying with cap Content-Type, was content-type
 
 
 	  res.end(data, function(err) {

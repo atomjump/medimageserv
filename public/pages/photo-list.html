@@ -1,37 +1,4 @@
 STANDARDHEADER
-        
-        <script>
-			var syncing = SYNCING;
-
-			function checkCall()
-			{
-				if(syncing == true) {
-					var serv = document.getElementById('server').value;
-					if((serv != "")&&(serv != "https://")) {
-						var address= '/pair?proxyServer=' + encodeURIComponent(document.getElementById('server').value);
-						window.location.href = address;
-					} else {
-						alert("Please enter your MedImage server address first.");
-						$('#private-details').slideDown();
-					}
-
-				} else {
-					alert("Sorry, this server is not configured to pair. Check your config.json file.");
-				}
-
-				return false;
-			}
-
-			function pair()
-			{
-				if(syncing == true) {
-					window.location = "/pair?country=" + document.getElementById('country').value;
-				} else {
-					alert("Sorry, this server is not configured to pair. Check your config.json file.");
-				}
-				return false;
-			}
-   		</script>
 
         <div id="page-wrapper">
             <div class="row">
@@ -46,21 +13,16 @@ STANDARDHEADER
                      <!-- /.panel -->
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <i class="fa fa-random fa-fw"></i> Pairing
+                            <i class="fa fa-camera fa-fw"></i> Wound Analysis
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
                       
-							<h1>Your passcode is <span style="color:#b5a0db;">CUSTOMCODE</span></h1>
-
-	
-
-							<p style="color:#777">On your phone's MedImage app, click the large blue/purple button, wait a few seconds, then enter this code in the box.</p>
- 
- 
-							<p style="color:#AAA">Note: Your remote paired server is based in CUSTOMCOUNTRY.</p>
-		
-							<p><a class="standardlink" href="index.html">Return</a></p>
+                      		CUSTOMGRID
+                      
+                      						
+							<br/><br/>
+							<p><a class="standardlink" href="../pages/photo-search.html">Return</a></p>
 					  
                     
                     	 </div>
