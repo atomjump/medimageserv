@@ -1402,8 +1402,16 @@ function handleServer(_req, _res) {
 								//Get a front-end facing image or html file
 								var outdir = __dirname + "/../public" + url;
 
-								customString.STANDARDHEADER = htmlHeaderCode;		//Set the header to the startup header code
-
+								if(customString) {
+									customString.STANDARDHEADER = htmlHeaderCode;		//Set the header to the startup header code
+								} else {
+									if(url.endsWith(".html")) {
+										//Yes, will likely need the standard header
+										var customString.STANDARDHEADER = htmlHeaderCode;
+									
+									}
+								}
+								
 								serveUpFile(outdir, null, res, false, customString);
 							}
 						}
