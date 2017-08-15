@@ -654,7 +654,7 @@ function addOns(eventType, cb, param1, param2, param3)
 								cmdLine = cmdLine.replace(/param1/g, param1);
 								cmdLine = cmdLine.replace(/param2/g, param2);
 								cmdLine = cmdLine.replace(/param3/g, param3);
-								console.log("Running addon line: " + cmdLine);
+								if(verbose == true) console.log("Running addon line: " + cmdLine);
 								
 								exec(cmdLine, (err, stdout, stderr) => {
 								  if (err) {
@@ -664,8 +664,8 @@ function addOns(eventType, cb, param1, param2, param3)
 								  }
 
 								  // the *entire* stdout and stderr (buffered)
-								  console.log(`stdout: ${stdout}`);
-								  console.log(`stderr: ${stderr}`);
+								  if(verbose == true) console.log(`stdout: ${stdout}`);
+								  if(verbose == true) console.log(`stderr: ${stderr}`);
 								});
 							}
 						
@@ -676,7 +676,7 @@ function addOns(eventType, cb, param1, param2, param3)
 				break;
 				
 				case "urlRequest":
-					console.log("URL request of " + param1);
+					if(verbose == true) console.log("URL request of " + param1);
 					
 					if(content.events.urlRequest) {
 							
@@ -685,7 +685,8 @@ function addOns(eventType, cb, param1, param2, param3)
 								
 								//Check if script in param1 starts with the scriptURLName
 								var scriptChk = evs[cnt].scriptURLName;
-								console.log("Checking against:" + scriptChk);
+								if(verbose == true) console.log("Checking against:" + scriptChk);
+								
 								if(param1.substr(0,scriptChk.length) == scriptChk) {
 									if(evs[cnt].active == true) {
 										//Run the command off the system - passing in the URL query string directly as a single url encoded string 								
@@ -697,7 +698,7 @@ function addOns(eventType, cb, param1, param2, param3)
 										var queryString = encodeURIComponent(param1.replace(scriptChk + "?",""));
 										
 										cmdLine = cmdLine.replace(/param1/g, queryString);
-										console.log("Running addon line: " + cmdLine);
+										if(verbose == true) console.log("Running addon line: " + cmdLine);
 								
 										if(evs[cnt].waitForRequestFinish) {
 											//Forward on to this page afterwards
@@ -712,14 +713,14 @@ function addOns(eventType, cb, param1, param2, param3)
 										  }
 
 										  // the *entire* stdout and stderr (buffered)
-										  console.log(`stdout: ${stdout}`);
-										  console.log(`stderr: ${stderr}`);
+										  if(verbose == true) console.log(`stdout: ${stdout}`);
+										  if(verbose == true) console.log(`stderr: ${stderr}`);
 										  
 										
 											if(waitForIt) {
 											   returnparams = "returnParams:";
 											   var params = "";
-											   console.log("Stdout:" + stdout);
+											   if(verbose == true) console.log("Stdout:" + stdout);
 											   var returnStart = stdout.lastIndexOf(returnparams);
 											   
 											  
@@ -729,7 +730,7 @@ function addOns(eventType, cb, param1, param2, param3)
 											   		params = params.replace("returnParams:?","");		//remove questions
 											   		params = params.replace("returnParams:","");		//remove questions
 											   		params = params.trim();		//remove newlines at the end
-											   		console.log("Params returned=" + params);
+											   		if(verbose == true) console.log("Params returned=" + params);
 											   }
 											   
 											   cb(waitForIt, params);
@@ -737,7 +738,7 @@ function addOns(eventType, cb, param1, param2, param3)
 												//There is the option of providing a raw file from the photo directory here. Include a blank ""
 												returnPhotoFile = "returnPhotoFile:";
 												var params = "";
-											    console.log("Stdout:" + stdout);
+											    if(verbose == true) console.log("Stdout:" + stdout);
 											    var returnStart = stdout.lastIndexOf(returnPhotoFile);
 											    
 											    if(returnStart > -1) {
@@ -746,7 +747,7 @@ function addOns(eventType, cb, param1, param2, param3)
 											   		params = params.replace("returnPhotoFile:?","");		//remove questions
 											   		params = params.replace("returnPhotoFile:","");		//remove questions
 											   		params = params.trim();		//remove newlines at the end
-											   		console.log("Photo file returned=" + params);
+											   		if(verbose == true) console.log("Photo file returned=" + params);
 											   		
 											   		
 											   		cb(params, null);		//This will actually serve up this file.
@@ -763,7 +764,7 @@ function addOns(eventType, cb, param1, param2, param3)
 											//Waiting for completion
 										} else {
 										
-											console.log("Checking after request:" + evs[cnt].afterRequest);
+											if(verbose == true) console.log("Checking after request:" + evs[cnt].afterRequest);
 											if(evs[cnt].afterRequest) {
 												//Forward on to this page afterwards
 												 cb(evs[cnt].afterRequest);
@@ -1384,11 +1385,11 @@ function handleServer(_req, _res) {
 										}
 																				
 										var outdir = __dirname + "/../public/pages/" + newLocation;
-										console.log("Serving up file:" + outdir + " Replace:" + JSON.stringify(replace));
+										if(verbose == true) console.log("Serving up file:" + outdir + " Replace:" + JSON.stringify(replace));
 										serveUpFile(outdir, null, res, false, replace);
 									} else {
 										//Just complete the browser request
-										console.log("Completing browser request");
+										if(verbose == true) console.log("Completing browser request");
 										res.writeHead(200, {'content-type': 'text/html'});
 										res.end();
 									}
