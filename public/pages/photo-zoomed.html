@@ -18,7 +18,7 @@ STANDARDHEADER
                         <!-- /.panel-heading -->
                         <div class="panel-body">
                       
-							<h1>Adjust Colour Ranges of <span style="color: #666"><small>CUSTOMIMAGE</small></span></h1>
+							<h1>Adjust Colour Ranges <span style="color: #666"><small>CUSTOMIMAGE</small></span></h1>
 
 							<p>Select your parameters and then click a point in the photo to set this colour as the dark (lower end) or light (upper end) section. Then click refresh to re-analyse the photo.</p>
 							<form action="/addon/regenerate-analysis">
@@ -30,25 +30,27 @@ STANDARDHEADER
 							</form>
 							
 							
-							<form action="/addon/grab-colour">
-								<input type="hidden" name="photo" value="CUSTOMIMAGE">
-								<select name="lowRange">
-									<option value="true" selected="selected">Lower end of Range</option>
-									<option value="false">Upper end of Range</option>
-								</select>
-								<select name="type">
-									<option value="wound" selected="selected">Wound</option>
-									<option value="sticker">Sticker</option>
-								</select>
-								Apply to
-								<select name="master">
-									<option value="false" selected="selected">Just this photo</option>
-									<option value="true">All new photos</option>
-								</select>
-								<select name="keep">
-									<option value="true" selected="selected">Keep other colour ranges</option>
-									<option value="false">Clear other colour ranges</option>
-								</select>
+							<form action="/addon/grab-colour" role="form">
+								<div class="form-group">
+									<input type="hidden" name="photo" value="CUSTOMIMAGE">
+									<select class="form-control" name="lowRange">
+										<option value="true" selected="selected">Lower end of Range</option>
+										<option value="false">Upper end of Range</option>
+									</select>
+									<select class="form-control" name="type">
+										<option value="wound" selected="selected">Wound</option>
+										<option value="sticker">Sticker</option>
+									</select>
+									Apply to
+									<select class="form-control" name="master">
+										<option value="false" selected="selected">Just this photo</option>
+										<option value="true">All new photos</option>
+									</select>
+									<select class="form-control" name="keep">
+										<option value="true" selected="selected">Keep other colour ranges</option>
+										<option value="false">Clear other colour ranges</option>
+									</select>
+								</div>
 								<input type="hidden" name="width" value="800">
 								<input type="hidden" name="height" value="600">
 								<p>&nbsp;</p>
