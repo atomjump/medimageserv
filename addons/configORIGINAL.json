@@ -2,60 +2,19 @@
 	"events": {
 		"photoWritten": [
 			{
-				"addon": "Wound Analysis",
-				"runProcess": "node addons/wound/wound-size.js param1",
-				"active": true
-			},
-			{
-				"addon": "MedTech",
-				"runProcess": "",
+				"addon": "Sample",
+				"runProcess": "node addons/sample/sample.js param1",
 				"active": false
 			}		
 		],
 		"urlRequest": [
 			{
-				"addon": "Wound Analysis",
-				"scriptURLName": "grab-colour",
-				"runProcess": "node addons/wound/hue-due.js param1; node addons/wound/show-adjust-colours.js param1",
-				"waitForRequestFinish":  "photo-zoomed.html",
-				"active": true
-			},
-			{
-				"addon": "Wound Analysis",
-				"scriptURLName": "regenerate-analysis",
-				"runProcess": "node addons/wound/wound-size.js param1",
-				"waitForRequestFinish": "photo-analysis.html",
-				"active": true
-			},
-			{
-				"addon": "Wound Analysis",
-				"scriptURLName": "show-analysis",
-				"runProcess": "node addons/wound/show-wound-size.js param1 param2",
-				"waitForRequestFinish": "photo-analysis.html",
-				"active": true
-			},
-			{
-				"addon": "Wound Analysis",
-				"scriptURLName": "show-adjust-colour",
-				"runProcess": "node addons/wound/show-adjust-colours.js param1",
-				"waitForRequestFinish": "photo-zoomed.html",
-				"active": true
-			},
-			{
-				"addon": "Wound Analysis",
-				"scriptURLName": "show-photo",
-				"runProcess": "node addons/wound/show-photo.js param1",
-				"waitForRequestFinish": "",
-				"active": true
-			},
-			{
-				"addon": "Wound Analysis",
-				"scriptURLName": "get-photos",
-				"runProcess": "node addons/wound/get-photos.js param1",
-				"waitForRequestFinish": "snippet.html",
-				"active": true
-			}
-		
+				"addon": "Sample",
+				"scriptURLName": "sample-url-path",
+				"runProcess": "node addons/sample/sample.js param1; node addons/sample/sample2.js param1 param2",
+				"waitForRequestFinish":  "sample.html",
+				"active": false
+			}		
 		]
 	}
 }
