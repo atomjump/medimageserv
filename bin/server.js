@@ -38,7 +38,7 @@ var shredfile = require('shredfile')();
 var queryStringLib = require('querystring');
 
 
-var verbose = false;		//Set to true to display debug info
+var verbose = true;		//Set to true to display debug info
 var outdirDefaultParent = '/medimage';		//These should have a slash before, and no slash after.
 var outdirPhotos = '/photos';			//These should have a slash before, and no slash after.
 var defaultTitle = "image";
