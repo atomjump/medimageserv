@@ -770,7 +770,7 @@ function addOns(eventType, cb, param1, param2, param3)
 														// outhashdir:   the directory path of the file relative to the root photos dir /photos. But if blank, 
 														//					this is included in the finalFileName below.
 														// finalFileName:  the photo or other file name itself e.g. photo-01-09-17-12-54-56.jpgvar thisPath = path.dirname(backupArray[cnt]);
-														var photoParentDir = path.normalize(parentDir + outdirPhotos);
+														var photoParentDir = path.normalize(serverParentDir() + outdirPhotos);
 														if(verbose == true) console.log("Backing up requested files from script");
 														if(verbose == true) console.log("photoParentDir=" + photoParentDir);
 														var finalFileName = backupArray[cnt].replace(photoParentDir,"");		//Remove the photo's directory from the filename
