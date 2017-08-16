@@ -490,7 +490,7 @@ function download(uri, callback){
 											})
 										}
 
-																		//Backup the file
+										//Backup the file
 										backupFile(createFile, "", dirFile);
 
 										addOns("photoWritten", function() {}, createFile);
@@ -583,7 +583,10 @@ function trailSlash(str)
 
 function backupFile(thisPath, outhashdir, finalFileName)
 {
-
+	// thisPath:  full path of the file to be backed up from the root file system
+	// outhashdir:   the directory path of the file relative to the root photos dir /photos. But if blank, 
+	//					this is included in the finalFileName below.
+	// finalFileName:  the photo or other file name itself e.g. photo-01-09-17-12-54-56.jpg
 
 	//Read in the config file
 	fs.readFile(configFile, function read(err, data) {
@@ -718,6 +721,7 @@ function addOns(eventType, cb, param1, param2, param3)
 										  
 										
 											if(waitForIt) {
+											   //The script has run, now parse for the return parameters	
 											   returnparams = "returnParams:";
 											   var params = "";
 											   if(verbose == true) console.log("Stdout:" + stdout);
@@ -725,13 +729,54 @@ function addOns(eventType, cb, param1, param2, param3)
 											   
 											  
 											   if(returnStart > -1) {
-											   		
+											   		//Yes exists
 											   		params = stdout.substr(returnStart);
-											   		params = params.replace("returnParams:?","");		//remove questions
-											   		params = params.replace("returnParams:","");		//remove questions
+											   		params = params.replace(returnparams + "?","");		//remove questions
+											   		params = params.replace(returnparams,"");		//remove the locator
 											   		params = params.trim();		//remove newlines at the end
 											   		if(verbose == true) console.log("Params returned=" + params);
 											   }
+											   
+											   
+											   //But also potentially get any files that are new and need to be backed-up
+											   //to the config-specified folders. This should be before the returnParams
+											   backupFilesStr = "backupFiles:";
+											   var backupFiles = "";
+											   var backStart = stdout.lastIndexOf(backupFilesStr);
+											   
+											   if(backStart > -1) {
+											   		//Yes string exists
+											   		if(returnStart > -1) {
+											   			//Go to the start of the returnParams string
+											   			var backLen = returnStart - backStart;
+											   			backupFiles = stdout.substr(backStart, backLen);
+											   		} else {
+											   			//Go to the end of the file otherwise
+											   			backupFiles = stdout.substr(backStart);
+											   		
+											   		}
+											   		backupFiles = backupFiles.replace(backupFilesStr,"");		//remove locator
+											   		backupFiles = backupFiles.trim();		//remove newlines at the end
+											   		var backupArray = backupFiles.split(";");	//Should be semi-colon split
+											   		
+											   		//Now loop through and back-up each of these files.
+											   		for(var cnt = 0; cnt<backupArray.len; cnt++) {	
+											   		
+										   				// thisPath:  full path of the file to be backed up from the root file system
+														// outhashdir:   the directory path of the file relative to the root photos dir /photos. But if blank, 
+														//					this is included in the finalFileName below.
+														// finalFileName:  the photo or other file name itself e.g. photo-01-09-17-12-54-56.jpgvar thisPath = path.dirname(backupArray[cnt]);
+														var photoParentDir = path.normalize(parentDir + outdirPhotos);
+														if(verbose == true) console.log("Backing up requested files from script");
+														if(verbose == true) console.log("photoParentDir=" + photoParentDir);
+														var finalFileName = backupArray[cnt].replace(photoParentDir,"");		//Remove the photo's directory from the filename
+											   			if(verbose == true) console.log("finalFileName=" + finalFileName);
+											   			var thisPath = backupArray[cnt];
+											   			if(verbose == true) console.log("thisPath=" + thisPath);
+											   			backupFile(thisPath, "", finalFileName);
+											   		}
+											   	}
+											   
 											   
 											   cb(waitForIt, params);
 											} else {
@@ -1161,12 +1206,7 @@ function handleServer(_req, _res) {
 					   if(globalId != "") {
 					   	//We already know the global id - use it to update the passcode only
 					   	data.guid = globalId;
-					   	/*if(queryString) {
-					   		queryString = queryString + "&guid=" + globalId;
-							
-						} else {
-							queryString = "?guid=" + globalId;
-						}*/
+					   	
 					   }
 
 					   if(queryString) {
