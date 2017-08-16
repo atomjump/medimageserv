@@ -1200,7 +1200,8 @@ function handleServer(_req, _res) {
 
 							   var replace = {
 							   	 "CUSTOMCODE": passcode,
-							   	 "CUSTOMCOUNTRY": country
+							   	 "CUSTOMCOUNTRY": country,
+							   	 "STANDARDHEADER": htmlHeaderCode
 							   };
 
 							   //Write full proxy to config file
