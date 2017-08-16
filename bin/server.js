@@ -38,7 +38,7 @@ var shredfile = require('shredfile')();
 var queryStringLib = require('querystring');
 
 
-var verbose = true;		//Set to true to display debug info
+var verbose = false;		//Set to true to display debug info
 var outdirDefaultParent = '/medimage';		//These should have a slash before, and no slash after.
 var outdirPhotos = '/photos';			//These should have a slash before, and no slash after.
 var defaultTitle = "image";
@@ -679,16 +679,8 @@ function addOns(eventType, cb, param1, param2, param3)
 								   if(backStart > -1) {
 										if(verbose == true) console.log("Backing up requested");
 										
-										//Yes string exists
-										if(returnStart > -1) {
-											//Go to the start of the returnParams string
-											var backLen = returnStart - backStart;
-											backupFiles = stdout.substr(backStart, backLen);
-										} else {
-											//Go to the end of the file otherwise
-											backupFiles = stdout.substr(backStart);
 										
-										}
+										backupFiles = stdout.substr(backStart);
 										backupFiles = backupFiles.replace(backupFilesStr,"");		//remove locator
 										backupFiles = backupFiles.trim();		//remove newlines at the end
 										if(verbose == true) console.log("Backing up string in server:" + backupFiles);
