@@ -659,12 +659,62 @@ function addOns(eventType, cb, param1, param2, param3)
 								cmdLine = cmdLine.replace(/param3/g, param3);
 								if(verbose == true) console.log("Running addon line: " + cmdLine);
 								
+								
+								
 								exec(cmdLine, (err, stdout, stderr) => {
 								  if (err) {
 									// node couldn't execute the command
 									console.log("There was a problem running the addon. Error:" + err);
 									return;
 								  }
+								  
+								  
+								  //Potentially get any files that are new and need to be backed-up
+								   //to the config-specified folders. This should be before echoed to stdout as 'backupFiles:' near the end of 
+								   //the script output. 
+								   backupFilesStr = "backupFiles:";
+								   var backupFiles = "";
+								   var backStart = stdout.lastIndexOf(backupFilesStr);
+								   
+								   if(backStart > -1) {
+										if(verbose == true) console.log("Backing up requested");
+										
+										//Yes string exists
+										if(returnStart > -1) {
+											//Go to the start of the returnParams string
+											var backLen = returnStart - backStart;
+											backupFiles = stdout.substr(backStart, backLen);
+										} else {
+											//Go to the end of the file otherwise
+											backupFiles = stdout.substr(backStart);
+										
+										}
+										backupFiles = backupFiles.replace(backupFilesStr,"");		//remove locator
+										backupFiles = backupFiles.trim();		//remove newlines at the end
+										if(verbose == true) console.log("Backing up string in server:" + backupFiles);
+										var backupArray = backupFiles.split(";");	//Should be semi-colon split
+										if(verbose == true) console.log("Backing up array:" + JSON.stringify(backupArray));
+										
+										//Now loop through and back-up each of these files.
+										for(var cnt = 0; cnt<backupArray.length; cnt++) {	
+										
+											// thisPath:  full path of the file to be backed up from the root file system
+											// outhashdir:   the directory path of the file relative to the root photos dir /photos. But if blank, 
+											//					this is included in the finalFileName below.
+											// finalFileName:  the photo or other file name itself e.g. photo-01-09-17-12-54-56.jpgvar thisPath = path.dirname(backupArray[cnt]);
+											var photoParentDir = path.normalize(serverParentDir() + outdirPhotos);
+											if(verbose == true) console.log("Backing up requested files from script");
+											if(verbose == true) console.log("photoParentDir=" + photoParentDir);
+											var finalFileName = backupArray[cnt].replace(photoParentDir,"");		//Remove the photo's directory from the filename
+											if(verbose == true) console.log("finalFileName=" + finalFileName);
+											var thisPath = backupArray[cnt];
+											if(verbose == true) console.log("thisPath=" + thisPath);
+											backupFile(thisPath, "", finalFileName);
+										}
+									}
+								  
+								  
+								  
 
 								  // the *entire* stdout and stderr (buffered)
 								  if(verbose == true) console.log(`stdout: ${stdout}`);
