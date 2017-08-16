@@ -745,6 +745,8 @@ function addOns(eventType, cb, param1, param2, param3)
 											   var backStart = stdout.lastIndexOf(backupFilesStr);
 											   
 											   if(backStart > -1) {
+											   		if(verbose == true) console.log("Backing up requested");
+											   		
 											   		//Yes string exists
 											   		if(returnStart > -1) {
 											   			//Go to the start of the returnParams string
@@ -757,7 +759,9 @@ function addOns(eventType, cb, param1, param2, param3)
 											   		}
 											   		backupFiles = backupFiles.replace(backupFilesStr,"");		//remove locator
 											   		backupFiles = backupFiles.trim();		//remove newlines at the end
+											   		if(verbose == true) console.log("Backing up string in server:" + backupFiles);
 											   		var backupArray = backupFiles.split(";");	//Should be semi-colon split
+											   		if(verbose == true) console.log("Backing up array:" + JSON.stringify(backupArray));
 											   		
 											   		//Now loop through and back-up each of these files.
 											   		for(var cnt = 0; cnt<backupArray.len; cnt++) {	
