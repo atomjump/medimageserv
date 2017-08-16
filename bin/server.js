@@ -764,7 +764,7 @@ function addOns(eventType, cb, param1, param2, param3)
 											   		if(verbose == true) console.log("Backing up array:" + JSON.stringify(backupArray));
 											   		
 											   		//Now loop through and back-up each of these files.
-											   		for(var cnt = 0; cnt<backupArray.len; cnt++) {	
+											   		for(var cnt = 0; cnt<backupArray.length; cnt++) {	
 											   		
 										   				// thisPath:  full path of the file to be backed up from the root file system
 														// outhashdir:   the directory path of the file relative to the root photos dir /photos. But if blank, 
