@@ -686,7 +686,7 @@ function addOns(eventType, cb, param1, param2, param3)
 								   var backStart = stdout.lastIndexOf(backupFilesStr);
 								   
 								   if(backStart > -1) {
-										if(verbose == true) console.log("Backing up requested");
+										console.log("Backing up requested of " + backStart);
 										
 										
 										backupFiles = stdout.substr(backStart);
