@@ -709,9 +709,9 @@ function addOns(eventType, cb, param1, param2, param3)
 											var photoParentDir = path.normalize(serverParentDir() + outdirPhotos);
 											if(verbose == true) console.log("Backing up requested files from script");
 											if(verbose == true) console.log("photoParentDir=" + photoParentDir);
-											var finalFileName = trim(backupArray[cnt].replace(photoParentDir,""));		//Remove the photo's directory from the filename
+											var finalFileName = backupArray[cnt].replace(photoParentDir,"").trim();		//Remove the photo's directory from the filename
 											if(verbose == true) console.log("finalFileName=" + finalFileName);
-											var thisPath = trim(backupArray[cnt]);
+											var thisPath = backupArray[cnt].trim();
 											if(verbose == true) console.log("thisPath=" + thisPath);
 											backupFile(thisPath, "", finalFileName);
 										}
