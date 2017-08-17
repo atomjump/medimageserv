@@ -670,7 +670,9 @@ function addOns(eventType, cb, param1, param2, param3)
 								
 								
 								
-								exec(cmdLine, (err, stdout, stderr) => {
+								exec(cmdLine, {
+										maxBuffer: 2000 * 1024 //quick fix
+									}, (err, stdout, stderr) => {
 								  if (err) {
 									// node couldn't execute the command
 									console.log("There was a problem running the addon. Error:" + err);
@@ -678,7 +680,6 @@ function addOns(eventType, cb, param1, param2, param3)
 								  }
 								  
 								  console.log("Stdout from command:" + stdout); 		//TESTING
-								  process.exit(0);										//TESTING
 								  
 								  //Potentially get any files that are new and need to be backed-up
 								   //to the config-specified folders. This should be before echoed to stdout as 'backupFiles:' near the end of 
