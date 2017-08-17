@@ -493,7 +493,16 @@ function download(uri, callback){
 										//Backup the file
 										backupFile(createFile, "", dirFile);
 
-										addOns("photoWritten", function() {}, createFile);
+										addOns("photoWritten", function(err) {
+											if(err) {
+												console.log("Error writing file:" + err);
+											} else {
+												if(verbose == true) console.log("Add-on completed running");
+											
+											}
+									
+										
+										}, createFile);
 
 
 										callback(null);
@@ -711,6 +720,8 @@ function addOns(eventType, cb, param1, param2, param3)
 								  // the *entire* stdout and stderr (buffered)
 								  if(verbose == true) console.log(`stdout: ${stdout}`);
 								  if(verbose == true) console.log(`stderr: ${stderr}`);
+								  
+								  cb(null);
 								});
 							}
 						
