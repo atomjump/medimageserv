@@ -688,11 +688,24 @@ function addOns(eventType, cb, param1, param2, param3)
 								   var backupFiles = "";
 								   var backStart = stdout.lastIndexOf(backupFilesStr);
 								   
+								   returnparams = "returnParams:";
+								   var returnStart = stdout.lastIndexOf(returnparams);
+											   
+								   
+								   
 								   if(backStart > -1) {
+										//Yes string exists
+										if(returnStart > -1) {
+											//Go to the start of the returnParams string
+											var backLen = returnStart - backStart;
+											backupFiles = stdout.substr(backStart, backLen);
+										} else {
+											//Go to the end of the file otherwise
+											backupFiles = stdout.substr(backStart);
+									
+										}
 										
-										
-										
-										backupFiles = stdout.substr(backStart);
+									
 										console.log("Backing up requested of " + backupFiles);
 										backupFiles = backupFiles.replace(backupFilesStr,"");		//remove locator
 										backupFiles = backupFiles.trim();		//remove newlines at the end
