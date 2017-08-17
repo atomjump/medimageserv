@@ -666,7 +666,7 @@ function addOns(eventType, cb, param1, param2, param3)
 								cmdLine = cmdLine.replace(/param1/g, param1);
 								cmdLine = cmdLine.replace(/param2/g, param2);
 								cmdLine = cmdLine.replace(/param3/g, param3);
-								if(verbose == true) console.log("Running addon line: " + cmdLine);
+								console.log("Running addon line: " + cmdLine);
 								
 								
 								
