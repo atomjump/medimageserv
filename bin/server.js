@@ -689,10 +689,11 @@ function addOns(eventType, cb, param1, param2, param3)
 								   var backStart = stdout.lastIndexOf(backupFilesStr);
 								   
 								   if(backStart > -1) {
-										console.log("Backing up requested of " + backStart);
+										
 										
 										
 										backupFiles = stdout.substr(backStart);
+										console.log("Backing up requested of " + backupFiles);
 										backupFiles = backupFiles.replace(backupFilesStr,"");		//remove locator
 										backupFiles = backupFiles.trim();		//remove newlines at the end
 										if(verbose == true) console.log("Backing up string in server:" + backupFiles);
@@ -724,7 +725,7 @@ function addOns(eventType, cb, param1, param2, param3)
 								  if(verbose == true) console.log(`stdout: ${stdout}`);
 								  if(verbose == true) console.log(`stderr: ${stderr}`);
 								  
-								  cb(null);
+								  //Note: don't call back here, because we may be running serveral add-ons on this event.
 								});
 							}
 						
