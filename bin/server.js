@@ -659,7 +659,7 @@ function addOns(eventType, cb, param1, param2, param3)
 					if(content.events.photoWritten) {
 						
 						var evs = content.events.photoWritten;
-						for(var cnt = 0; cnt< evs.length; evs++) {
+						for(var cnt = 0; cnt< evs.length; cnt++) {
 							if(evs[cnt].active == true) {
 								//Run the command off the system 								
 								var cmdLine = evs[cnt].runProcess;
