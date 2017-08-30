@@ -36,6 +36,7 @@ var readChunk = require('read-chunk'); // npm install read-chunk
 var imageType = require('image-type');
 var shredfile = require('shredfile')();
 var queryStringLib = require('querystring');
+var async = require('async');
 
 
 var verbose = false;		//Set to true to display debug info
