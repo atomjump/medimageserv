@@ -736,9 +736,10 @@ function addOns(eventType, cb, param1, param2, param3)
 												var photoParentDir = path.normalize(serverParentDir() + outdirPhotos);
 												if(verbose == true) console.log("Backing up requested files from script");
 												if(verbose == true) console.log("photoParentDir=" + photoParentDir);
-												var finalFileName = backupArray[cnt].replace(photoParentDir,"").trim();		//Remove the photo's directory from the filename
+												var finalFileName = path.normalize(backupArray[cnt]);
+												finalFileName = finalFileName.replace(photoParentDir,"").trim();		//Remove the photo's directory from the filename
 												if(verbose == true) console.log("finalFileName=" + finalFileName);
-												var thisPath = backupArray[cnt].trim();
+												var thisPath = path.normalize(backupArray[cnt].trim());
 												if(verbose == true) console.log("thisPath=" + thisPath);
 												backupFile(thisPath, "", finalFileName);
 											}
@@ -871,9 +872,10 @@ function addOns(eventType, cb, param1, param2, param3)
 														var photoParentDir = path.normalize(serverParentDir() + outdirPhotos);
 														if(verbose == true) console.log("Backing up requested files from script");
 														if(verbose == true) console.log("photoParentDir=" + photoParentDir);
-														var finalFileName = backupArray[cnt].replace(photoParentDir,"");		//Remove the photo's directory from the filename
+														var finalFileName = path.normalize(backupArray[cnt]);
+														finalFileName = finalFileName.replace(photoParentDir,"");		//Remove the photo's directory from the filename
 											   			if(verbose == true) console.log("finalFileName=" + finalFileName);
-											   			var thisPath = backupArray[cnt];
+											   			var thisPath = path.normalize(backupArray[cnt]);
 											   			if(verbose == true) console.log("thisPath=" + thisPath);
 											   			backupFile(thisPath, "", finalFileName);
 											   		}
