@@ -674,6 +674,8 @@ function addOns(eventType, cb, param1, param2, param3)
 								if(runBlock.active == true) {
 									//Run the command off the system 								
 									var cmdLine = runBlock.runProcess;
+									cmdLine = cmdLine.replace(/parentdir/g, serverParentDir());
+									
 									cmdLine = cmdLine.replace(/param1/g, param1);
 									cmdLine = cmdLine.replace(/param2/g, param2);
 									cmdLine = cmdLine.replace(/param3/g, param3);
@@ -795,6 +797,7 @@ function addOns(eventType, cb, param1, param2, param3)
 										
 										var queryString = encodeURIComponent(param1.replace(scriptChk + "?",""));
 										
+										cmdLine = cmdLine.replace(/parentdir/g, serverParentDir());
 										cmdLine = cmdLine.replace(/param1/g, queryString);
 										if(verbose == true) console.log("Running addon line: " + cmdLine);
 								
