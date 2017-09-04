@@ -690,71 +690,73 @@ function addOns(eventType, cb, param1, param2, param3)
 										// node couldn't execute the command
 										console.log("There was a problem running the addon. Error:" + err);
 										callback(err);
-									  }
+										
+									  } else {
 								  
-									  console.log("Stdout from command:" + stdout); 		//TESTING
+										  console.log("Stdout from command:" + stdout); 		//TESTING
 								  
-									  //Potentially get any files that are new and need to be backed-up
-									   //to the config-specified folders. This should be before echoed to stdout as 'backupFiles:' near the end of 
-									   //the script output. 
-									   backupFilesStr = "backupFiles:";
-									   var backupFiles = "";
-									   var backStart = stdout.lastIndexOf(backupFilesStr);
+										  //Potentially get any files that are new and need to be backed-up
+										   //to the config-specified folders. This should be before echoed to stdout as 'backupFiles:' near the end of 
+										   //the script output. 
+										   backupFilesStr = "backupFiles:";
+										   var backupFiles = "";
+										   var backStart = stdout.lastIndexOf(backupFilesStr);
 								   
-									   returnparams = "returnParams:";
-									   var returnStart = stdout.lastIndexOf(returnparams);
+										   returnparams = "returnParams:";
+										   var returnStart = stdout.lastIndexOf(returnparams);
 											   
 								   
-								   	   //Backups will take place asyncronously, in the background	
-									   if(backStart > -1) {
-											//Yes string exists
-											if(returnStart > -1) {
-												//Go to the start of the returnParams string
-												var backLen = returnStart - backStart;
-												backupFiles = stdout.substr(backStart, backLen);
-											} else {
-												//Go to the end of the file otherwise
-												backupFiles = stdout.substr(backStart);
+										   //Backups will take place asyncronously, in the background	
+										   if(backStart > -1) {
+												//Yes string exists
+												if(returnStart > -1) {
+													//Go to the start of the returnParams string
+													var backLen = returnStart - backStart;
+													backupFiles = stdout.substr(backStart, backLen);
+												} else {
+													//Go to the end of the file otherwise
+													backupFiles = stdout.substr(backStart);
 									
-											}
+												}
 										
 									
-											console.log("Backing up requested of " + backupFiles);
-											backupFiles = backupFiles.replace(backupFilesStr,"");		//remove locator
-											backupFiles = backupFiles.trim();		//remove newlines at the end
-											if(verbose == true) console.log("Backing up string in server:" + backupFiles);
-											var backupArray = backupFiles.split(";");	//Should be semi-colon split
-											if(verbose == true) console.log("Backing up array:" + JSON.stringify(backupArray));
+												console.log("Backing up requested of " + backupFiles);
+												backupFiles = backupFiles.replace(backupFilesStr,"");		//remove locator
+												backupFiles = backupFiles.trim();		//remove newlines at the end
+												if(verbose == true) console.log("Backing up string in server:" + backupFiles);
+												var backupArray = backupFiles.split(";");	//Should be semi-colon split
+												if(verbose == true) console.log("Backing up array:" + JSON.stringify(backupArray));
 										
-											//Now loop through and back-up each of these files.
-											for(var cnt = 0; cnt<backupArray.length; cnt++) {	
+												//Now loop through and back-up each of these files.
+												for(var cnt = 0; cnt<backupArray.length; cnt++) {	
 										
-												// thisPath:  full path of the file to be backed up from the root file system
-												// outhashdir:   the directory path of the file relative to the root photos dir /photos. But if blank, 
-												//					this is included in the finalFileName below.
-												// finalFileName:  the photo or other file name itself e.g. photo-01-09-17-12-54-56.jpgvar thisPath = path.dirname(backupArray[cnt]);
-												var photoParentDir = path.normalize(serverParentDir() + outdirPhotos);
-												if(verbose == true) console.log("Backing up requested files from script");
-												if(verbose == true) console.log("photoParentDir=" + photoParentDir);
-												var finalFileName = path.normalize(backupArray[cnt]);
-												finalFileName = finalFileName.replace(photoParentDir,"").trim();		//Remove the photo's directory from the filename
-												if(verbose == true) console.log("finalFileName=" + finalFileName);
-												var thisPath = path.normalize(backupArray[cnt].trim());
-												if(verbose == true) console.log("thisPath=" + thisPath);
-												backupFile(thisPath, "", finalFileName);
+													// thisPath:  full path of the file to be backed up from the root file system
+													// outhashdir:   the directory path of the file relative to the root photos dir /photos. But if blank, 
+													//					this is included in the finalFileName below.
+													// finalFileName:  the photo or other file name itself e.g. photo-01-09-17-12-54-56.jpgvar thisPath = path.dirname(backupArray[cnt]);
+													var photoParentDir = path.normalize(serverParentDir() + outdirPhotos);
+													if(verbose == true) console.log("Backing up requested files from script");
+													if(verbose == true) console.log("photoParentDir=" + photoParentDir);
+													var finalFileName = path.normalize(backupArray[cnt]);
+													finalFileName = finalFileName.replace(photoParentDir,"").trim();		//Remove the photo's directory from the filename
+													if(verbose == true) console.log("finalFileName=" + finalFileName);
+													var thisPath = path.normalize(backupArray[cnt].trim());
+													if(verbose == true) console.log("thisPath=" + thisPath);
+													backupFile(thisPath, "", finalFileName);
+												}
 											}
-										}
 								  
 								  
 								  
 
-									  // the *entire* stdout and stderr (buffered)
-									  if(verbose == true) console.log(`stdout: ${stdout}`);
-									  if(verbose == true) console.log(`stderr: ${stderr}`);
+										  // the *entire* stdout and stderr (buffered)
+										  if(verbose == true) console.log(`stdout: ${stdout}`);
+										  if(verbose == true) console.log(`stderr: ${stderr}`);
 								  
-									  //Note: we must call back here once the system command has finished. This allows us
-									  //to go on to the next command, sequentially, though each command is run async
-									  callback();
+										  //Note: we must call back here once the system command has finished. This allows us
+										  //to go on to the next command, sequentially, though each command is run async
+										  callback();
+										}
 									});	//End of exec
 								} else {	//End of is active check
 									//We must callback even if it is not active, to go to the next option
@@ -792,13 +794,14 @@ function addOns(eventType, cb, param1, param2, param3)
 									if(evs[cnt].active == true) {
 										//Run the command off the system - passing in the URL query string directly as a single url encoded string 								
 										var cmdLine = evs[cnt].runProcess;
+										cmdLine = cmdLine.replace(/parentdir/g, serverParentDir());
 										
 										param1 = param1.replace("%23", "#");		//allow hashes to be sent in the url - reverse code them. TODO Would this affect e.g. %2345 ?
 										param1 = param1.replace("%20", " ");		//allow spaces to be sent in the url - reverse code them. TODO Would this affect e.g. %2345 ?
 										
 										var queryString = encodeURIComponent(param1.replace(scriptChk + "?",""));
 										
-										cmdLine = cmdLine.replace(/parentdir/g, serverParentDir());
+										
 										cmdLine = cmdLine.replace(/param1/g, queryString);
 										if(verbose == true) console.log("Running addon line: " + cmdLine);
 								
