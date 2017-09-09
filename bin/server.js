@@ -1534,6 +1534,12 @@ function handleServer(_req, _res) {
 																				
 										var outdir = __dirname + "/../public/pages/" + newLocation;
 										if(verbose == true) console.log("Serving up file:" + outdir + " Replace:" + JSON.stringify(replace));
+										
+										//Since this is dynamic content we don't want to cache it.
+										res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+										res.header('Expires', '-1');
+										res.header('Pragma', 'no-cache');
+										
 										serveUpFile(outdir, null, res, false, replace);
 									} else {
 										//Just complete the browser request
