@@ -1536,7 +1536,7 @@ function handleServer(_req, _res) {
 										if(verbose == true) console.log("Serving up file:" + outdir + " Replace:" + JSON.stringify(replace));
 										
 										//Since this is dynamic content we don't want to cache it.
-										if(res.headersSent) {
+										if((res.headersSent) && (res.headersSent == true)) {
 											//Sorry, the header has already been sent
 										} else {
 											res.setHeader("Cache-Control", 'private, no-cache, no-store, must-revalidate');
