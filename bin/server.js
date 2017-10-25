@@ -1672,9 +1672,11 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
     	res.end();
 	  })
 
-
-	  res.writeHead(200, {'Content-Type': contentType, 'file-name': theFile});		//Trying with cap Content-Type, was content-type
-
+	  if((res.headersSent) && (res.headersSent == true)) {
+	    	//Sorry, the header has already been sent
+	  } else {
+	  	res.writeHead(200, {'Content-Type': contentType, 'file-name': theFile});		//Trying with cap Content-Type, was content-type
+	  }
 
 	  res.end(data, function(err) {
 		  //Wait until finished sending, then delete locally
@@ -1691,7 +1693,11 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
   		//Use streams instead for a larger file
 
   	     //Still pipe a mime type back
-  	     res.writeHead(200, {'content-type': contentType, 'file-name': theFile});
+  	     if((res.headersSent) && (res.headersSent == true)) {
+	    	//Sorry, the header has already been sent
+	  	 } else {
+  	         res.writeHead(200, {'content-type': contentType, 'file-name': theFile});
+		 }
 
 		  //Read the file from disk, then send to client
 		  var stream = fs.createReadStream(normpath);
