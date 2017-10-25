@@ -1536,9 +1536,10 @@ function handleServer(_req, _res) {
 										if(verbose == true) console.log("Serving up file:" + outdir + " Replace:" + JSON.stringify(replace));
 										
 										//Since this is dynamic content we don't want to cache it.
-										res.setHeader("Cache-Control", 'private, no-cache, no-store, must-revalidate');
-										res.setHeader("Expires", "-1");
-										res.setHeader("Pragma", "no-cache");
+										//This is causing problems:
+										//res.setHeader("Cache-Control", 'private, no-cache, no-store, must-revalidate');
+										//res.setHeader("Expires", "-1");
+										//res.setHeader("Pragma", "no-cache");
 										
 										
 										serveUpFile(outdir, null, res, false, replace);
