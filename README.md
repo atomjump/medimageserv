@@ -136,7 +136,8 @@ sudo mv "$(npm prefix -global)/lib/node_modules/medimage/config.json" /var/tmp
 sudo mv "$(npm prefix -global)/lib/node_modules/medimage/addons" /var/tmp
 sudo mv "$(npm prefix -global)/lib/node_modules/medimage/photos" /var/tmp
 sudo npm install -g medimage
-sudo mv /var/tmp/config.json "$(npm prefix -global)/lib/node_modules/medimage/" 
+sudo mv /var/tmp/config.json "$(npm prefix -global)/lib/node_modules/medimage/"
+sudo rm -rf "$(npm prefix -global)/lib/node_modules/medimage/addons" 
 sudo mv /var/tmp/addons "$(npm prefix -global)/lib/node_modules/medimage/" 
 sudo rm -rf "$(npm prefix -global)/lib/node_modules/medimage/photos"
 sudo mv /var/tmp/photos "$(npm prefix -global)/lib/node_modules/medimage/"
