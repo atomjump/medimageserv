@@ -1684,8 +1684,25 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
 	  	  	 console.log(err);
 	  	  } else {
 			//success, do nothing
+			
+			if(deleteAfterwards == true) {
+				//Delete the file 'normpath' from the server. This server is like a proxy cache and
+				//doesn't hold permanently
 
-	   	   }
+				//Note: we may need to check the client has got the full file before deleting it?
+				//e.g. timeout/ or a whole new request.
+				if(verbose == true) console.log("About to shred:" + normpath);
+				shredfile.shred(normpath, function(err, file) {
+					if(err) {
+						console.log(err);
+						return;
+					}
+					console.log("Sent on and shredded " + theFile);
+				});
+
+			}
+
+	   	 }
   	   });
 	 });  //End of readFile
    } else {	//End of if custom string
