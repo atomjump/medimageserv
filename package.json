@@ -2,7 +2,7 @@
   "author": "AtomJump.com",
   "name": "medimage",
   "description": "An image server for the Android/iPhone app, MedImage.",
-  "version": "0.8.4",
+  "version": "0.8.5",
   "bin": {
     "medimage": "bin/server.js"
   },
