@@ -1635,7 +1635,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
 
 
 
-  if(stream == false) {
+  if((stream == false)&&(deleteAfterwards != true)) {
 	//Implies we need to modify this file, and it is likely and html request - i.e. fairly rare
   	//Use the slow method:
   	fs.readFile(normpath, function (err,data) {
