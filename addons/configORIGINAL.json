@@ -1,20 +1,8 @@
 {
 	"events": {
-		"photoWritten": [
-			{
-				"addon": "Sample",
-				"runProcess": "node addons/sample/sample.js param1",
-				"active": false
-			}		
+		"photoWritten": [		
 		],
-		"urlRequest": [
-			{
-				"addon": "Sample",
-				"scriptURLName": "sample-url-path",
-				"runProcess": "node addons/sample/sample.js param1; node addons/sample/sample2.js param1 param2",
-				"waitForRequestFinish":  "sample.html",
-				"active": false
-			}		
+		"urlRequest": [	
 		]
 	}
 }
