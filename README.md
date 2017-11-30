@@ -133,11 +133,11 @@ The current way to upgrade medimage server:
 ```
 pm2 delete medimage-server
 sudo mv "$(npm prefix -global)/lib/node_modules/medimage/config.json" /var/tmp
-sudo mv "$(npm prefix -global)/lib/node_modules/medimage/addons/config.json" /var/tmp/addons_config.json
+sudo mv "$(npm prefix -global)/lib/node_modules/medimage/addons" /var/tmp
 sudo mv "$(npm prefix -global)/lib/node_modules/medimage/photos" /var/tmp
 sudo npm install -g medimage
 sudo mv /var/tmp/config.json "$(npm prefix -global)/lib/node_modules/medimage/" 
-sudo mv /var/tmp/addons_config.json "$(npm prefix -global)/lib/node_modules/medimage/addons/config.json" 
+sudo mv /var/tmp/addons "$(npm prefix -global)/lib/node_modules/medimage/" 
 sudo rm -rf "$(npm prefix -global)/lib/node_modules/medimage/photos"
 sudo mv /var/tmp/photos "$(npm prefix -global)/lib/node_modules/medimage/"
 cd "$(npm prefix -global)/lib/node_modules/medimage/" 
