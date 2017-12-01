@@ -645,7 +645,7 @@ function backupFile(thisPath, outhashdir, finalFileName)
 					//Not considered
 				} else {
 					if(content.keepMaster == false) {
-						fsExtra.remove(thisPath, fucntion(err) {
+						fsExtra.remove(thisPath, function(err) {
 						  if (err) {
 							console.error('Warning: there was a problem removing: ' + err.message)
 						  } else {
