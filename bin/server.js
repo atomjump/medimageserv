@@ -603,8 +603,6 @@ function backupFile(thisPath, outhashdir, finalFileName)
 	//					this is included in the finalFileName below.
 	// finalFileName:  the photo or other file name itself e.g. photo-01-09-17-12-54-56.jpg
 	
-	//TODO: remove old file
-
 	//Read in the config file
 	fs.readFile(configFile, function read(err, data) {
 		if (err) {
@@ -615,46 +613,64 @@ function backupFile(thisPath, outhashdir, finalFileName)
 
 			if(content.backupTo) {
 				//Loop through all the backup directories
-				for(var cnt=0; cnt< content.backupTo.length; cnt++) {
-
-					if(outhashdir) {
-						var target = trailSlash(content.backupTo[cnt]) + trailSlash(outhashdir) + finalFileName;
-						} else {
-						var target = trailSlash(content.backupTo[cnt]) + finalFileName;
-					}
-					if(verbose == true) console.log("Backing up " + thisPath + " to:" + target);
-
-					fsExtra.ensureDir(trailSlash(content.backupTo[cnt]) + trailSlash(outhashdir), function(err) {
-						if(err) {
-							console.log("Warning: Could not create directory for backup: " + content.backupTo[cnt]);
-						} else {
-							try {
-								console.log("Copying " + thisPath + " to " + target);
-								fsExtra.copySync(thisPath, target);
-								ensurePhotoReadableWindows(target);
-							} catch (err) {
-								console.error('Warning: there was a problem backing up: ' + err.message);
-							}
+				async.eachOf(content.backupTo,
+					// 2nd param is the function that each item is passed to
+					function(runBlock, cnt, callback){
+				
+						if(outhashdir) {
+							var target = trailSlash(content.backupTo[cnt]) + trailSlash(outhashdir) + finalFileName;
+							} else {
+							var target = trailSlash(content.backupTo[cnt]) + finalFileName;
 						}
-					});
+						if(verbose == true) console.log("Backing up " + thisPath + " to:" + target);
 
-				}
-				
-				//And finally, remove the old file, if the option is set
-				if( typeof content.keepMaster === 'undefined') {
-					//Not considered
-				} else {
-					if(content.keepMaster == false) {
-						fsExtra.remove(thisPath, function(err) {
-						  if (err) {
-							console.error('Warning: there was a problem removing: ' + err.message)
-						  } else {
-							console.log('Removed the file: ' + thisPath);
-						  }
+						fsExtra.ensureDir(trailSlash(content.backupTo[cnt]) + trailSlash(outhashdir), function(err) {
+							if(err) {
+								console.log("Warning: Could not create directory for backup: " + content.backupTo[cnt]);
+							} else {
+								try {
+									console.log("Copying " + thisPath + " to " + target);
+									fsExtra.copySync(thisPath, target);
+									ensurePhotoReadableWindows(target);
+									callback(null);
+								} catch (err) {
+									console.error('Warning: there was a problem backing up: ' + err.message);
+									callback(null);
+								}
+							}
 						});
-					}
+					
+					},	//End of async eachOf single item
+					  function(err){
+						// All tasks are done now
+						if(err) {
+						   console.log('ERR:' + err);
+						 } else {
+						   console.log('Completed all backups!');
+						   //And finally, remove the old file, if the option is set
+							if( typeof content.keepMaster === 'undefined') {
+								//Not considered
+							} else {
+								if(content.keepMaster == false) {
+									fsExtra.remove(thisPath, function(err) {
+									  if (err) {
+										console.error('Warning: there was a problem removing: ' + err.message)
+									  } else {
+										console.log('Removed the file: ' + thisPath);
+									  }
+									});
+								}
+	
+							}
+					   
+					   
+						   return;
+						 }
+					   }
+				); //End of async eachOf all items
 				
-				}
+				
+				
 			}
 		}
 
