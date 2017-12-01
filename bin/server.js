@@ -491,15 +491,20 @@ function download(uri, callback){
 											})
 										}
 
-										//Backup the file
-										backupFile(createFile, "", dirFile);
+										
 
-										addOns("photoWritten", function(err) {
+										addOns("photoWritten", function(err, normalBackup) {
 											if(err) {
 												console.log("Error writing file:" + err);
 											} else {
 												if(verbose == true) console.log("Add-on completed running");
 											
+											}
+											
+											if(normalBackup == true) {
+												//Now we have finished processing the file via the addons,
+												//backup the standard files if 'normal' is the case
+												backupFile(createFile, "", dirFile);
 											}
 									
 										
@@ -597,6 +602,8 @@ function backupFile(thisPath, outhashdir, finalFileName)
 	// outhashdir:   the directory path of the file relative to the root photos dir /photos. But if blank, 
 	//					this is included in the finalFileName below.
 	// finalFileName:  the photo or other file name itself e.g. photo-01-09-17-12-54-56.jpg
+	
+	//TODO: remove old file
 
 	//Read in the config file
 	fs.readFile(configFile, function read(err, data) {
@@ -632,6 +639,22 @@ function backupFile(thisPath, outhashdir, finalFileName)
 					});
 
 				}
+				
+				//And finally, remove the old file, if the option is set
+				if( typeof content.keepMaster === 'undefined') {
+					//Not considered
+				} else {
+					if(content.keepMaster == false) {
+						fsExtra.remove(thisPath, fucntion(err) {
+						  if (err) {
+							console.error('Warning: there was a problem removing: ' + err.message)
+						  } else {
+							console.log('Removed the file: ' + thisPath);
+						  }
+						});
+					}
+				
+				}
 			}
 		}
 
@@ -659,6 +682,7 @@ function addOns(eventType, cb, param1, param2, param3)
 					//param1 is the full path of the new photo in the home directory (not the backed up copy)
 					if(content.events.photoWritten) {
 						
+						var normalBackup = true;
 						var evs = content.events.photoWritten;
 						//Asyncronously call each item, but in sequential order. This means the process could
 						//be doing something processor intensive without holding up the main server, but still allow
@@ -701,6 +725,14 @@ function addOns(eventType, cb, param1, param2, param3)
 										   backupFilesStr = "backupFiles:";
 										   var backupFiles = "";
 										   var backStart = stdout.lastIndexOf(backupFilesStr);
+										   
+										   
+										   //Special case of the original file is renamed
+										   backupFileRenamedStr = "backupFileRenamed:";	
+										   if(stdout.lastIndexOf(backupFileRenamedStr) > -1) {
+										   		backStart = stdout.lastIndexOf(backupFileRenamedStr);
+										   		normalBackup = false;
+										   }
 								   
 										   returnparams = "returnParams:";
 										   var returnStart = stdout.lastIndexOf(returnparams);
@@ -708,6 +740,7 @@ function addOns(eventType, cb, param1, param2, param3)
 								   
 										   //Backups will take place asyncronously, in the background	
 										   if(backStart > -1) {
+										   		
 												//Yes string exists
 												if(returnStart > -1) {
 													//Go to the start of the returnParams string
@@ -755,12 +788,12 @@ function addOns(eventType, cb, param1, param2, param3)
 								  
 										  //Note: we must call back here once the system command has finished. This allows us
 										  //to go on to the next command, sequentially, though each command is run async
-										  callback();
+										  callback(null);
 										}
 									});	//End of exec
 								} else {	//End of is active check
 									//We must callback even if it is not active, to go to the next option
-									 callback();
+									 callback(null);
 								}
 						
 						},	//End of async eachOf single item
@@ -770,6 +803,7 @@ function addOns(eventType, cb, param1, param2, param3)
 								   console.log('ERR:' + err);
 								 } else {
 								   console.log('Completed all photoWritten events!');
+								   cb(null, normalBackup);
 								 }
 							   }
 					  	); //End of async eachOf all items
