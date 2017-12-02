@@ -15,7 +15,7 @@
 					"addon": "change-folder",
 					"scriptURLName": "change-folder-view-settings",
 					"runProcess": "node parentdir/addons/change-folder/view-settings.js",
-					"waitForRequestFinish":  "addon-settings.html",
+					"waitForRequestFinish":  "change-folder-settings.html",
 					"active": true
 				}
 		
