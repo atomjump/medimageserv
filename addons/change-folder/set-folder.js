@@ -68,7 +68,7 @@ function updateConfig(newdir, cb) {
 if(process.argv[2]) {
 
   var opts = queryString.parse(decodeURIComponent(process.argv[2]));
-  var photoDir = upath.normalize(opts.photoDir);
+  var photoDir = upath.normalize(opts.newFolder);
   
   
   //path.posix.normalize(p)
