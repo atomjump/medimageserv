@@ -24,7 +24,7 @@ var queryString = require('querystring');
 
 
 var currentDisks = [];
-var configFile = '/../config.json';
+var configFile = '/../../config.json';
 
 
 function updateConfig(newdir, cb) {
