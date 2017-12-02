@@ -25,12 +25,33 @@ var queryString = require('querystring');
 
 var currentDisks = [];
 var configFile = __dirname + '/../../config.json';
-if(process.env.npm_package_config_configFile) {
-	//This is an npm environment var set for the location of the configFile
-	configFile = process.env.npm_package_config_configFile;
+
+
 	console.log("Using config file:" + configFile);
 
+
+
+
+function getMasterConfig(defaultConfig, callback) {
+	exec("npm get medimage:configFile", {
+			maxBuffer: 2000 * 1024 //quick fix
+		}, (err, stdout, stderr) => {
+		  if (err) {
+			// node couldn't execute the command
+			console.log("There was a problem running the addon. Error:" + err);
+			callback(err, "");
+	
+		  } else {
+			  console.log("Stdout from command:" + stdout);
+			  if(stdout != "") {
+			  	 callback(null, stdout);
+			  
+			  } 		
+		  }
+	});		//End of the exec
 }
+
+
 
 function noTrailSlash(str)
 {
@@ -42,45 +63,100 @@ function noTrailSlash(str)
 
 }
 
+function restartParentServer(cb)
+{
+	//Restart the parent MedImage service
+	var platform = process.platform;
+	var isWin = /^win/.test(platform);
+	if(isWin) {
+		var run = 'net stop MedImage';
+		if(verbose == true) console.log("Running:" + run);
+		exec(run, function(error, stdout, stderr){
+			if(error) {
+				console.log("Error stopping MedImage:" + error);
+				cb();
+			
+			} else {
+				console.log(stdout);
+			
+				var run = 'net start MedImage';
+				exec(run, function(error, stdout, stderr){
+					if(error) {
+						console.log("Error starting MedImage:" + error);
+						cb();
+					} else {
+						console.log(stdout);
+						cb();
+					}
+				});
+			}
+		});
+	} else {
+	   //Probably linux
+	   if((pm2Parent) && (pm2Parent != '')) {
+		   var run = 'pm2 restart ' + pm2Parent;
+			if(verbose == true) console.log("Running:" + run);
+			exec(run, function(error, stdout, stderr){
+				console.log(stdout);
+				cb();
+			});
+		}
+	}
+
+}
+
+
 
 function updateConfig(newdir, cb) {
 	//Reads and updates config with a newdir in the output photos - this will overwrite all other entries there
 	//Returns cb(err) where err = null, or a string with the error
 
 
-	//Write to a json file with the current drive.  This can be removed later manually by user, or added to
-	fs.readFile(configFile, function read(err, data) {
-		if (err) {
-				cb("Sorry, cannot read config file! " + err);
+	getMasterConfig(configFile, function(err, masterConfigFile) {
+		if(err) {
+			//Leave with the configFile
 		} else {
-			var content = JSON.parse(data);
+			configFile = masterConfigFile;		//Override with the global option
+		}
+
+		//Write to a json file with the current drive.  This can be removed later manually by user, or added to
+		fs.readFile(configFile, function read(err, data) {
+			if (err) {
+					cb("Sorry, cannot read config file! " + err);
+			} else {
+				var content = JSON.parse(data);
 
 
-			if(content.allowPhotosLeaving == false) {	//For security purposes, only allow this change through the interface if we are a client machine
+				if(content.allowPhotosLeaving == false) {	//For security purposes, only allow this change through the interface if we are a client machine
 
-				content.backupTo = [ newdir ];
+					content.backupTo = [ newdir ];
 
-				//Write the file nicely formatted again
-				fs.writeFile(__dirname + configFile, JSON.stringify(content, null, 6), function(err) {
-					if(err) {
-						cb(err);
-					}
+					//Write the file nicely formatted again
+					fs.writeFile(__dirname + configFile, JSON.stringify(content, null, 6), function(err) {
+						if(err) {
+							cb(err);
+						} else {
   
   
 
-					console.log("The config file was saved!");
+							console.log("The config file was saved!");
 
 				
-					cb(null);
-				});
-			} else {
+							restartParentServer(function(){ 
+										cb(null);
+						   
+							});
+						}
+					});
+				} else {
 			
-				cb("Sorry, this server is not configured to accept changes. Please check your config.json file.");
-			}
+					cb("Sorry, this server is not configured to accept changes. Please check your config.json file.");
+				}
 			
 
 
-		};
+			};
+		});
 	});
 
 }

@@ -733,7 +733,7 @@ function addOns(eventType, cb, param1, param2, param3)
 										
 									  } else {
 								  
-										  console.log("Stdout from command:" + stdout); 		//TESTING
+										  console.log("Stdout from command:" + stdout); 		
 								  
 										  //Potentially get any files that are new and need to be backed-up
 										   //to the config-specified folders. This should be before echoed to stdout as 'backupFiles:' near the end of 
