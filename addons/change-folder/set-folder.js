@@ -92,6 +92,7 @@ if(process.argv[2]) {
       	
       } else {
       	 console.log("Set successfully.");
+      	 console.log("returnParams:");
       	 process.exit(0);
       }
     
