@@ -11,7 +11,7 @@ var verbose = false;
 //Globals
 var mainConfigFile = __dirname + '/../../config.json';
 var mainMedImagePath = "../../photos/";
-
+var exec = require('child_process').exec;
 
 
 function getMasterConfig(defaultConfig, callback) {

@@ -20,6 +20,7 @@ var fsExtra = require('fs-extra');
 var request = require("request");
 var needle = require('needle');
 var queryString = require('querystring');
+var exec = require('child_process').exec;
 
 
 var verbose = false;
