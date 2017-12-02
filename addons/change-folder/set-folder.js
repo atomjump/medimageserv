@@ -50,22 +50,28 @@ function updateConfig(newdir, cb) {
 		} else {
 			var content = JSON.parse(data);
 
-			content.backupTo = [ newdir ];
 
-			//Write the file nicely formatted again
-			fs.writeFile(__dirname + configFile, JSON.stringify(content, null, 6), function(err) {
-				if(err) {
-					cb(err);
-				}
+			if(conf.allowPhotosLeaving == false) {	//For security purposes, only allow this change through the interface if we are a client machine
+
+				content.backupTo = [ newdir ];
+
+				//Write the file nicely formatted again
+				fs.writeFile(__dirname + configFile, JSON.stringify(content, null, 6), function(err) {
+					if(err) {
+						cb(err);
+					}
   
   
 
-				console.log("The config file was saved!");
+					console.log("The config file was saved!");
 
 				
-				cb(null);
-			});
-
+					cb(null);
+				});
+			} else {
+			
+				cb("Sorry, this server is not configured to accept changes. Please check your config.json file.");
+			}
 			
 
 

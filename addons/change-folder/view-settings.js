@@ -49,8 +49,14 @@ readConfig(readConfigFile, function(conf, err) {
 			   if((conf.backupTo[0]) && (conf.allowPhotosLeaving == false)) {		//The allowPhotosLeaving should be a client, not a proxy - hide the folder on a proxy
 			   	 	oldFolder = conf.backupTo[0];
 			   }
+			   
+			   if(conf.allowPhotosLeaving == true) {
+			   		var allowChanges = "Locked";
+			   } else {
+			   		var allowChanges = "Unlocked";
+			   }
 			  
-			   console.log("returnParams:?OLDFOLDERVAL=" + oldFolder);
+			   console.log("returnParams:?OLDFOLDERVAL=" + oldFolder + "&ALLOWCHANGES=" + allowChanges);
 			   
 			}
 });
