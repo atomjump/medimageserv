@@ -797,6 +797,13 @@ function addOns(eventType, cb, param1, param2, param3)
 								  
 								  
 								  
+								  		  reloadConfig = "reloadConfig:true";	
+										  if(stdout.lastIndexOf(reloadConfig) > -1) {
+										   		checkConfigCurrent(setProxy, function() {
+										   			//This is run async - refresh the config in the background.
+										   		});
+										   }
+								  
 
 										  // the *entire* stdout and stderr (buffered)
 										  if(verbose == true) console.log(`stdout: ${stdout}`);
@@ -879,9 +886,16 @@ function addOns(eventType, cb, param1, param2, param3)
 											   if(verbose == true) console.log("Stdout:" + stdout);
 											   var returnStart = stdout.lastIndexOf(returnparams);
 											   
+											   reloadConfig = "reloadConfig:true";	
+											   if(stdout.lastIndexOf(reloadConfig) > -1) {
+													checkConfigCurrent(setProxy, function() {
+														//This is run async - refresh the config in the background.
+													});
+											   }
+											   
 											  
 											   if(returnStart > -1) {
-											   		//Yes exists
+											   		//Yes return params exists
 											   		params = stdout.substr(returnStart);
 											   		params = params.replace(returnparams + "?","");		//remove questions
 											   		params = params.replace(returnparams,"");		//remove the locator

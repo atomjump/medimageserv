@@ -103,9 +103,7 @@ function restartParentServer(cb)
 			if(verbose == true) console.log("Running:" + run);
 			exec(run, function(error, stdout, stderr){
 				console.log(stdout);
-				setTimeout(function(){	//Wait a couple of seconds for the server to restart
-					cb();
-				}, 2000);
+				cb();
 				
 			});
 		}
@@ -150,11 +148,9 @@ function updateConfig(newdir, cb) {
 
 							console.log("The config file was saved!");
 
-				
-							restartParentServer(function(){ 
-										cb(null);
-						   
-							});
+							//Ensure the parent server reloads it's config
+							console.log("reloadConfig:true");
+							cb(null);
 						}
 					});
 				} else {
