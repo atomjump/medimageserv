@@ -34,7 +34,6 @@ var pm2Parent = 'medimage-server';		//Include a string if this is run on linux t
 
 
 
-
 function getMasterConfig(defaultConfig, callback) {
 	exec("npm get medimage:configFile", {
 			maxBuffer: 2000 * 1024 //quick fix
@@ -47,7 +46,7 @@ function getMasterConfig(defaultConfig, callback) {
 		  } else {
 			  console.log("Stdout from command:" + stdout);
 			  if((stdout != "")&&(!stdout.startsWith("undefined"))) {
-			  	 callback(null, stdout);
+			  	 callback(null, stdout.trim());
 			  
 			  } else {
 			  	 callback("Global not set", null);

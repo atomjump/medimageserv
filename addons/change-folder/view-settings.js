@@ -26,7 +26,7 @@ function getMasterConfig(defaultConfig, callback) {
 		  } else {
 			  console.log("Stdout from command:" + stdout);
 			  if((stdout != "")&&(!stdout.startsWith("undefined"))) {
-			  	 callback(null, stdout);
+			  	 callback(null, stdout.trim());
 			  
 			  } else {
 			  	 callback("Global not set", null);
