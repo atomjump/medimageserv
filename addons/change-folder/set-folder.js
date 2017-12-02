@@ -27,7 +27,7 @@ var currentDisks = [];
 var configFile = __dirname + '/../../config.json';
 
 
-	console.log("Using config file:" + configFile);
+	
 
 
 
@@ -43,7 +43,7 @@ function getMasterConfig(defaultConfig, callback) {
 	
 		  } else {
 			  console.log("Stdout from command:" + stdout);
-			  if((stdout != "")&&(stdout != "undefined")) {
+			  if((stdout != "")&&(!stdout.startsWith("undefined"))) {
 			  	 callback(null, stdout);
 			  
 			  } else {
@@ -121,6 +121,7 @@ function updateConfig(newdir, cb) {
 		} else {
 			configFile = masterConfigFile;		//Override with the global option
 		}
+		console.log("Using config file:" + configFile);
 
 		//Write to a json file with the current drive.  This can be removed later manually by user, or added to
 		fs.readFile(configFile, function read(err, data) {
