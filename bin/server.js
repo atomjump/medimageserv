@@ -700,6 +700,9 @@ function addOns(eventType, cb, param1, param2, param3)
 						
 						var normalBackup = true;
 						var evs = content.events.photoWritten;
+						var backupAtEnd = [];
+						
+						
 						//Asyncronously call each item, but in sequential order. This means the process could
 						//be doing something processor intensive without holding up the main server, but still allow
 						//each add-on to potentially process sequentially. This could be useful for chaining image resizing,
@@ -791,7 +794,9 @@ function addOns(eventType, cb, param1, param2, param3)
 													if(verbose == true) console.log("finalFileName=" + finalFileName);
 													var thisPath = path.normalize(backupArray[cnt].trim());
 													if(verbose == true) console.log("thisPath=" + thisPath);
-													backupFile(thisPath, "", finalFileName);
+													backupAtEnd.push({ "thisPath": thisPath,
+																		"finalFileName": finalFileName });
+													
 												}
 											}
 								  
@@ -826,6 +831,14 @@ function addOns(eventType, cb, param1, param2, param3)
 								   console.log('ERR:' + err);
 								 } else {
 								   console.log('Completed all photoWritten events!');
+								   
+								   //Carry out the backups after all commands have finished
+								   for(var cnt = 0; cnt < backupAtEnd.length; cnt++) {	
+								   		backupFile(backupAtEnd[cnt].thisPath, "", backupAtEnd[cnt].finalFileName);
+								   }
+								   
+								   
+								   
 								   cb(null, normalBackup);
 								 }
 							   }
