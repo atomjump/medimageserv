@@ -799,7 +799,7 @@ function addOns(eventType, cb, param1, param2, param3)
 								  
 								  		  reloadConfig = "reloadConfig:true";	
 										  if(stdout.lastIndexOf(reloadConfig) > -1) {
-										   		checkConfigCurrent(setProxy, function() {
+										   		checkConfigCurrent(null, function() {
 										   			//This is run async - refresh the config in the background.
 										   		});
 										   }
@@ -888,7 +888,7 @@ function addOns(eventType, cb, param1, param2, param3)
 											   
 											   reloadConfig = "reloadConfig:true";	
 											   if(stdout.lastIndexOf(reloadConfig) > -1) {
-													checkConfigCurrent(setProxy, function() {
+													checkConfigCurrent(null, function() {
 														//This is run async - refresh the config in the background.
 													});
 											   }
