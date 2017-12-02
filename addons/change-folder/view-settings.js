@@ -9,7 +9,7 @@ var fs = require('fs');
 var verbose = false;
 
 //Globals
-var resizeConfigFile = __dirname + '/../../config.json';
+var mainConfigFile = __dirname + '/../../config.json';
 var mainMedImagePath = "../../photos/";
 
 
@@ -33,7 +33,13 @@ function readConfig(confFile, cb) {
 
 
 
-readConfigFile = resizeConfigFile;
+var readConfigFile = mainConfigFile;
+if(process.env.npm_package_config_configFile) {
+	//This is an npm environment var set for the location of the configFile
+	readConfigFile = process.env.npm_package_config_configFile;
+	console.log("Using config file:" + readConfigFile);
+
+}
  
 //Read the config
 readConfig(readConfigFile, function(conf, err) {
