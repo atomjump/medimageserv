@@ -22,6 +22,7 @@ var needle = require('needle');
 var queryString = require('querystring');
 
 
+var verbose = false;
 
 var currentDisks = [];
 var configFile = __dirname + '/../../config.json';
