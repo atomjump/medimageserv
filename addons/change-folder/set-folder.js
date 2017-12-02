@@ -103,7 +103,10 @@ function restartParentServer(cb)
 			if(verbose == true) console.log("Running:" + run);
 			exec(run, function(error, stdout, stderr){
 				console.log(stdout);
-				cb();
+				setTimeout(function(){	//Wait a couple of seconds for the server to restart
+					cb();
+				}, 2000);
+				
 			});
 		}
 	}
