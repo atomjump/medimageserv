@@ -136,7 +136,7 @@ function updateConfig(newdir, cb) {
 					content.backupTo = [ newdir ];
 
 					//Write the file nicely formatted again
-					fs.writeFile(__dirname + configFile, JSON.stringify(content, null, 6), function(err) {
+					fs.writeFile(configFile, JSON.stringify(content, null, 6), function(err) {
 						if(err) {
 							cb(err);
 						} else {
