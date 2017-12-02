@@ -13,20 +13,54 @@ var mainConfigFile = __dirname + '/../../config.json';
 var mainMedImagePath = "../../photos/";
 
 
+
+function getMasterConfig(defaultConfig, callback) {
+	exec("npm get medimage:configFile", {
+			maxBuffer: 2000 * 1024 //quick fix
+		}, (err, stdout, stderr) => {
+		  if (err) {
+			// node couldn't execute the command
+			console.log("There was a problem running the addon. Error:" + err);
+			callback(err, "");
+	
+		  } else {
+			  console.log("Stdout from command:" + stdout);
+			  if((stdout != "")&&(!stdout.startsWith("undefined"))) {
+			  	 callback(null, stdout);
+			  
+			  } else {
+			  	 callback("Global not set", null);
+			  
+			  }		
+		  }
+	});		//End of the exec
+}
+
+
+
 function readConfig(confFile, cb) {
 	//Reads and updates config with a newdir in the output photos - this will overwrite all other entries there
 	//Returns cb(err) where err = null, or a string with the error
 
-
-	//Write to a json file with the current drive.  This can be removed later manually by user, or added to
-	fs.readFile(confFile, function read(err, data) {
-		if (err) {
-				cb(null, "Sorry, cannot read config file! " + err);
+	getMasterConfig(confFile, function(err, masterConfigFile) {
+		if(err) {
+			//Leave with the configFile
 		} else {
-			var content = JSON.parse(data);
+			confFile = masterConfigFile;		//Override with the global option
+		}
+		console.log("Using config file:" + confFile);
 
-			cb(content, null);
-		};
+
+		//Write to a json file with the current drive.  This can be removed later manually by user, or added to
+		fs.readFile(confFile, function read(err, data) {
+			if (err) {
+					cb(null, "Sorry, cannot read config file! " + err);
+			} else {
+				var content = JSON.parse(data);
+
+				cb(content, null);
+			};
+		});
 	});
 
 }
@@ -34,12 +68,7 @@ function readConfig(confFile, cb) {
 
 
 var readConfigFile = mainConfigFile;
-if(process.env.npm_package_config_configFile) {
-	//This is an npm environment var set for the location of the configFile
-	readConfigFile = process.env.npm_package_config_configFile;
-	console.log("Using config file:" + readConfigFile);
 
-}
  
 //Read the config
 readConfig(readConfigFile, function(conf, err) {

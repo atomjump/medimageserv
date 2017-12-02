@@ -25,6 +25,7 @@ var queryString = require('querystring');
 
 var currentDisks = [];
 var configFile = __dirname + '/../../config.json';
+var pm2Parent = 'medimage-server';		//Include a string if this is run on linux that represents the MedImage server to restart
 
 
 	
