@@ -27,6 +27,17 @@ var currentDisks = [];
 var configFile = '/../../config.json';
 
 
+function noTrailSlash(str)
+{
+	if(str.slice(-1) == "/") {
+		return str.slice(0,-1);	//Chop off last char
+	} else {
+		return str;
+	}
+
+}
+
+
 function updateConfig(newdir, cb) {
 	//Reads and updates config with a newdir in the output photos - this will overwrite all other entries there
 	//Returns cb(err) where err = null, or a string with the error
@@ -68,10 +79,10 @@ function updateConfig(newdir, cb) {
 if(process.argv[2]) {
 
   var opts = queryString.parse(decodeURIComponent(process.argv[2]));
-  console.log("New folder=" + opts.newFolder);
   var photoDir = upath.normalize(decodeURIComponent(opts.newFolder));
-  console.log("Setting to " + photoDir);
   
+  //Remove any trailing slashes
+  photoDir = noTrailSlash(photoDir);
   
   //path.posix.normalize(p)
   updateConfig(photoDir, function(err) {
