@@ -25,7 +25,12 @@ var queryString = require('querystring');
 
 var currentDisks = [];
 var configFile = '/../../config.json';
+if(process.env.npm_package_config_configFile) {
+	//This is an npm environment var set for the location of the configFile
+	configFile = process.env.npm_package_config_configFile;
+	console.log("Using config file:" + configFile);
 
+}
 
 function noTrailSlash(str)
 {
