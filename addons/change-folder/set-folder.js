@@ -88,12 +88,11 @@ if(process.argv[2]) {
   updateConfig(photoDir, function(err) {
       if(err) {
       	 console.log("Error:" + err);
-      	 process.exit(1);
+      	 console.log("returnParams:?MESSAGE=Error+setting+folder");
       	
       } else {
       	 console.log("Set successfully.");
-      	 console.log("returnParams:");
-      	 process.exit(0);
+      	 console.log("returnParams:?MESSAGE=Success");
       }
     
   })
