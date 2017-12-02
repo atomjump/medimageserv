@@ -46,7 +46,7 @@ readConfig(readConfigFile, function(conf, err) {
 		   } else {
 						   			   			   
 			   var oldFolder = "";
-			   if(conf.backupTo[0]) {
+			   if((conf.backupTo[0]) && (conf.allowPhotosLeaving == false)) {		//The allowPhotosLeaving should be a client, not a proxy - hide the folder on a proxy
 			   	 	oldFolder = conf.backupTo[0];
 			   }
 			  
