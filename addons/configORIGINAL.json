@@ -7,7 +7,7 @@
 			   {
 					"addon": "change-folder",
 					"scriptURLName": "change-folder-set",
-					"runProcess": "node parentdir/bin/install.js param1",
+					"runProcess": "node parentdir/addons/change-folder/set-folder.js param1",
 					"waitForRequestFinish":  "addon-settings.html",
 					"active": true
 				},

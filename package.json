@@ -32,7 +32,8 @@
     "shredfile": "^0.2.0",
     "upath": "*",
     "klaw": "*",
-    "async": "*"
+    "async": "*",
+    "querystring": "*"
   },
   "repository" : { 
      "type" : "git",
