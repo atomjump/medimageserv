@@ -43,10 +43,13 @@ function getMasterConfig(defaultConfig, callback) {
 	
 		  } else {
 			  console.log("Stdout from command:" + stdout);
-			  if(stdout != "") {
+			  if((stdout != "")&&(stdout != "undefined")) {
 			  	 callback(null, stdout);
 			  
-			  } 		
+			  } else {
+			  	 callback("Global not set", null);
+			  
+			  }		
 		  }
 	});		//End of the exec
 }
