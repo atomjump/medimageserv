@@ -1,0 +1,112 @@
+STANDARDHEADER
+        
+        
+        
+
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+					&nbsp;
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                     <!-- /.panel -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-gear fa-fw"></i> MedImage Server Settings
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                      
+						
+ 							<!-- Nav tabs -->
+                            <ul id="setting-tabs" class="nav nav-tabs">
+                                <li class="active"><a href="#main" data-toggle="tab">Main Server</a>
+                                </li>               
+                            </ul>
+
+                            <!-- Tab panes -->
+                            <div id="tab-content" class="tab-content" >
+                                <div class="tab-pane fade in active" id="main">
+                                    <h4>Main Server</h4>
+                                    
+                                    <form id="search-dir" action="/addon/change-folder-set" role="form">
+										<div class="form-group">
+											<label>String Replace</label>
+											<input class="form-control" id="newFolder" type="text" name="newFolder" value="OLDFOLDERVAL">
+											<p class="help-block">Typically '-'</p>
+										</div>
+										<!-- Can put option to keep master copy here -->
+		
+										<input type="hidden" name="prepend" value="false">
+		
+										<div class="form-group">
+											<input type="submit" class="btn btn-primary" value="Save">
+										</div>
+									</form>
+                                    
+                                    
+                                    <p>There are no settings currently for the main server.</p>
+                                </div>
+                            </div>
+
+
+							
+							
+							
+							
+							
+
+							<br/><br/>
+							<p><a class="standardlink" href="../index.html">Return</a></p>
+					  
+                    
+                    	 </div>
+                    
+                    
+                    
+                   </div>
+                
+            </div>
+ 
+ 		</div>
+ 		<!-- /page-wrapper -->
+            
+		 <script>
+		jQuery(document).ready(function(){         			
+			var tabStart = "TABSTART";
+			if(tabStart != "") {
+				jQuery("#" + tabStart).trigger("click");
+			
+			}	
+		
+		
+		});
+         
+         </script>     
+ 
+
+    </div>
+    <!-- /#wrapper -->
+
+ 
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="../vendor/metisMenu/metisMenu.min.js"></script>
+
+    <!-- Morris Charts JavaScript -->
+    <script src="../vendor/raphael/raphael.min.js"></script>
+    <script src="../vendor/morrisjs/morris.min.js"></script>
+    <script src="../data/morris-data.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="../dist/js/sb-admin-2.js"></script>
+
+</body>
+
+</html>

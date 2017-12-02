@@ -3,6 +3,22 @@
 		"photoWritten": [		
 		],
 		"urlRequest": [	
+		
+			   {
+					"addon": "change-folder",
+					"scriptURLName": "change-folder-set",
+					"runProcess": "node parentdir/bin/install.js param1",
+					"waitForRequestFinish":  "addon-settings.html",
+					"active": true
+				},
+				{
+					"addon": "change-folder",
+					"scriptURLName": "change-folder-view-settings",
+					"runProcess": "node parentdir/addons/change-folder/view-settings.js",
+					"waitForRequestFinish":  "addon-settings.html",
+					"active": true
+				}
+		
 		]
 	}
 }
