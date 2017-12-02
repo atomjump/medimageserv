@@ -33,23 +33,10 @@ STANDARDHEADER
                                 <div class="tab-pane fade in active" id="main">
                                     <h4>Main Server</h4>
                                     
-                                    <form id="search-dir" action="/addon/change-folder-set" role="form">
-										<div class="form-group">
-											<label>String Replace</label>
-											<input class="form-control" id="newFolder" type="text" name="newFolder" value="OLDFOLDERVAL">
-											<p class="help-block">Typically '-'</p>
-										</div>
-										<!-- Can put option to keep master copy here -->
-		
-										<input type="hidden" name="prepend" value="false">
-		
-										<div class="form-group">
-											<input type="submit" class="btn btn-primary" value="Save">
-										</div>
-									</form>
                                     
                                     
-                                    <p>There are no settings currently for the main server.</p>
+                                    
+                                    <div id="change-folder"></div>
                                 </div>
                             </div>
 
@@ -85,6 +72,22 @@ STANDARDHEADER
 		
 		
 		});
+		
+		
+
+		//Get the current settings HTML snippet via an ajax request
+		uri = "/addon/change-folder-view-settings/";
+		jQuery.ajax({
+			url: uri,
+			success: function(data) {
+				jQuery('#change-folder').html(data);
+			}
+		 }); 
+
+		
+
+	
+		
          
          </script>     
  
