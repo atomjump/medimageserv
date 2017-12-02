@@ -24,7 +24,7 @@ var queryString = require('querystring');
 
 
 var currentDisks = [];
-var configFile = '/../../config.json';
+var configFile = __dirname + '/../../config.json';
 if(process.env.npm_package_config_configFile) {
 	//This is an npm environment var set for the location of the configFile
 	configFile = process.env.npm_package_config_configFile;
@@ -49,7 +49,7 @@ function updateConfig(newdir, cb) {
 
 
 	//Write to a json file with the current drive.  This can be removed later manually by user, or added to
-	fs.readFile(__dirname + configFile, function read(err, data) {
+	fs.readFile(configFile, function read(err, data) {
 		if (err) {
 				cb("Sorry, cannot read config file! " + err);
 		} else {
