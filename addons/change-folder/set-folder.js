@@ -51,7 +51,7 @@ function updateConfig(newdir, cb) {
 			var content = JSON.parse(data);
 
 
-			if(conf.allowPhotosLeaving == false) {	//For security purposes, only allow this change through the interface if we are a client machine
+			if(content.allowPhotosLeaving == false) {	//For security purposes, only allow this change through the interface if we are a client machine
 
 				content.backupTo = [ newdir ];
 
