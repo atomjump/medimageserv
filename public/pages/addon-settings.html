@@ -70,9 +70,9 @@ STANDARDHEADER
 		 <script>
 		 function areYouSure(addon) {
 		 	alert("Clicked on uninstall");
-				
-			if(confirm("Are you sure you want to uninstall the add-on '" + jQuery(this).attr('id') + "'? You will lose all settings and data for that add-on.")) {
-				var URI = "/addon/install-addon?uninstall=" + jQuery(this).attr('id');
+			var msg = "Are you sure you want to uninstall the add-on '" + addon + "'? You will lose all settings and data for that add-on.";	
+			if(confirm(msg)) {
+				var URI = "/addon/install-addon?uninstall=" + addon;
 				alert("About to uninstall with " + URI);
 				window.location.href = URI;	
 			
