@@ -11,7 +11,14 @@ var verbose = false;
 //Globals
 var mainConfigFile = __dirname + '/../../config.json';
 var mainMedImagePath = "../../photos/";
+var targetAddonsFolder = __dirname + "/../";
 var exec = require('child_process').exec;
+
+var unallowedFilenameStrings = [
+	".json",
+	".md",
+	".txt"
+];
 
 
 function getMasterConfig(defaultConfig, callback) {
@@ -35,6 +42,54 @@ function getMasterConfig(defaultConfig, callback) {
 		  }
 	});		//End of the exec
 }
+
+
+
+function fileWalk(startDir, cb)   //This was originally copied from the MedImage server.
+{
+   //Read and return the first file in dir, and the count of which file it is. Only the cnt = 0 is used
+   var items = [];
+   
+
+	if(verbose == true) console.log("Searching:" + startDir);
+	//[ { "label": "#peter blister (10-June-2017 10:30am 56secs)", "value": "/peter/blister-10-June-2017-10-30-56.jpg" },
+	//{ "label": "#peter blister (20-June-2017 10:40am 34secs)", "value": "/peter/blister-10-June-2017-10-40-34.jpg" }]
+	var uStartDir = upath.normalize(startDir);  //readdir requires a unix style path
+	//Note: on Windows an absolute path won't work - it needs to be relative to the script
+	if(verbose == true) console.log("Searching in unix terms:" + uStartDir);
+	
+	glob.readdir(uStartDir, function(err, items) {
+		 
+		 var resp = [];
+		 for(var cnt = 0; cnt< items.length; cnt++) {
+			var banned = false;
+			//Now confirm it doesn't have any of the banned strings
+
+			for(var scnt = 0; scnt < unallowedFilenameStrings.length; scnt++) {
+				if(items[cnt].indexOf(unallowedFilenameStrings[scnt]) >= 0) {
+					banned = true;
+				}
+			}
+			 
+			if(banned == false) { 
+			
+				//Append to the list of user options to select
+				resp.push({
+					"addon": items[cnt]						
+				});			
+				
+			 }  //end of banned
+		}
+		cb(resp);
+		
+	});
+			        
+
+
+
+}
+
+
 
 
 
@@ -87,8 +142,20 @@ readConfig(readConfigFile, function(conf, err) {
 			   } else {
 			   		var allowChanges = "Unlocked";
 			   }
+			   
+			   fileWalk(targetAddonsFolder, function(addonArray) {
+			   
+			   	  var currentAddons = "<table>";
+			   	  for(var cnt=0; cnt< addonArray.length; cnt++) {
+			   	  	  currentAddons += "<tr><td>" + addonArray[cnt].addon + "</td></tr>";
+			   	  
+			   	  }	
+			   	  currentAddons += "</table>";
+			   	  
+			   	  console.log("returnParams:?ALLOWCHANGES=" + allowChanges + "&CURRENTADDONS=" + encodeURIComponent(currentAddons));
+			   }
 			  
-			   console.log("returnParams:?ALLOWCHANGES=" + allowChanges);
+			   
 			   
 			}
 });
