@@ -153,7 +153,7 @@ readConfig(readConfigFile, function(conf, err) {
 			   	  currentAddons += "</table>";
 			   	  
 			   	  console.log("returnParams:?ALLOWCHANGES=" + allowChanges + "&CURRENTADDONS=" + encodeURIComponent(currentAddons));
-			   }
+			   });
 			  
 			   
 			   
