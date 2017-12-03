@@ -27,7 +27,7 @@
 				},
 				{
 					"addon": "install-addon",
-					"scriptURLName": "install-addon-view-settings",
+					"scriptURLName": "addon-installer-view-settings",
 					"runProcess": "node parentdir/addons/addon-installer/view-settings.js",
 					"waitForRequestFinish":  "install-addon-settings.html",
 					"active": true
