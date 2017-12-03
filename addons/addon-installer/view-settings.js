@@ -62,6 +62,9 @@ function fileWalk(startDir, cb)   //This was originally copied from the MedImage
 		 
 		 var resp = [];
 		 for(var cnt = 0; cnt< items.length; cnt++) {
+			
+			console.log("Found:" + items[cnt]);	
+			
 			var banned = false;
 			//Now confirm it doesn't have any of the banned strings
 
@@ -78,7 +81,7 @@ function fileWalk(startDir, cb)   //This was originally copied from the MedImage
 					"addon": items[cnt]									
 				});		
 				
-				console.log("Found:" + items[cnt]);		
+					
 				
 			 }  //end of banned
 		}
