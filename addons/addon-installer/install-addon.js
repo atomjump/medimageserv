@@ -380,6 +380,9 @@ function uninstall(addonName)
 {
 	var dirOut = targetAddonsFolder + addonName;	//Absolute path to folder to delete
 	
+	//Change into the directory of the add-on
+	process.chdir(dirOut);
+
 	
 	//Read in the json descriptor to get
 	var desc = dirOut + "/" + descriptorFile;
@@ -455,6 +458,9 @@ function uninstall(addonName)
 						console.log("returnParams:?FINISHED=false");
 						process.exit(1);
 					} else {
+					
+						//Change back out of our folder
+						process.chdir(targetAddonsFolder);
 					
 						//Now clear out the folder
 						console.log("Removing folder:" + dirOut);
