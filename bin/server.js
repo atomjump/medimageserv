@@ -617,6 +617,7 @@ function backupFile(thisPath, outhashdir, finalFileName)
 					// 2nd param is the function that each item is passed to
 					function(runBlock, cnt, callback){
 				
+						
 						if(outhashdir) {
 							var target = trailSlash(content.backupTo[cnt]) + trailSlash(outhashdir) + finalFileName;
 							} else {
@@ -626,7 +627,8 @@ function backupFile(thisPath, outhashdir, finalFileName)
 
 						fsExtra.ensureDir(trailSlash(content.backupTo[cnt]) + trailSlash(outhashdir), function(err) {
 							if(err) {
-								console.log("Warning: Could not create directory for backup: " + content.backupTo[cnt] + " Err:" + err.message);
+								console.log("Warning: Could not create directory for backup: " + content.backupTo[cnt] + " Err:" + err);
+								callback(err);
 							} else {
 								try {
 									console.log("Copying " + thisPath + " to " + target);
@@ -682,6 +684,8 @@ function backupFile(thisPath, outhashdir, finalFileName)
 function addOns(eventType, cb, param1, param2, param3) 
 {
 	//Read in any add-ons that exist in the config?, or in the 'addons' folder.
+	console.log("Checking add-ons");
+	
 	
 	//Read in the config file
 	fs.readFile(addonsConfigFile, function read(err, data) {
@@ -690,7 +694,9 @@ function addOns(eventType, cb, param1, param2, param3)
 		} else {
 			var content = JSON.parse(data);
 
-
+			if(verbose == true) {
+				console.log("Got content of addons config");			
+			}
 	
 			switch(eventType)
 			{
@@ -774,6 +780,7 @@ function addOns(eventType, cb, param1, param2, param3)
 									
 												console.log("Backing up requested of " + backupFiles);
 												backupFiles = backupFiles.replace(backupFilesStr,"");		//remove locator
+												backupFiles = backupFiles.replace(backupFileRenamedStr,"");		//remove locator
 												backupFiles = backupFiles.trim();		//remove newlines at the end
 												if(verbose == true) console.log("Backing up string in server:" + backupFiles);
 												var backupArray = backupFiles.split(";");	//Should be semi-colon split
@@ -1272,13 +1279,36 @@ function handleServer(_req, _res) {
 
 							//Ensure no admin restictions on Windows
 							ensurePhotoReadableWindows(fullPath);
+							
+							
+							addOns("photoWritten", function(err, normalBackup) {
+											if(err) {
+												console.log("Error writing file:" + err);
+											} else {
+												if(verbose == true) console.log("Add-on completed running");
+											
+											}
+											
+											if(normalBackup == true) {
+												//Now we have finished processing the file via the addons,
+												//backup the standard files if 'normal' is the case
+												
+												//Now copy to any other backup directories
+												if(verbose == true) console.log("Backups:");
+												var thisPath = fullPath;
 
-							//Now copy to any other backup directories
-							if(verbose == true) console.log("Backups:");
-							var thisPath = fullPath;
+												//Now backup to any directories specified in the config
+												backupFile(thisPath, outhashdir, finalFileName);
+							
+												
+												
+												//OLD:backupFile(createFile, "", dirFile);
+											}
+									
+										
+										}, fullPath);
+							
 
-							//Now backup to any directories specified in the config
-							backupFile(thisPath, outhashdir, finalFileName);
 							
 							
 
@@ -1733,12 +1763,12 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
 
 	     for (var key in customStringList) {
 	     	 strData = strData.replace(new RegExp(key, 'g'), customStringList[key]);
-  		  	 if(verbose == true) console.log("key " + key + " has value " + customStringList[key]);
+  		  	 //if(verbose == true) console.log("key " + key + " has value " + customStringList[key]);
 
 	     }
 
 
-	     if(verbose == true) console.log(strData);
+	     //if(verbose == true) console.log(strData);
 
 	     data = JSON.parse( JSON.stringify( strData ) ); //JSON.parse(strData);
 	  }

@@ -79,11 +79,11 @@ function havePermission(configFile, cb) {
 
 				if(content.allowPhotosLeaving == false) {	//For security purposes, only allow this change through the interface if we are a client machine
 
-					cb(true);
+					cb(null, true);
 					
 				} else {
 			
-					cb(false);
+					cb(null, false);
 				}
 			
 
@@ -504,45 +504,57 @@ function uninstall(addonName)
 
 
 
-havePermission(configFile, function(ret) {
+havePermission(configFile, function(err, ret) {
 
-	if(ret == true) {
-		//Yes we have permission to install
-		if(process.argv[2]) {
-
-		  var opts = queryString.parse(decodeURIComponent(process.argv[2]));
-
-		  if(opts.zipfileURL) {
-		  	  //If passing in a zip file url to install
-			  var zipfileURL = opts.zipfileURL;
-  
-  
-  
-			  var parsed = url.parse(zipfileURL);
-			  var filename = path.basename(parsed.pathname);
-  
-			  console.log("Filename: " + filename + " URL: " + zipfileURL);
-			  //Get the filename of the path to the URL
-  
-			  downloadAndUnzip(filename, zipfileURL, function(err, dirname) {
-				  console.log("Files unzipped");
-	  
-				  renameFolder(filename, dirname);
-  
-			  });
-		  }
-		  
-		  if(opts.uninstall) {
-		  	  uninstall(opts.uninstall);		  
-		  }
-  
-
-  
-		} else {
-		  console.log("Usage: node install-addon.js zipfileURL%3Dhttp://url.To.Zip/file/name.zip");
-  
-		}
+	if(err) {
+		console.log("There was an error:" + err);
+	
 	} else {
-		//No permission, sorry
+
+		if(ret == true) {
+			//Yes we have permission to install
+			if(process.argv[2]) {
+
+			  var opts = queryString.parse(decodeURIComponent(process.argv[2]));
+
+			  if(opts.zipfileURL) {
+				  //If passing in a zip file url to install
+				  var zipfileURL = opts.zipfileURL;
+  
+  
+  
+				  var parsed = url.parse(zipfileURL);
+				  var filename = path.basename(parsed.pathname);
+  
+				  console.log("Filename: " + filename + " URL: " + zipfileURL);
+				  //Get the filename of the path to the URL
+  
+				  downloadAndUnzip(filename, zipfileURL, function(err, dirname) {
+					  console.log("Files unzipped");
+	  
+					  renameFolder(filename, dirname);
+  
+				  });
+			  } 
+		  
+			  if(opts.uninstall) {
+				  uninstall(opts.uninstall);		  
+			  }
+			  
+			  if((!opts.uninstall)&&(!opts.zipfileURL)) {
+			  	  console.log("You should enter a.")_;
+			  
+			  }
+  
+
+  
+			} else {
+			  console.log("Usage: node install-addon.js zipfileURL%3Dhttp://url.To.Zip/file/name.zip (with urlencoded URL)");
+  
+			}
+		} else {
+			//No permission, sorry
+			console.log("Sorry, you don't have permission to install add-ons. Please check your config.json. " + ret);
+		}
 	}
 });
