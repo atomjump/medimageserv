@@ -68,45 +68,37 @@ STANDARDHEADER
  		<!-- /page-wrapper -->
             
 		 <script>
-		jQuery(document).ready(function(){         			
+		 jQuery(document).ready(function(){         			
 			var tabStart = "TABSTART";
 			if(tabStart != "") {
 				jQuery("#" + tabStart).trigger("click");
 			
 			}	
-		
-		
-		});
-		
-		
-
-		//Get the current settings HTML snippet via an ajax request
-		uri = "/addon/change-folder-view-settings/";
-		jQuery.ajax({
-			url: uri,
-			success: function(data) {
-				jQuery('#change-folder').html(data);
-			}
-		 }); 
-		 
-		 jQuery('#install-addon-tab').click(function() {
+			
+			
 			//Get the current settings HTML snippet via an ajax request
-
-			uri = "/addon/addon-installer-view-settings/";
+			uri = "/addon/change-folder-view-settings/";
 			jQuery.ajax({
 				url: uri,
 				success: function(data) {
-					jQuery('#install-addon').html(data);
+					jQuery('#change-folder').html(data);
 				}
 			 }); 
+		 
+			 jQuery('#install-addon-tab').click(function() {
+				//Get the current settings HTML snippet via an ajax request
 
-		});
+				uri = "/addon/addon-installer-view-settings/";
+				jQuery.ajax({
+					url: uri,
+					success: function(data) {
+						jQuery('#install-addon').html(data);
+					}
+				 }); 
 
+			});
 		
-
-	
-		
-         
+		 });
          </script>     
  
 
