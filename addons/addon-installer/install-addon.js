@@ -299,7 +299,7 @@ function openAndRunDescriptor(directory)
 								callback(null);
 							});
 						} else {
-							callback(null);
+							callback(null, 'done');
 						}
 					}
 				], 
@@ -451,7 +451,7 @@ function uninstall(addonName)
 						}
 					}
 				], 
-				function (err) {
+				function (err, success) {
 					// result now equals 'done'
 					if(err) {
 						console.log("The uninstallation was not complete.");
