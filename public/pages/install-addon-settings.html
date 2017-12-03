@@ -30,7 +30,9 @@
 				//Confirm you want to uninstall
 
 				if(confirm("Are you sure you want to uninstall the add-on '" + jQuery(this).attr('id') + "'? You will lose all settings and data for that add-on.")) {
-					console.log("About to uninstall");
+					var URI = "/addon/install-addon?uninstall=" + jQuery(this).attr('id');
+					console.log("About to uninstall with " + URI);
+					
 				
 				}
 				

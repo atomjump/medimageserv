@@ -384,13 +384,7 @@ function uninstall(addonName)
 	//Read in the json descriptor to get
 	var desc = dirOut + "/" + descriptorFile;
 	console.log("Checking for file:" + desc);
-	var dirOut = "";
-	if(fs.existsSync(desc) == true) {
-		const data = fsExtra.readJsonSync(desc);
-		if(data) {
-			dirOut = targetAddonsFolder + data.name;
-		}
-	}
+	
 	
 	
 	if(fs.existsSync(desc) == true) {

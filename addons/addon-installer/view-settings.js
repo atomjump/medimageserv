@@ -157,7 +157,7 @@ readConfig(readConfigFile, function(conf, err) {
 			   
 			   	  var currentAddons = "<table>";
 			   	  for(var cnt=0; cnt< addonArray.length; cnt++) {
-			   	  	  currentAddons += "<tr><td>" + addonArray[cnt].addon + " <a class='are-you-sure' id='" + addonArray[cnt].addon + "' href='/addon/install-addon?uninstall=" + addonArray[cnt].addon + "'>Uninstall</a></td></tr>";
+			   	  	  currentAddons += "<tr><td>" + addonArray[cnt].addon + " <a class='are-you-sure' id='" + addonArray[cnt].addon + "' href='javascript:'>Uninstall</a></td></tr>";
 			   	  
 			   	  }	
 			   	  currentAddons += "</table>";
