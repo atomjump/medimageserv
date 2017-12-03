@@ -12,7 +12,7 @@ var verbose = false;
 //Globals
 var mainConfigFile = __dirname + '/../../config.json';
 var mainMedImagePath = "../../photos/";
-var targetAddonsFolder = __dirname + "/../";
+var targetAddonsFolder = "/../";
 var exec = require('child_process').exec;
 var glob = require('glob-fs')({ gitignore: true });
 
@@ -50,6 +50,7 @@ function getMasterConfig(defaultConfig, callback) {
 function fileWalk(startDir, cb)   //This was originally copied from the MedImage server.
 {
    //Read and return the first file in dir, and the count of which file it is. Only the cnt = 0 is used
+   //Note: startDir cannot be absolute, but should be relative
    var items = [];
    
 
