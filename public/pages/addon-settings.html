@@ -68,6 +68,19 @@ STANDARDHEADER
  		<!-- /page-wrapper -->
             
 		 <script>
+		 function areYouSure(addon) {
+		 	alert("Clicked on uninstall");
+				
+			if(confirm("Are you sure you want to uninstall the add-on '" + jQuery(this).attr('id') + "'? You will lose all settings and data for that add-on.")) {
+				var URI = "/addon/install-addon?uninstall=" + jQuery(this).attr('id');
+				alert("About to uninstall with " + URI);
+				window.location.href = URI;	
+			
+			}
+		 
+		 }
+		 
+		 
 		 jQuery(document).ready(function(){         			
 			var tabStart = "TABSTART";
 			if(tabStart != "") {
@@ -101,17 +114,11 @@ STANDARDHEADER
 			 jQuery('.are-you-ready').click(function() {
 				//Confirm you want to uninstall
 				
-				alert("Clicked on uninstall");
 				
-				if(confirm("Are you sure you want to uninstall the add-on '" + jQuery(this).attr('id') + "'? You will lose all settings and data for that add-on.")) {
-					var URI = "/addon/install-addon?uninstall=" + jQuery(this).attr('id');
-					alert("About to uninstall with " + URI);
-					
-				
-				}
 				
 
 			});
+			
 		
 		 });
          </script>     
