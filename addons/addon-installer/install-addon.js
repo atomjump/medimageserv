@@ -195,7 +195,7 @@ function execCommands(commandArray)
 		//each add-on to potentially process sequentially. 
 		
 		
-		async.eachOf(commandArray,
+		async.eachOfSeries(commandArray,
 					// 2nd param is the function that each item is passed to
 					function(runBlock, cnt, callback){
 				
@@ -211,6 +211,7 @@ function execCommands(commandArray)
 								 } else {
 					  
 									  console.log("Stdout from command:" + stdout);
+									  callback(null);
 								 }
 						 });	//End of exec
 					
@@ -353,7 +354,7 @@ havePermission(configFile, function(ret) {
 
   
 		} else {
-		  console.log("Usage: node install-addon.js http://url.To.Zip/file/name.zip");
+		  console.log("Usage: node install-addon.js zipfileURL%3Dhttp://url.To.Zip/file/name.zip");
   
 		}
 	} else {
