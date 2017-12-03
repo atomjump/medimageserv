@@ -188,7 +188,7 @@ function downloadAndUnzip(filename, url, cb) {
 }
 
 
-function execCommands(commandArray) 
+function execCommands(commandArray, cb) 
 {
 		//Asyncronously call each item, but in sequential order. This means the process could
 		//be doing something processor intensive without holding up the main server, but still allow
@@ -220,11 +220,12 @@ function execCommands(commandArray)
 						// All tasks are done now
 						if(err) {
 						   console.log('returnParams:?MESSAGE=ERROR:' + err);
+						   cb(err);
 						 } else {
 						   console.log('Completed all commands!');
 						   
 						   console.log("returnParams:?MESSAGE=Success");					   
-						   return;
+						   cb(null);
 						 }
 					   }
 		); //End of async eachOf all items
