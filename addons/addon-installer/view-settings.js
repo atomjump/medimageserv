@@ -54,13 +54,11 @@ function fileWalk(startDir, cb)   //This was originally copied from the MedImage
    
 
 	if(verbose == true) console.log("Searching:" + startDir);
-	//[ { "label": "#peter blister (10-June-2017 10:30am 56secs)", "value": "/peter/blister-10-June-2017-10-30-56.jpg" },
-	//{ "label": "#peter blister (20-June-2017 10:40am 34secs)", "value": "/peter/blister-10-June-2017-10-40-34.jpg" }]
 	var uStartDir = upath.normalize(startDir);  //readdir requires a unix style path
 	//Note: on Windows an absolute path won't work - it needs to be relative to the script
 	if(verbose == true) console.log("Searching in unix terms:" + uStartDir);
 	
-	glob.readdir(uStartDir, function(err, items) {
+	glob.readdir(uStartDir + "/*", function(err, items) {
 		 
 		 var resp = [];
 		 for(var cnt = 0; cnt< items.length; cnt++) {
