@@ -248,36 +248,84 @@ function openAndRunDescriptor(directory)
 		if(data) {
 			//Yes there is an installer script to run
 			if(data.installCommands) {
-			
+				
 				//Determine our current platform
-			
-				if(data.installCommands.all) {
-					//Run through these commands always - all platforms	
-					execCommands(data.installCommands.all);
-				}
-			
 				var platform = getPlatform();
-				if((data.installCommands.win32) && (platform == "win32")) {
-					//Only run these on Windows
-					execCommands(data.installCommands.win32);
-				}
-			
-				if((data.installCommands.unix) && (platform == "unix")) {
-					//Only run these on Linux/unix
-					execCommands(data.installCommands.unix);
-				}
-			
-				if((data.installCommands.mac) && (platform == "mac")) {
-					//Only run these on Macs
-					execCommands(data.installCommands.mac);
-				}
-			
+				async.waterfall([
+					function(callback) {
+						if(data.installCommands.all) {
+							//Run through these commands always - all platforms	
+							execCommands(data.installCommands.all, function(err) {
+								callback(null);
+							});
+						} else {
+							callback(null);
+						}
+					},
+					function(callback) {
+						if((data.installCommands.win32) && (platform == "win32")) {
+							//Run through these commands always - all platforms	
+							execCommands(data.installCommands.win32, function(err) {
+								callback(null);
+							});
+						} else {
+							callback(null);
+						}
+					},
+					function(callback) {
+						if((data.installCommands.win64) && (platform == "win64")) {
+							//Run through these commands always - all platforms	
+							execCommands(data.installCommands.win64, function(err) {
+								callback(null);
+							});
+						} else {
+							callback(null);
+						}
+					},
+					function(callback) {
+						if((data.installCommands.unix) && (platform == "unix")) {
+							//Run through these commands always - all platforms	
+							execCommands(data.installCommands.unix, function(err) {
+								callback(null);
+							});
+						} else {
+							callback(null);
+						}
+					},
+					function(callback) {
+						if((data.installCommands.mac) && (platform == "mac")) {
+							//Run through these commands always - all platforms	
+							execCommands(data.installCommands.mac, function(err) {
+								callback(null);
+							});
+						} else {
+							callback(null);
+						}
+					}
+				], 
+				function (err, result) {
+					// result now equals 'done'
+					if(err) {
+						console.log("The installation was not complete.");
+						console.log("returnParams:?FINISHED=false");
+						process.exit(1);
+					} else {
+						console.log("The installation was completed successfully!");
+						console.log("returnParams:?FINISHED=true");
+						process.exit(0);
+					}
+				});
+						
 			}
 		} else {
 			console.log("Warning: no valid JSON data found");
+			console.log("returnParams:?FINISHED=false");
+			process.exit(1);
 		}
 	} else {
 		console.log("Warning: no installer script was found");
+		console.log("returnParams:?FINISHED=false");
+		process.exit(1);
 	}
 	
 
@@ -328,6 +376,122 @@ function renameFolder(filename, dirname) {
 	})
 }
 
+function uninstall(addonName)
+{
+	var dirOut = targetAddonsFolder + addonName;	//Absolute path to folder to delete
+	
+	
+	//Read in the json descriptor to get
+	var desc = dirOut + "/" + descriptorFile;
+	console.log("Checking for file:" + desc);
+	var dirOut = "";
+	if(fs.existsSync(desc) == true) {
+		const data = fsExtra.readJsonSync(desc);
+		if(data) {
+			dirOut = targetAddonsFolder + data.name;
+		}
+	}
+	
+	
+	if(fs.existsSync(desc) == true) {
+		const data = fsExtra.readJsonSync(desc);
+		if(data) {
+			//Yes there is an uninstaller script to run
+			if(data.uninstallCommands) {
+			
+				//Determine our current platform
+			
+				var platform = getPlatform();
+				async.waterfall([
+					function(callback) {
+						if(data.uninstallCommands.all) {
+							//Run through these commands always - all platforms	
+							execCommands(data.uninstallCommands.all, function(err) {
+								callback(null);
+							});
+						} else {
+							callback(null);
+						}
+					},
+					function(callback) {
+						if((data.uninstallCommands.win32) && (platform == "win32")) {
+							//Run through these commands always - all platforms	
+							execCommands(data.uninstallCommands.win32, function(err) {
+								callback(null);
+							});
+						} else {
+							callback(null);
+						}
+					},
+					function(callback) {
+						if((data.uninstallCommands.win64) && (platform == "win64")) {
+							//Run through these commands always - all platforms	
+							execCommands(data.uninstallCommands.win64, function(err) {
+								callback(null);
+							});
+						} else {
+							callback(null);
+						}
+					},
+					function(callback) {
+						if((data.uninstallCommands.unix) && (platform == "unix")) {
+							//Run through these commands always - all platforms	
+							execCommands(data.uninstallCommands.unix, function(err) {
+								callback(null);
+							});
+						} else {
+							callback(null);
+						}
+					},
+					function(callback) {
+						if((data.uninstallCommands.mac) && (platform == "mac")) {
+							//Run through these commands always - all platforms	
+							execCommands(data.uninstallCommands.mac, function(err) {
+								callback(null);
+							});
+						} else {
+							callback(null);
+						}
+					}
+				], 
+				function (err, result) {
+					// result now equals 'done'
+					if(err) {
+						console.log("The uninstallation was not complete.");
+						console.log("returnParams:?FINISHED=false");
+						process.exit(1);
+					} else {
+					
+						//Now clear out the folder
+						console.log("Removing folder:" + dirOut);
+						//fs.removeSync(dirOut);
+					
+						console.log("The uninstallation was completed successfully!");
+						console.log("returnParams:?FINISHED=true");
+						process.exit(0);
+					}
+				});
+			
+			}
+		} else {
+			console.log("Warning: no valid JSON data found");
+			console.log("returnParams:?FINISHED=false");
+			process.exit(1);
+		}
+	} else {
+		console.log("Warning: no valid JSON data found");
+		console.log("returnParams:?FINISHED=false");
+		process.exit(1);
+	}
+
+		
+
+
+}
+
+
+
+
 
 havePermission(configFile, function(ret) {
 
@@ -336,20 +500,30 @@ havePermission(configFile, function(ret) {
 		if(process.argv[2]) {
 
 		  var opts = queryString.parse(decodeURIComponent(process.argv[2]));
-		  var zipfileURL = opts.zipfileURL;
+
+		  if(opts.zipfileURL) {
+		  	  //If passing in a zip file url to install
+			  var zipfileURL = opts.zipfileURL;
   
-		  var parsed = url.parse(zipfileURL);
-		  var filename = path.basename(parsed.pathname);
   
-		  console.log("Filename: " + filename + " URL: " + zipfileURL);
-		  //Get the filename of the path to the URL
   
-		  downloadAndUnzip(filename, zipfileURL, function(err, dirname) {
-			  console.log("Files unzipped");
+			  var parsed = url.parse(zipfileURL);
+			  var filename = path.basename(parsed.pathname);
+  
+			  console.log("Filename: " + filename + " URL: " + zipfileURL);
+			  //Get the filename of the path to the URL
+  
+			  downloadAndUnzip(filename, zipfileURL, function(err, dirname) {
+				  console.log("Files unzipped");
 	  
-			  renameFolder(filename, dirname);
+				  renameFolder(filename, dirname);
   
-		  });
+			  });
+		  }
+		  
+		  if(opts.uninstall) {
+		  	  uninstall(opts.uninstall);		  
+		  }
   
 
   
