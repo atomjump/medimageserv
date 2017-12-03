@@ -359,4 +359,4 @@ if(havePermission(configFile, function(ret) {
 	} else {
 		//No permission, sorry
 	}
-}
+}));
