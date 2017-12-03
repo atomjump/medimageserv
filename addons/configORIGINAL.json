@@ -21,14 +21,14 @@
 				{
 					"addon": "install-addon",
 					"scriptURLName": "install-addon",
-					"runProcess": "node parentdir/addons/install-addon/install-addon.js param1",
+					"runProcess": "node parentdir/addons/addon-installer/install-addon.js param1",
 					"waitForRequestFinish":  "install-addon-settings.html",
 					"active": true
 				},
 				{
 					"addon": "install-addon",
 					"scriptURLName": "install-addon-view-settings",
-					"runProcess": "node parentdir/addons/install-addon/view-settings.js",
+					"runProcess": "node parentdir/addons/addon-installer/view-settings.js",
 					"waitForRequestFinish":  "install-addon-settings.html",
 					"active": true
 				}
