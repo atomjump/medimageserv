@@ -12,7 +12,7 @@ var verbose = false;
 //Globals
 var mainConfigFile = __dirname + '/../../config.json';
 var mainMedImagePath = "../../photos/";
-var targetAddonsFolder = "./addons/";
+var targetAddonsFolder = "../addons/";
 var exec = require('child_process').exec;
 var glob = require('glob-fs')({ gitignore: true });
 
