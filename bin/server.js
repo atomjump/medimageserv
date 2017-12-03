@@ -707,7 +707,7 @@ function addOns(eventType, cb, param1, param2, param3)
 						//be doing something processor intensive without holding up the main server, but still allow
 						//each add-on to potentially process sequentially. This could be useful for chaining image resizing,
 						//image processing add-ons together in the correct order.
-						async.eachOf(evs,
+						async.eachOfSeries(evs,
 							  // 2nd param is the function that each item is passed to
 							  function(runBlock, cnt, callback){
 						
