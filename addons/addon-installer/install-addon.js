@@ -406,6 +406,7 @@ function uninstall(addonName)
 				var platform = getPlatform();
 				async.waterfall([
 					function(callback) {
+						console.log("Checking all platform commands");
 						if(data.uninstallCommands.all) {
 							//Run through these commands always - all platforms	
 							execCommands(data.uninstallCommands.all, function(err) {
@@ -416,6 +417,7 @@ function uninstall(addonName)
 						}
 					},
 					function(callback) {
+						console.log("Checking Win32 commands");
 						if((data.uninstallCommands.win32) && (platform == "win32")) {
 							//Run through these commands always - all platforms	
 							execCommands(data.uninstallCommands.win32, function(err) {
@@ -426,6 +428,7 @@ function uninstall(addonName)
 						}
 					},
 					function(callback) {
+						console.log("Checking Win64 commands");
 						if((data.uninstallCommands.win64) && (platform == "win64")) {
 							//Run through these commands always - all platforms	
 							execCommands(data.uninstallCommands.win64, function(err) {
@@ -436,6 +439,7 @@ function uninstall(addonName)
 						}
 					},
 					function(callback) {
+						console.log("Checking Unix commands");
 						if((data.uninstallCommands.unix) && (platform == "unix")) {
 							//Run through these commands always - all platforms	
 							execCommands(data.uninstallCommands.unix, function(err) {
@@ -446,10 +450,11 @@ function uninstall(addonName)
 						}
 					},
 					function(callback) {
+						console.log("Checking Mac commands");
 						if((data.uninstallCommands.mac) && (platform == "mac")) {
 							//Run through these commands always - all platforms	
 							execCommands(data.uninstallCommands.mac, function(err) {
-								callback(null);
+								callback(null, 'done');
 							});
 						} else {
 							callback(null);
