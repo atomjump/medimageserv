@@ -38,9 +38,12 @@ STANDARDHEADER
                                     
                                     <div id="change-folder"></div>
                                 </div>
+                                
+                                <div class='tab-pane fade' id='install-addon'></div>
+                                
                             </div>
 
-
+							
 							
 							
 							
@@ -83,6 +86,19 @@ STANDARDHEADER
 				jQuery('#change-folder').html(data);
 			}
 		 }); 
+		 
+		 jQuery('#install-addon-tab').click(function() {
+			//Get the current settings HTML snippet via an ajax request
+
+			uri = "/addon/install-addon-view-settings/";
+			jQuery.ajax({
+				url: uri,
+				success: function(data) {
+					jQuery('#install-addon').html(data);
+				}
+			 }); 
+
+		});
 
 		
 
