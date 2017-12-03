@@ -475,7 +475,7 @@ function uninstall(addonName)
 					
 						//Now clear out the folder
 						console.log("Removing folder:" + dirOut);
-						fs.removeSync(dirOut);
+						fsExtra.removeSync(dirOut);
 					
 						console.log("The uninstallation was completed successfully!");
 						console.log("returnParams:?FINISHED=true");
