@@ -451,7 +451,7 @@ function uninstall(addonName)
 						}
 					}
 				], 
-				function (err, result) {
+				function (err) {
 					// result now equals 'done'
 					if(err) {
 						console.log("The uninstallation was not complete.");
