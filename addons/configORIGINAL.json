@@ -29,7 +29,7 @@
 					"addon": "install-addon",
 					"scriptURLName": "addon-installer-view-settings",
 					"runProcess": "node parentdir/addons/addon-installer/view-settings.js",
-					"waitForRequestFinish":  "install-addon-settings.html",
+					"waitForRequestFinish":  "addon-settings.html",
 					"active": true
 				}
 		
