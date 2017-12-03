@@ -5,6 +5,7 @@
 */
 
 var fs = require('fs');
+var upath = require("upath");
 
 var verbose = false;
 
@@ -13,6 +14,7 @@ var mainConfigFile = __dirname + '/../../config.json';
 var mainMedImagePath = "../../photos/";
 var targetAddonsFolder = __dirname + "/../";
 var exec = require('child_process').exec;
+var glob = require('glob-fs')({ gitignore: true });
 
 var unallowedFilenameStrings = [
 	".json",

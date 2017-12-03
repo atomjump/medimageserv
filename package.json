@@ -19,6 +19,7 @@
     "drivelist": "~3.2.2",
     "express": "*",
     "fs-extra": "^4.0.2",
+    "glob-fs": "^0.1.7",
     "http": "0.0.0",
     "https": "*",
     "image-type": "^2.1.0",
