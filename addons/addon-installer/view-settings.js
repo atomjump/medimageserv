@@ -83,7 +83,7 @@ function fileWalk(startDir, cb)   //This was originally copied from the MedImage
 			
 				//Append to the list of user options to select
 				resp.push({
-					"addon": items[cnt]									
+					"addon": items[cnt].replace("addons/", "")								
 				});		
 				
 					
