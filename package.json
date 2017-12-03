@@ -19,7 +19,6 @@
     "express": "*",
     "fs-extra": "^4.0.2",
     "glob-fs": "^0.1.7",
-    "micromatch": "*",
     "glob": "*",
     "http": "0.0.0",
     "https": "*",
