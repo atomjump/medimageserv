@@ -253,6 +253,7 @@ function openAndRunDescriptor(directory)
 				var platform = getPlatform();
 				async.waterfall([
 					function(callback) {
+						console.log("Checking all platform commands");
 						if(data.installCommands.all) {
 							//Run through these commands always - all platforms	
 							execCommands(data.installCommands.all, function(err) {
@@ -263,6 +264,7 @@ function openAndRunDescriptor(directory)
 						}
 					},
 					function(callback) {
+						console.log("Checking Win32 commands");
 						if((data.installCommands.win32) && (platform == "win32")) {
 							//Run through these commands always - all platforms	
 							execCommands(data.installCommands.win32, function(err) {
@@ -273,6 +275,7 @@ function openAndRunDescriptor(directory)
 						}
 					},
 					function(callback) {
+						console.log("Checking Win64 commands");
 						if((data.installCommands.win64) && (platform == "win64")) {
 							//Run through these commands always - all platforms	
 							execCommands(data.installCommands.win64, function(err) {
@@ -283,6 +286,7 @@ function openAndRunDescriptor(directory)
 						}
 					},
 					function(callback) {
+						console.log("Checking Unix commands");
 						if((data.installCommands.unix) && (platform == "unix")) {
 							//Run through these commands always - all platforms	
 							execCommands(data.installCommands.unix, function(err) {
@@ -293,6 +297,7 @@ function openAndRunDescriptor(directory)
 						}
 					},
 					function(callback) {
+						console.log("Checking Mac commands");
 						if((data.installCommands.mac) && (platform == "mac")) {
 							//Run through these commands always - all platforms	
 							execCommands(data.installCommands.mac, function(err) {
