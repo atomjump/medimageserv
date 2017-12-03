@@ -155,7 +155,7 @@ readConfig(readConfigFile, function(conf, err) {
 			   
 			   fileWalk(targetAddonsFolder, function(addonArray) {
 			   
-			   	  var currentAddons = "<table>";
+			   	  var currentAddons = "<table class='table'>";
 			   	  for(var cnt=0; cnt< addonArray.length; cnt++) {
 			   	  	  currentAddons += "<tr><td>" + addonArray[cnt].addon + " </td><td> <a onclick='return areYouSure(\"" + addonArray[cnt].addon + "\");' class='are-you-sure' href='javascript:'>Uninstall</a></td></tr>";
 			   	  
