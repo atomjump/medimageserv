@@ -56,7 +56,7 @@ function fileWalk(startDir, cb)   //This was originally copied from the MedImage
    
 
 	if(verbose == true) console.log("Searching:" + startDir);
-	var uStartDir = upath.normalize(startDir) + "*";  //readdir requires a unix style path
+	var uStartDir = upath.normalize(startDir) + "/*";  //readdir requires a unix style path
 	//Note: on Windows an absolute path won't work - it needs to be relative to the script
 	console.log("Searching in unix terms:" + uStartDir);
 	
