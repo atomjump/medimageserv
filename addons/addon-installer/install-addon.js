@@ -143,8 +143,6 @@ function downloadAndUnzip(filename, url, cb) {
 		
 			response.on('end', function() {
 				 var zip = new AdmZip(tmpFilePath);
-				 
-				 var zip = new AdmZip(tmpFilePath);
 				 var zipEntries = zip.getEntries(); // an array of ZipEntry records 
  				  
  				 if(zipEntries[0].isDirectory == true) {
@@ -155,7 +153,7 @@ function downloadAndUnzip(filename, url, cb) {
  				 }				 
 				 
 				 zip.extractAllTo(targetAddonsFolder, true);	//Overwrite is the 'true'
-				 fs.unlink(tmpFilePath, cb);		//Remove the zip file itself
+				 fs.unlink(tmpFilePath, cb(null, dirName));		//Remove the zip file itself
 			})
 		});
 	
