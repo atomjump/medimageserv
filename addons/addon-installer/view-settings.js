@@ -75,9 +75,10 @@ function fileWalk(startDir, cb)   //This was originally copied from the MedImage
 			
 				//Append to the list of user options to select
 				resp.push({
-					"addon": items[cnt]		
-					console.log("Found:" + items[cnt]);				
-				});			
+					"addon": items[cnt]									
+				});		
+				
+				console.log("Found:" + items[cnt]);		
 				
 			 }  //end of banned
 		}
