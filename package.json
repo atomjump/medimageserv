@@ -9,7 +9,6 @@
   "preferGlobal": "true",
   "scripts": {
     "start": "node bin/server.js",
-    "prepublish": "cp newconfig.json config.json"
   },
   "dependencies": {
     "adm-zip": "^0.4.7",
@@ -20,6 +19,8 @@
     "express": "*",
     "fs-extra": "^4.0.2",
     "glob-fs": "^0.1.7",
+    "micromatch": "*",
+    "glob": "*",
     "http": "0.0.0",
     "https": "*",
     "image-type": "^2.1.0",

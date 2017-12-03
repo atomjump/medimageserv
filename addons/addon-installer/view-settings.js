@@ -5,7 +5,7 @@
 */
 
 var fs = require('fs');
-var upath = require("upath");
+var upath = require('upath');
 var path = require('path');
 
 var verbose = false;
@@ -18,7 +18,8 @@ console.log(addonsAbsPath);
 console.log(process.cwd());
 var targetAddonsFolder = path.relative(process.cwd(), addonsAbsPath);
 var exec = require('child_process').exec;
-var glob = require('glob-fs')({ gitignore: true });
+//var glob = require('glob-fs')({ gitignore: true });
+var glob = require("glob");
 
 var unallowedFilenameStrings = [
 	".json",
@@ -63,7 +64,7 @@ function fileWalk(startDir, cb)   //This was originally copied from the MedImage
 	//Note: on Windows an absolute path won't work - it needs to be relative to the script
 	console.log("Searching in unix terms:" + uStartDir);
 	
-	glob.readdir(uStartDir, function(err, items) {
+	glob(uStartDir, function(err, items) {
 		 
 		 var resp = [];
 		 for(var cnt = 0; cnt< items.length; cnt++) {
