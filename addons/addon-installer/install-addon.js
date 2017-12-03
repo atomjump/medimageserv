@@ -28,9 +28,71 @@ var serverOptions = {};				//default https server options (see nodejs https modu
 var verbose = false;
 
 
-
+var configFile = __dirname + '/../../config.json';
 var targetAddonsFolder = __dirname + "/../";
 var descriptorFile = "medimage-installer.json";
+
+
+
+function getMasterConfig(defaultConfig, callback) {
+	exec("npm get medimage:configFile", {
+			maxBuffer: 2000 * 1024 //quick fix
+		}, (err, stdout, stderr) => {
+		  if (err) {
+			// node couldn't execute the command
+			console.log("There was a problem running the addon. Error:" + err);
+			callback(err, "");
+	
+		  } else {
+			  console.log("Stdout from command:" + stdout);
+			  if((stdout != "")&&(!stdout.startsWith("undefined"))) {
+			  	 callback(null, stdout.trim());
+			  
+			  } else {
+			  	 callback("Global not set", null);
+			  
+			  }		
+		  }
+	});		//End of the exec
+}
+
+function havePermission(configFile, cb) {
+	//Checks config to see if we have permissions
+	//Returns true or false
+
+
+	getMasterConfig(configFile, function(err, masterConfigFile) {
+		if(err) {
+			//Leave with the configFile
+		} else {
+			configFile = masterConfigFile;		//Override with the global option
+		}
+		console.log("Using config file:" + configFile);
+
+		//Write to a json file with the current drive.  This can be removed later manually by user, or added to
+		fs.readFile(configFile, function read(err, data) {
+			if (err) {
+					cb("Sorry, cannot read config file! " + err);
+			} else {
+				var content = JSON.parse(data);
+
+
+				if(content.allowPhotosLeaving == false) {	//For security purposes, only allow this change through the interface if we are a client machine
+
+					cb(true);
+					
+				} else {
+			
+					cb(false);
+				}
+			
+
+
+			};
+		});
+	});
+
+}
 
 
 function noTrailSlash(str)
@@ -266,29 +328,35 @@ function renameFolder(filename, dirname) {
 }
 
 
+if(havePermission(configFile, function(ret) {
 
+	if(ret == true) {
+		//Yes we have permission to install
+		if(process.argv[2]) {
 
-if(process.argv[2]) {
-
-  var opts = queryString.parse(decodeURIComponent(process.argv[2]));
-  var zipfileURL = opts.zipfileURL;
+		  var opts = queryString.parse(decodeURIComponent(process.argv[2]));
+		  var zipfileURL = opts.zipfileURL;
   
-  var parsed = url.parse(zipfileURL);
-  var filename = path.basename(parsed.pathname);
+		  var parsed = url.parse(zipfileURL);
+		  var filename = path.basename(parsed.pathname);
   
-  console.log("Filename: " + filename + " URL: " + zipfileURL);
-  //Get the filename of the path to the URL
+		  console.log("Filename: " + filename + " URL: " + zipfileURL);
+		  //Get the filename of the path to the URL
   
-  downloadAndUnzip(filename, zipfileURL, function(err, dirname) {
-  	  console.log("Files unzipped");
-  	  
-  	  renameFolder(filename, dirname);
+		  downloadAndUnzip(filename, zipfileURL, function(err, dirname) {
+			  console.log("Files unzipped");
+	  
+			  renameFolder(filename, dirname);
   
-  });
+		  });
   
 
   
-} else {
-  console.log("Usage: node install-addon.js http://url.To.Zip/file/name.zip");
+		} else {
+		  console.log("Usage: node install-addon.js http://url.To.Zip/file/name.zip");
   
+		}
+	} else {
+		//No permission, sorry
+	}
 }

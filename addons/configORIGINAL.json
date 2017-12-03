@@ -17,6 +17,20 @@
 					"runProcess": "node parentdir/addons/change-folder/view-settings.js",
 					"waitForRequestFinish":  "change-folder-settings.html",
 					"active": true
+				},
+				{
+					"addon": "install-addon",
+					"scriptURLName": "install-addon",
+					"runProcess": "node parentdir/addons/install-addon/install-addon.js param1",
+					"waitForRequestFinish":  "install-addon-settings.html",
+					"active": true
+				},
+				{
+					"addon": "install-addon",
+					"scriptURLName": "install-addon-view-settings",
+					"runProcess": "node parentdir/addons/install-addon/view-settings.js",
+					"waitForRequestFinish":  "install-addon-settings.html",
+					"active": true
 				}
 		
 		]
