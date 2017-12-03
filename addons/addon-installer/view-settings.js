@@ -13,7 +13,7 @@ var verbose = false;
 //Globals
 var mainConfigFile = __dirname + '/../../config.json';
 var mainMedImagePath = "../../photos/";
-var addonsAbsPath = __dirname + "/../addons";
+var addonsAbsPath = __dirname + "/../../addons";
 console.log(addonsAbsPath);
 console.log(process.cwd());
 var targetAddonsFolder = path.relative(process.cwd(), addonsAbsPath);
