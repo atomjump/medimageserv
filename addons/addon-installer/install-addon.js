@@ -328,7 +328,7 @@ function renameFolder(filename, dirname) {
 }
 
 
-if(havePermission(configFile, function(ret) {
+havePermission(configFile, function(ret) {
 
 	if(ret == true) {
 		//Yes we have permission to install
@@ -359,4 +359,4 @@ if(havePermission(configFile, function(ret) {
 	} else {
 		//No permission, sorry
 	}
-}));
+});
