@@ -463,7 +463,7 @@ function uninstall(addonName)
 					// result now equals 'done'
 					if(err) {
 						console.log("The uninstallation was not complete.");
-						console.log("returnParams:?FINISHED=false&MSG=The uninstallation was not complete. Error:" + );
+						console.log("returnParams:?FINISHED=false&MSG=The uninstallation was not complete. Error:" + err);
 						process.exit(1);
 					} else {
 					
