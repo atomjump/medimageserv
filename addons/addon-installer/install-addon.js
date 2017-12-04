@@ -142,17 +142,18 @@ function downloadAndUnzip(filename, url, cb) {
 			//TODO: handle error case
 		
 			response.on('end', function() {
-				 var zip = new AdmZip(tmpFilePath);
-				 var zipEntries = zip.getEntries(); // an array of ZipEntry records 
- 				  
- 				 if(zipEntries[0].isDirectory == true) {
- 				 	var dirName = zipEntries[0].entryName;	//e.g. "medimage-addon-p4m-0.0.1/"
- 				 
- 				 } else {
- 				 	var dirName = null;
- 				 }				 
-				 
 				  try {
+					 var zip = new AdmZip(tmpFilePath);
+					 var zipEntries = zip.getEntries(); // an array of ZipEntry records 
+				  
+					 if(zipEntries[0].isDirectory == true) {
+						var dirName = zipEntries[0].entryName;	//e.g. "medimage-addon-p4m-0.0.1/"
+				 
+					 } else {
+						var dirName = null;
+					 }				 
+				 
+				 
 				 	zip.extractAllTo(targetAddonsFolder, true);	//Overwrite is the 'true'
 				 } catch(err) {
 				 		console.log("returnParams:?FINISHED=false&MSG=There was a problem unzipping the file. Err:" + err);
@@ -173,22 +174,23 @@ function downloadAndUnzip(filename, url, cb) {
 			//TODO: handle error case
 		
 			response.on('end', function() {
-				 var zip = new AdmZip(tmpFilePath);
-				 var zipEntries = zip.getEntries(); // an array of ZipEntry records 
- 				  
- 				 if(zipEntries[0].isDirectory == true) {
- 				 	var dirName = zipEntries[0].entryName;	//e.g. "medimage-addon-p4m-0.0.1/"
- 				 
- 				 } else {
- 				 	var dirName = null;
- 				 }
- 			 
- 			 	 try {
+				try {
+					 var zip = new AdmZip(tmpFilePath);
+					 var zipEntries = zip.getEntries(); // an array of ZipEntry records 
+				  
+					 if(zipEntries[0].isDirectory == true) {
+						var dirName = zipEntries[0].entryName;	//e.g. "medimage-addon-p4m-0.0.1/"
+				 
+					 } else {
+						var dirName = null;
+					 }				 
+				 
+				 
 				 	zip.extractAllTo(targetAddonsFolder, true);	//Overwrite is the 'true'
 				 } catch(err) {
 				 		console.log("returnParams:?FINISHED=false&MSG=There was a problem unzipping the file. Err:" + err);
 						process.exit(1);				 
-				 }				 
+				 }	
 				 fs.unlink(tmpFilePath, cb(null, dirName));		//Remove the zip file itself
 			})
 		});
