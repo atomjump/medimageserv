@@ -336,12 +336,12 @@ function openAndRunDescriptor(directory)
 		} else {
 			console.log("Warning: no valid JSON data found");
 			console.log("returnParams:?FINISHED=false");
-			process.exit(1);
+			process.exit(0);
 		}
 	} else {
 		console.log("Warning: no installer script was found");
 		console.log("returnParams:?FINISHED=false");
-		process.exit(1);
+		process.exit(0);
 	}
 	
 

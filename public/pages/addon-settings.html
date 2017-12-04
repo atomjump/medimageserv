@@ -114,11 +114,11 @@ STANDARDHEADER
 			//Handle any messages
 			var msg = "MSG";
 			var finished = "FINISHED";
-			if(msg !== "MSG") {
+			if(msg.substr(0,2) !== "MS") {		//Can't use the full MSG because that gets replaced
 				//We have a user message
 				var colour = "panel-green";
 				
-				if(finished === "FINISHED") {
+				if(finished.substr(0,3) === "FIN") {		//Can't use the full FINISHED because that gets replaced
 					colour = "panel-green";
 				} else {
 					if(finished == "true") {
