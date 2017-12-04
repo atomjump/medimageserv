@@ -22,7 +22,7 @@ STANDARDHEADER
                         <div class="panel-body">
                       
                       		<div style="display: none;" id="my-warning" class="panel">
-								<div id="warning-heading" class="panel-heading">
+								<div id="warning-header" class="panel-heading">
 									Success
 								</div>
 								<div class="panel-body">
@@ -125,19 +125,19 @@ STANDARDHEADER
 			var finished = "FINISHED";
 			if(msg.substr(0,2) !== "MS") {		//Can't use the full MSG because that gets replaced
 				//We have a user message
-				var colour = "panel-green";
+				var colour = "panel-success";
 				var header = "Success";
 				var footer = "";
 				
 				if(finished.substr(0,3) === "FIN") {		//Can't use the full FINISHED because that gets replaced
-					colour = "panel-green";
+					colour = "panel-success";
 					header = "Success";
 				} else {
 					if(finished == "true") {
-						colour = "panel-green";	
+						colour = "panel-success";	
 						header = "Success";	
 					} else {
-						colour = "panel-red";
+						colour = "panel-danger";
 						header = "Error";
 					}
 				}
