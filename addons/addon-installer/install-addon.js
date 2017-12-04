@@ -397,7 +397,12 @@ function uninstall(addonName)
 	var dirOut = targetAddonsFolder + addonName;	//Absolute path to folder to delete
 	
 	//Change into the directory of the add-on
-	process.chdir(dirOut);
+	try {
+		process.chdir(dirOut);
+	} catch(err) {
+		return console.log("returnParams:?FINISHED=false&MSG=This is not a directory. Err:" + err);
+		process.exit(0);
+	}
 
 	
 	//Read in the json descriptor to get
@@ -477,7 +482,7 @@ function uninstall(addonName)
 					if(err) {
 						console.log("The uninstallation was not complete.");
 						console.log("returnParams:?FINISHED=false&MSG=The uninstallation was not complete. Error:" + err);
-						process.exit(1);
+						process.exit(0);
 					} else {
 					
 						//Change back out of our folder
@@ -497,12 +502,12 @@ function uninstall(addonName)
 		} else {
 			console.log("Warning: no valid JSON data found");
 			console.log("returnParams:?FINISHED=false&MSG=Warning: no valid JSON datafound");
-			process.exit(1);
+			process.exit(0);
 		}
 	} else {
 		console.log("Warning: no valid JSON data found");
 		console.log("returnParams:?FINISHED=false&MSG=Warning: no valid JSON data found");
-		process.exit(1);
+		process.exit(0);
 	}
 
 		
