@@ -217,11 +217,12 @@ function execCommands(commandArray, cb)
 					  },	//End of async eachOf single item
 					  function(err){
 						// All tasks are done now
+						console.log("All tasks finished");
 						if(err) {
 						   console.log('ERROR:' + err);
 						   cb(err);
 						 } else {
-						   console.log('Completed all commands!');
+						   console.log('Completed all commands successfully!');
 						   cb(null);
 						 }
 					   }
