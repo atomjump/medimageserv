@@ -13,10 +13,8 @@ var verbose = false;
 //Globals
 var mainConfigFile = __dirname + '/../../config.json';
 var mainMedImagePath = "../../photos/";
-var addonsAbsPath = __dirname + "/../../addons";
-console.log(addonsAbsPath);
-console.log(process.cwd());
-var targetAddonsFolder = addonsAbsPath;	//path.relative(process.cwd(), addonsAbsPath);
+var addonsAbsPath = upath.normalize(__dirname + "/../../addons");
+var targetAddonsFolder = addonsAbsPath;
 var exec = require('child_process').exec;
 //var glob = require('glob-fs')({ gitignore: true });
 var glob = require("glob");
@@ -85,7 +83,7 @@ function fileWalk(startDir, cb)   //This was originally copied from the MedImage
 			
 				//Append to the list of user options to select
 				resp.push({
-					"addon": items[cnt].replace("addons/", "")								
+					"addon": items[cnt].replace(addonsAbsPath, "")								
 				});		
 				
 					
