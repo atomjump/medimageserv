@@ -249,8 +249,12 @@ function openAndRunDescriptor(directory)
 {
 
 	//Change into the directory of the add-on
-	process.chdir(directory);
-	
+	try {
+		process.chdir(directory);
+	} catch(err) {
+		return console.log("returnParams:?FINISHED=false&MSG=This is not a directory.&EXTENDED=" + err);
+		process.exit(0);
+	}
 	var desc = directory + "/" + descriptorFile;
 	console.log("Checking installer file " + desc);
 	
