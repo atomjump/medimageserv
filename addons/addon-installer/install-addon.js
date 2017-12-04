@@ -156,7 +156,7 @@ function downloadAndUnzip(filename, url, cb) {
 				 
 				 	zip.extractAllTo(targetAddonsFolder, true);	//Overwrite is the 'true'
 				 } catch(err) {
-				 		console.log("returnParams:?FINISHED=false&MSG=There was a problem unzipping the file. Err:" + err);
+				 		console.log("returnParams:?FINISHED=false&MSG=There was a problem unzipping the file.&EXTENDED=" + err);
 						process.exit(0);				 
 				 }	
 				 fs.unlink(tmpFilePath, cb(null, dirName));		//Remove the zip file itself
@@ -188,7 +188,7 @@ function downloadAndUnzip(filename, url, cb) {
 				 
 				 	zip.extractAllTo(targetAddonsFolder, true);	//Overwrite is the 'true'
 				 } catch(err) {
-				 		console.log("returnParams:?FINISHED=false&MSG=There was a problem unzipping the file. Err:" + err);
+				 		console.log("returnParams:?FINISHED=false&MSG=There was a problem unzipping the file.&EXTENDED=" + err);
 						process.exit(0);				 
 				 }	
 				 fs.unlink(tmpFilePath, cb(null, dirName));		//Remove the zip file itself
@@ -323,11 +323,11 @@ function openAndRunDescriptor(directory)
 					// result now equals 'done'
 					if(err) {
 						console.log("The installation was not complete.");
-						console.log("returnParams:?FINISHED=false");
-						process.exit(1);
+						console.log("returnParams:?FINISHED=false&MSG=The installation was not complete.&EXTENDED=" + err);
+						process.exit(0);
 					} else {
 						console.log("The installation was completed successfully!");
-						console.log("returnParams:?FINISHED=true");
+						console.log("returnParams:?FINISHED=true&MSG=The installation was completed successfully!");
 						process.exit(0);
 					}
 				});
@@ -335,12 +335,12 @@ function openAndRunDescriptor(directory)
 			}
 		} else {
 			console.log("Warning: no valid JSON data found");
-			console.log("returnParams:?FINISHED=false");
+			console.log("returnParams:?FINISHED=false&MSG=No valid JSON data found.");
 			process.exit(0);
 		}
 	} else {
 		console.log("Warning: no installer script was found");
-		console.log("returnParams:?FINISHED=false");
+		console.log("returnParams:?FINISHED=false&MSG=No installer script was found.");
 		process.exit(0);
 	}
 	
@@ -383,7 +383,7 @@ function renameFolder(filename, dirname) {
 	//fsExtra.move(dirIn, dirOut);
 	fsExtra.move(dirIn, dirOut, { overwrite: true }, function(err) {
 	  if (err) {
-	  	return console.log("returnParams:?FINISHED=false&MSG=Could not rename the folder. Err:" + err);
+	  	return console.log("returnParams:?FINISHED=false&MSG=Could not rename the folder.&EXTENDED=" + err);
 	  } else {
 	  	console.log('Success renaming!');
 	  	openAndRunDescriptor(dirOut);
@@ -400,7 +400,7 @@ function uninstall(addonName)
 	try {
 		process.chdir(dirOut);
 	} catch(err) {
-		return console.log("returnParams:?FINISHED=false&MSG=This is not a directory. Err:" + err);
+		return console.log("returnParams:?FINISHED=false&MSG=This is not a directory.&EXTENDED=" + err);
 		process.exit(0);
 	}
 
@@ -481,7 +481,7 @@ function uninstall(addonName)
 					// result now equals 'done'
 					if(err) {
 						console.log("The uninstallation was not complete.");
-						console.log("returnParams:?FINISHED=false&MSG=The uninstallation was not complete. Error:" + err);
+						console.log("returnParams:?FINISHED=false&MSG=The uninstallation was not complete.&EXTENDED=" + err);
 						process.exit(0);
 					} else {
 					

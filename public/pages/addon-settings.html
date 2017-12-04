@@ -123,11 +123,16 @@ STANDARDHEADER
 			//Handle any messages
 			var msg = "MSG";
 			var finished = "FINISHED";
+			var extended = "EXTENDED";
 			if(msg.substr(0,2) !== "MS") {		//Can't use the full MSG because that gets replaced
 				//We have a user message
 				var colour = "panel-success";
 				var header = "Success";
 				var footer = "";
+				
+				if(extended.substr(0,3) !== "EXT") {
+					footer = extended;
+				}
 				
 				if(finished.substr(0,3) === "FIN") {		//Can't use the full FINISHED because that gets replaced
 					colour = "panel-success";
