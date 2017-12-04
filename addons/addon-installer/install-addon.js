@@ -156,7 +156,7 @@ function downloadAndUnzip(filename, url, cb) {
 				 
 				 	zip.extractAllTo(targetAddonsFolder, true);	//Overwrite is the 'true'
 				 } catch(err) {
-				 		console.log("returnParams:?FINISHED=false&MSG=There was a problem unzipping the file.&EXTENDED=" + err);
+				 		console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=There was a problem unzipping the file.&EXTENDED=" + err);
 						process.exit(0);				 
 				 }	
 				 fs.unlink(tmpFilePath, cb(null, dirName));		//Remove the zip file itself
@@ -188,7 +188,7 @@ function downloadAndUnzip(filename, url, cb) {
 				 
 				 	zip.extractAllTo(targetAddonsFolder, true);	//Overwrite is the 'true'
 				 } catch(err) {
-				 		console.log("returnParams:?FINISHED=false&MSG=There was a problem unzipping the file.&EXTENDED=" + err);
+				 		console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=There was a problem unzipping the file.&EXTENDED=" + err);
 						process.exit(0);				 
 				 }	
 				 fs.unlink(tmpFilePath, cb(null, dirName));		//Remove the zip file itself
@@ -198,7 +198,7 @@ function downloadAndUnzip(filename, url, cb) {
 }
 
 
-function execCommands(commandArray, cb) 
+function execCommands(commandArray, prepend, cb) 
 {
 		//Asyncronously call each item, but in sequential order. This means the process could
 		//be doing something processor intensive without holding up the main server, but still allow
@@ -209,13 +209,14 @@ function execCommands(commandArray, cb)
 					// 2nd param is the function that each item is passed to
 					function(runBlock, cnt, callback){
 				
-						console.log("Running command: " + commandArray[cnt]);
+						var cmd = prepend + commandArray[cnt];
+						console.log("Running command: " + cmd);
 						exec(commandArray[cnt], {
 								maxBuffer: 2000 * 1024 //max buffer size
 							}, (err, stdout, stderr) => {
 								 if (err) {
 									// node couldn't execute the command
-									var msg = "There was a problem running the command " + commandArray[cnt] + ". Error:" + err;
+									var msg = "There was a problem running the command " + cmd + ". Error:" + err;
 									console.log(msg);
 									callback(msg);
 							
@@ -252,7 +253,7 @@ function openAndRunDescriptor(directory)
 	try {
 		process.chdir(directory);
 	} catch(err) {
-		return console.log("returnParams:?FINISHED=false&MSG=This is not a directory.&EXTENDED=" + err);
+		return console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=This is not a directory.&EXTENDED=" + err);
 		process.exit(0);
 	}
 	var desc = directory + "/" + descriptorFile;
@@ -271,7 +272,7 @@ function openAndRunDescriptor(directory)
 						console.log("Checking all platform commands");
 						if(data.installCommands.all) {
 							//Run through these commands always - all platforms	
-							execCommands(data.installCommands.all, function(err) {
+							execCommands(data.installCommands.all, "", function(err) {
 								callback(err);
 							});
 						} else {
@@ -282,7 +283,7 @@ function openAndRunDescriptor(directory)
 						console.log("Checking Win32 commands");
 						if((data.installCommands.win32) && (platform == "win32")) {
 							//Run through these commands always - all platforms	
-							execCommands(data.installCommands.win32, function(err) {
+							execCommands(data.installCommands.win32, "", function(err) {
 								callback(err);
 							});
 						} else {
@@ -293,7 +294,7 @@ function openAndRunDescriptor(directory)
 						console.log("Checking Win64 commands");
 						if((data.installCommands.win64) && (platform == "win64")) {
 							//Run through these commands always - all platforms	
-							execCommands(data.installCommands.win64, function(err) {
+							execCommands(data.installCommands.win64, "", function(err) {
 								callback(err);
 							});
 						} else {
@@ -304,7 +305,7 @@ function openAndRunDescriptor(directory)
 						console.log("Checking Unix commands");
 						if((data.installCommands.unix) && (platform == "unix")) {
 							//Run through these commands always - all platforms	
-							execCommands(data.installCommands.unix, function(err) {
+							execCommands(data.installCommands.unix, "", function(err) {
 								callback(err);
 							});
 						} else {
@@ -315,7 +316,7 @@ function openAndRunDescriptor(directory)
 						console.log("Checking Mac commands");
 						if((data.installCommands.mac) && (platform == "mac")) {
 							//Run through these commands always - all platforms	
-							execCommands(data.installCommands.mac, function(err) {
+							execCommands(data.installCommands.mac, "sudo ", function(err) {
 								callback(err);
 							});
 						} else {
@@ -327,11 +328,11 @@ function openAndRunDescriptor(directory)
 					// result now equals 'done'
 					if(err) {
 						console.log("The installation was not complete.");
-						console.log("returnParams:?FINISHED=false&MSG=The installation was not complete.&EXTENDED=" + err);
+						console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The installation was not complete.&EXTENDED=" + err);
 						process.exit(0);
 					} else {
 						console.log("The installation was completed successfully!");
-						console.log("returnParams:?FINISHED=true&MSG=The installation was completed successfully!");
+						console.log("returnParams:?FINISHED=true&TABSTART=install-addon-tab&MSG=The installation was completed successfully!");
 						process.exit(0);
 					}
 				});
@@ -339,12 +340,12 @@ function openAndRunDescriptor(directory)
 			}
 		} else {
 			console.log("Warning: no valid JSON data found");
-			console.log("returnParams:?FINISHED=false&MSG=No valid JSON data found.");
+			console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=No valid JSON data found.");
 			process.exit(0);
 		}
 	} else {
 		console.log("Warning: no installer script was found");
-		console.log("returnParams:?FINISHED=false&MSG=No installer script was found.");
+		console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=No installer script was found.");
 		process.exit(0);
 	}
 	
@@ -387,7 +388,7 @@ function renameFolder(filename, dirname) {
 	//fsExtra.move(dirIn, dirOut);
 	fsExtra.move(dirIn, dirOut, { overwrite: true }, function(err) {
 	  if (err) {
-	  	return console.log("returnParams:?FINISHED=false&MSG=Could not rename the folder.&EXTENDED=" + err);
+	  	return console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=Could not rename the folder.&EXTENDED=" + err);
 	  } else {
 	  	console.log('Success renaming!');
 	  	openAndRunDescriptor(dirOut);
@@ -404,7 +405,7 @@ function uninstall(addonName)
 	try {
 		process.chdir(dirOut);
 	} catch(err) {
-		return console.log("returnParams:?FINISHED=false&MSG=This is not a directory.&EXTENDED=" + err);
+		return console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=This is not a directory.&EXTENDED=" + err);
 		process.exit(0);
 	}
 
@@ -429,7 +430,7 @@ function uninstall(addonName)
 						console.log("Checking all platform commands");
 						if(data.uninstallCommands.all) {
 							//Run through these commands always - all platforms	
-							execCommands(data.uninstallCommands.all, function(err) {
+							execCommands(data.uninstallCommands.all, "", function(err) {
 								callback(err);
 							});
 						} else {
@@ -440,7 +441,7 @@ function uninstall(addonName)
 						console.log("Checking Win32 commands");
 						if((data.uninstallCommands.win32) && (platform == "win32")) {
 							//Run through these commands always - all platforms	
-							execCommands(data.uninstallCommands.win32, function(err) {
+							execCommands(data.uninstallCommands.win32, "", function(err) {
 								callback(err);
 							});
 						} else {
@@ -451,7 +452,7 @@ function uninstall(addonName)
 						console.log("Checking Win64 commands");
 						if((data.uninstallCommands.win64) && (platform == "win64")) {
 							//Run through these commands always - all platforms	
-							execCommands(data.uninstallCommands.win64, function(err) {
+							execCommands(data.uninstallCommands.win64, "", function(err) {
 								callback(err);
 							});
 						} else {
@@ -462,7 +463,7 @@ function uninstall(addonName)
 						console.log("Checking Unix commands");
 						if((data.uninstallCommands.unix) && (platform == "unix")) {
 							//Run through these commands always - all platforms	
-							execCommands(data.uninstallCommands.unix, function(err) {
+							execCommands(data.uninstallCommands.unix, "", function(err) {
 								callback(err);
 							});
 						} else {
@@ -473,7 +474,7 @@ function uninstall(addonName)
 						console.log("Checking Mac commands");
 						if((data.uninstallCommands.mac) && (platform == "mac")) {
 							//Run through these commands always - all platforms	
-							execCommands(data.uninstallCommands.mac, function(err) {
+							execCommands(data.uninstallCommands.mac, "sudo ", function(err) {
 								callback(err, 'done');
 							});
 						} else {
@@ -485,7 +486,7 @@ function uninstall(addonName)
 					// result now equals 'done'
 					if(err) {
 						console.log("The uninstallation was not complete.");
-						console.log("returnParams:?FINISHED=false&MSG=The uninstallation was not complete.&EXTENDED=" + err);
+						console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The uninstallation was not complete.&EXTENDED=" + err);
 						process.exit(0);
 					} else {
 					
@@ -497,7 +498,7 @@ function uninstall(addonName)
 						fsExtra.removeSync(dirOut);
 					
 						console.log("The uninstallation was completed successfully!");
-						console.log("returnParams:?FINISHED=true&MSG=The uninstallation was completed successfully!");
+						console.log("returnParams:?FINISHED=true&TABSTART=install-addon-tab&MSG=The uninstallation was completed successfully!");
 						process.exit(0);
 					}
 				});
@@ -505,12 +506,12 @@ function uninstall(addonName)
 			}
 		} else {
 			console.log("Warning: no valid JSON data found");
-			console.log("returnParams:?FINISHED=false&MSG=Warning: no valid JSON datafound");
+			console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=Warning: no valid JSON datafound");
 			process.exit(0);
 		}
 	} else {
 		console.log("Warning: no valid JSON data found");
-		console.log("returnParams:?FINISHED=false&MSG=Warning: no valid JSON data found");
+		console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=Warning: no valid JSON data found");
 		process.exit(0);
 	}
 
