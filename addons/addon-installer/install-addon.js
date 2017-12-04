@@ -157,7 +157,7 @@ function downloadAndUnzip(filename, url, cb) {
 				 	zip.extractAllTo(targetAddonsFolder, true);	//Overwrite is the 'true'
 				 } catch(err) {
 				 		console.log("returnParams:?FINISHED=false&MSG=There was a problem unzipping the file. Err:" + err);
-						process.exit(1);				 
+						process.exit(0);				 
 				 }	
 				 fs.unlink(tmpFilePath, cb(null, dirName));		//Remove the zip file itself
 			})
@@ -189,7 +189,7 @@ function downloadAndUnzip(filename, url, cb) {
 				 	zip.extractAllTo(targetAddonsFolder, true);	//Overwrite is the 'true'
 				 } catch(err) {
 				 		console.log("returnParams:?FINISHED=false&MSG=There was a problem unzipping the file. Err:" + err);
-						process.exit(1);				 
+						process.exit(0);				 
 				 }	
 				 fs.unlink(tmpFilePath, cb(null, dirName));		//Remove the zip file itself
 			})
