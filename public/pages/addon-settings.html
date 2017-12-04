@@ -21,6 +21,8 @@ STANDARDHEADER
                         <!-- /.panel-heading -->
                         <div class="panel-body">
                       
+                      		<div style="display: none;" id="my-warning" class="panel"></div>
+                      
 						
  							<!-- Nav tabs -->
                             <ul id="setting-tabs" class="nav nav-tabs">
@@ -109,7 +111,28 @@ STANDARDHEADER
 
 			});
 			
-			
+			//Handle any messages
+			var msg = "MSG";
+			var finished = "FINISHED";
+			if(msg !== "MSG") {
+				//We have a user message
+				var colour = "panel-green";
+				
+				if(finished === "FINISHED") {
+					colour = "panel-green";
+				} else {
+					if(finished == "true") {
+						colour = "panel-green";		
+					} else {
+						colour = "panel-red";
+					}
+				}
+				
+				//Now set the panel
+				jQuery("#my-warning").addClasses(colour);
+				jQuery("#my-warning").html(msg);
+				jQuery("#my-warning").show();
+			}
 		
 		 });
          </script>     

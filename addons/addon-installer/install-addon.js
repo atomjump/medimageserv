@@ -203,8 +203,9 @@ function execCommands(commandArray, cb)
 							}, (err, stdout, stderr) => {
 								 if (err) {
 									// node couldn't execute the command
-									console.log("There was a problem running the command. Error:" + err);
-									callback(err);
+									var msg = "There was a problem running the command " + commandArray[cnt] + ". Error:" + err;
+									console.log(msg);
+									callback(msg);
 							
 								 } else {
 					  
@@ -217,12 +218,10 @@ function execCommands(commandArray, cb)
 					  function(err){
 						// All tasks are done now
 						if(err) {
-						   console.log('returnParams:?MESSAGE=ERROR:' + err);
+						   console.log('ERROR:' + err);
 						   cb(err);
 						 } else {
 						   console.log('Completed all commands!');
-						   
-						   console.log("returnParams:?MESSAGE=Success");					   
 						   cb(null);
 						 }
 					   }
@@ -256,7 +255,7 @@ function openAndRunDescriptor(directory)
 						if(data.installCommands.all) {
 							//Run through these commands always - all platforms	
 							execCommands(data.installCommands.all, function(err) {
-								callback(null);
+								callback(err);
 							});
 						} else {
 							callback(null);
@@ -267,7 +266,7 @@ function openAndRunDescriptor(directory)
 						if((data.installCommands.win32) && (platform == "win32")) {
 							//Run through these commands always - all platforms	
 							execCommands(data.installCommands.win32, function(err) {
-								callback(null);
+								callback(err);
 							});
 						} else {
 							callback(null);
@@ -278,7 +277,7 @@ function openAndRunDescriptor(directory)
 						if((data.installCommands.win64) && (platform == "win64")) {
 							//Run through these commands always - all platforms	
 							execCommands(data.installCommands.win64, function(err) {
-								callback(null);
+								callback(err);
 							});
 						} else {
 							callback(null);
@@ -289,7 +288,7 @@ function openAndRunDescriptor(directory)
 						if((data.installCommands.unix) && (platform == "unix")) {
 							//Run through these commands always - all platforms	
 							execCommands(data.installCommands.unix, function(err) {
-								callback(null);
+								callback(err);
 							});
 						} else {
 							callback(null);
@@ -300,7 +299,7 @@ function openAndRunDescriptor(directory)
 						if((data.installCommands.mac) && (platform == "mac")) {
 							//Run through these commands always - all platforms	
 							execCommands(data.installCommands.mac, function(err) {
-								callback(null);
+								callback(err);
 							});
 						} else {
 							callback(null, 'done');
@@ -371,7 +370,7 @@ function renameFolder(filename, dirname) {
 	//fsExtra.move(dirIn, dirOut);
 	fsExtra.move(dirIn, dirOut, { overwrite: true }, function(err) {
 	  if (err) {
-	  	return console.error(err);
+	  	return console.log("returnParams:?FINISHED=false&MSG=Could not rename the folder. Err:" + err);
 	  } else {
 	  	console.log('Success renaming!');
 	  	openAndRunDescriptor(dirOut);
@@ -409,7 +408,7 @@ function uninstall(addonName)
 						if(data.uninstallCommands.all) {
 							//Run through these commands always - all platforms	
 							execCommands(data.uninstallCommands.all, function(err) {
-								callback(null);
+								callback(err);
 							});
 						} else {
 							callback(null);
@@ -420,7 +419,7 @@ function uninstall(addonName)
 						if((data.uninstallCommands.win32) && (platform == "win32")) {
 							//Run through these commands always - all platforms	
 							execCommands(data.uninstallCommands.win32, function(err) {
-								callback(null);
+								callback(err);
 							});
 						} else {
 							callback(null);
@@ -431,7 +430,7 @@ function uninstall(addonName)
 						if((data.uninstallCommands.win64) && (platform == "win64")) {
 							//Run through these commands always - all platforms	
 							execCommands(data.uninstallCommands.win64, function(err) {
-								callback(null);
+								callback(err);
 							});
 						} else {
 							callback(null);
@@ -442,7 +441,7 @@ function uninstall(addonName)
 						if((data.uninstallCommands.unix) && (platform == "unix")) {
 							//Run through these commands always - all platforms	
 							execCommands(data.uninstallCommands.unix, function(err) {
-								callback(null);
+								callback(err);
 							});
 						} else {
 							callback(null);
@@ -453,7 +452,7 @@ function uninstall(addonName)
 						if((data.uninstallCommands.mac) && (platform == "mac")) {
 							//Run through these commands always - all platforms	
 							execCommands(data.uninstallCommands.mac, function(err) {
-								callback(null, 'done');
+								callback(err, 'done');
 							});
 						} else {
 							callback(null);
@@ -464,7 +463,7 @@ function uninstall(addonName)
 					// result now equals 'done'
 					if(err) {
 						console.log("The uninstallation was not complete.");
-						console.log("returnParams:?FINISHED=false");
+						console.log("returnParams:?FINISHED=false&MSG=The uninstallation was not complete. Error:" + );
 						process.exit(1);
 					} else {
 					
@@ -476,7 +475,7 @@ function uninstall(addonName)
 						fsExtra.removeSync(dirOut);
 					
 						console.log("The uninstallation was completed successfully!");
-						console.log("returnParams:?FINISHED=true");
+						console.log("returnParams:?FINISHED=true&MSG=The uninstallation was completed successfully!");
 						process.exit(0);
 					}
 				});
@@ -484,12 +483,12 @@ function uninstall(addonName)
 			}
 		} else {
 			console.log("Warning: no valid JSON data found");
-			console.log("returnParams:?FINISHED=false");
+			console.log("returnParams:?FINISHED=false&MSG=Warning: no valid JSON datafound");
 			process.exit(1);
 		}
 	} else {
 		console.log("Warning: no valid JSON data found");
-		console.log("returnParams:?FINISHED=false");
+		console.log("returnParams:?FINISHED=false&MSG=Warning: no valid JSON data found");
 		process.exit(1);
 	}
 
@@ -505,7 +504,7 @@ function uninstall(addonName)
 havePermission(configFile, function(err, ret) {
 
 	if(err) {
-		console.log("There was an error:" + err);
+		console.log("returnParams:?FINISHED=false&MSG=Sorry you do not have permissions to install add-ons. Please contact your administrator.");
 	
 	} else {
 
@@ -540,7 +539,7 @@ havePermission(configFile, function(err, ret) {
 			  }
 			  
 			  if((!opts.uninstall)&&(!opts.zipfileURL)) {
-			  	  console.log("You should enter a.")_;
+			  	  console.log("You should enter a 'zipfileURL' or 'uninstall' param.");
 			  
 			  }
   
@@ -552,7 +551,7 @@ havePermission(configFile, function(err, ret) {
 			}
 		} else {
 			//No permission, sorry
-			console.log("Sorry, you don't have permission to install add-ons. Please check your config.json. " + ret);
+			console.log("returnParams:?FINISHED=false&MSG=Sorry, you don't have permission to install add-ons. Please check your config.json. " + ret);
 		}
 	}
 });
