@@ -684,8 +684,6 @@ function backupFile(thisPath, outhashdir, finalFileName)
 function addOns(eventType, cb, param1, param2, param3) 
 {
 	//Read in any add-ons that exist in the config?, or in the 'addons' folder.
-	console.log("Checking add-ons");
-	
 	
 	//Read in the config file
 	fs.readFile(addonsConfigFile, function read(err, data) {
