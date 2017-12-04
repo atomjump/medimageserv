@@ -21,7 +21,16 @@ STANDARDHEADER
                         <!-- /.panel-heading -->
                         <div class="panel-body">
                       
-                      		<div style="display: none;" id="my-warning" class="panel"></div>
+                      		<div style="display: none;" id="my-warning" class="panel">
+								<div id="warning-heading" class="panel-heading">
+									Success
+								</div>
+								<div class="panel-body">
+									<p id="warning-body"></p>
+								</div>
+								<div id="warning-footer" class="panel-footer">
+								</div>
+                      		</div>
                       
 						
  							<!-- Nav tabs -->
@@ -117,20 +126,27 @@ STANDARDHEADER
 			if(msg.substr(0,2) !== "MS") {		//Can't use the full MSG because that gets replaced
 				//We have a user message
 				var colour = "panel-green";
+				var header = "Success";
+				var footer = "";
 				
 				if(finished.substr(0,3) === "FIN") {		//Can't use the full FINISHED because that gets replaced
 					colour = "panel-green";
+					header = "Success";
 				} else {
 					if(finished == "true") {
-						colour = "panel-green";		
+						colour = "panel-green";	
+						header = "Success";	
 					} else {
 						colour = "panel-red";
+						header = "Error";
 					}
 				}
 				
 				//Now set the panel
 				jQuery("#my-warning").addClass(colour);
-				jQuery("#my-warning").html(msg);
+				jQuery("#warning-header").html(header);
+				jQuery("#warning-body").html(msg);
+				jQuery("#warning-footer").html(footer);
 				jQuery("#my-warning").show();
 			}
 		
