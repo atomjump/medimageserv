@@ -24,7 +24,8 @@ var glob = require("glob");
 var unallowedFilenameStrings = [
 	".json",
 	".md",
-	".txt"
+	".txt",
+	".zip"
 ];
 
 
