@@ -1,7 +1,7 @@
 
 <h4>Add-on Installer</h4>
                                     
-	<form id="search-dir" action="/addon/install-addon" role="form" onsubmit="startWait(); return true;">
+	<form id="search-dir" action="/addon/install-addon" role="form" onsubmit="return startWait();">
 		<div class="form-group">
 			<label>URL of the Add-on's .zip file (ALLOWCHANGES)</label>
 			<input class="form-control" id="zipfileURL" type="text" name="zipfileURL" value="" placeholder="e.g. https://path.to.your.addon/file.zip">
