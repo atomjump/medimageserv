@@ -272,7 +272,11 @@ function openAndRunDescriptor(directory)
 						console.log("Checking all platform commands");
 						if(data.installCommands.all) {
 							//Run through these commands always - all platforms	
-							execCommands(data.installCommands.all, "", function(err) {
+							var prepend = "";
+							if(platform == "mac") {
+								prepend = "sudo ";
+							}
+							execCommands(data.installCommands.all, prepend, function(err) {
 								callback(err);
 							});
 						} else {
@@ -429,8 +433,12 @@ function uninstall(addonName)
 					function(callback) {
 						console.log("Checking all platform commands");
 						if(data.uninstallCommands.all) {
+							var prepend = "";
+							if(platform == "mac") {
+								prepend = "sudo ";
+							}
 							//Run through these commands always - all platforms	
-							execCommands(data.uninstallCommands.all, "", function(err) {
+							execCommands(data.uninstallCommands.all, prepend, function(err) {
 								callback(err);
 							});
 						} else {
