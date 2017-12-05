@@ -399,7 +399,7 @@ function renameFolder(filename, dirname, opts) {
 	})
 }
 
-function uninstall(addonName)
+function uninstall(addonName, opts)
 {
 	var dirOut = targetAddonsFolder + addonName;	//Absolute path to folder to delete
 	
