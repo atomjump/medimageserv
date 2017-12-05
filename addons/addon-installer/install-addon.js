@@ -533,6 +533,7 @@ function uninstall(addonName, opts)
 									console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The uninstallation was not complete.&EXTENDED=" + err);
 								} else {
 									console.log("The uninstallation was completed successfully!");
+									console.log("reloadConfig:true");
 									console.log("returnParams:?FINISHED=true&TABSTART=install-addon-tab&MSG=The uninstallation was completed successfully!");
 								}
 								process.exit(0);
@@ -542,6 +543,7 @@ function uninstall(addonName, opts)
 							fsExtra.removeSync(dirOut);
 					
 							console.log("The uninstallation was completed successfully!");
+							console.log("reloadConfig:true");
 							console.log("returnParams:?FINISHED=true&TABSTART=install-addon-tab&MSG=The uninstallation was completed successfully!");
 							process.exit(0);
 						}
