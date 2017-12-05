@@ -84,7 +84,7 @@ STANDARDHEADER
 		 function areYouSure(addon) {
 			var msg = "Are you sure you want to uninstall the add-on '" + addon + "'? You will lose all settings and data for that add-on.";	
 			if(confirm(msg)) {
-				var URI = "/addon/install-addon?uninstall=" + addon;
+				var URI = "/addon/install-addon?uninstall=" + addon + "&password=" + jQuery("#password").val();;
 				window.location.href = URI;	
 				
 			}
