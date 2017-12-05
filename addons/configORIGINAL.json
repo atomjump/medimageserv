@@ -31,7 +31,14 @@
 					"runProcess": "node parentdir/addons/addon-installer/view-settings.js",
 					"waitForRequestFinish":  "install-addon-settings.html",
 					"active": true
-				}
+				},
+				{
+					"addon": "current-log",
+					"scriptURLName": "current-log",
+					"runProcess": "node parentdir/addons/view-log/view-log.js",
+					"waitForRequestFinish":  "view-log.html",
+					"active": true
+				},
 		
 		]
 	}
