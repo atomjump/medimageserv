@@ -502,11 +502,26 @@ function uninstall(addonName, opts)
 					
 						//Now clear out the folder
 						console.log("Removing folder:" + dirOut);
-						fsExtra.removeSync(dirOut);
+						if((platform == "unix")||(platform == "mac")) {
+							var rmrf[] = [ "echo \"" + opts.password + "\" | sudo -S rm -rf " + dirOut ];		//Do an OS level sudo rm dir
+							execCommands(rmrf, "", function(err) {
+								if(err) {
+									console.log("The uninstallation was not complete.");
+									console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The uninstallation was not complete.&EXTENDED=" + err);
+								} else {
+									console.log("The uninstallation was completed successfully!");
+									console.log("returnParams:?FINISHED=true&TABSTART=install-addon-tab&MSG=The uninstallation was completed successfully!");
+								}
+								process.exit(0);
+							});
+						} else {
+							
+							fsExtra.removeSync(dirOut);
 					
-						console.log("The uninstallation was completed successfully!");
-						console.log("returnParams:?FINISHED=true&TABSTART=install-addon-tab&MSG=The uninstallation was completed successfully!");
-						process.exit(0);
+							console.log("The uninstallation was completed successfully!");
+							console.log("returnParams:?FINISHED=true&TABSTART=install-addon-tab&MSG=The uninstallation was completed successfully!");
+							process.exit(0);
+						}
 					}
 				});
 			
