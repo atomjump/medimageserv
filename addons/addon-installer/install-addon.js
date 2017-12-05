@@ -212,7 +212,7 @@ function execCommands(commandArray, prepend, cb)
 							}, (err, stdout, stderr) => {
 								 if (err) {
 									// node couldn't execute the command
-									var msg = "There was a problem running the command " + cmd + ". Error:" + err;
+									var msg = "There was a problem running the command " + cmd + ". Error:" + err;	// "\n\nStdout:" + stdout;
 									console.log(msg);
 									callback(msg);
 							
@@ -269,8 +269,10 @@ function openAndRunDescriptor(directory, opts)
 						if(data.installCommands.all) {
 							//Run through these commands always - all platforms	
 							var prepend = "";
-							if(platform == "mac") {
-								prepend = "echo \"" + opts.password + "\" | sudo -S ";
+							if((platform == "unix")||(platform == "mac")) {
+								if(opts.password != "") {
+									prepend = "echo \"" + opts.password + "\" | sudo -S ";
+								}
 							}
 							execCommands(data.installCommands.all, prepend, function(err) {
 								callback(err);
@@ -305,8 +307,12 @@ function openAndRunDescriptor(directory, opts)
 						console.log("Checking Unix commands");
 						if((data.installCommands.unix) && (platform == "unix")) {
 							//Run through these commands on unix/linux
-							var prepend = "echo \"" + opts.password + "\" | sudo -S ";
-							execCommands(data.installCommands.unix, "", function(err) {
+							if(opts.password != "") {
+								var prepend = "echo \"" + opts.password + "\" | sudo -S ";
+							} else {
+								var prepend = "";
+							}
+							execCommands(data.installCommands.unix, prepend, function(err) {
 								callback(err);
 							});
 						} else {
@@ -317,7 +323,11 @@ function openAndRunDescriptor(directory, opts)
 						console.log("Checking Mac commands");
 						if((data.installCommands.mac) && (platform == "mac")) {
 							//Run through these commands on mac
-							var prepend = "echo \"" + opts.password + "\" | sudo -S ";
+							if(opts.password != "") {
+								var prepend = "echo \"" + opts.password + "\" | sudo -S ";
+							} else {
+								var prepend = "";
+							}
 							execCommands(data.installCommands.mac, prepend, function(err) {
 								callback(err);
 							});
@@ -339,6 +349,11 @@ function openAndRunDescriptor(directory, opts)
 					}
 				});
 						
+			} else {
+				console.log("Warning: no valid install commands.");
+				console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=No valid install commands.");
+				process.exit(0);
+			
 			}
 		} else {
 			console.log("Warning: no valid JSON data found");
@@ -432,8 +447,10 @@ function uninstall(addonName, opts)
 						console.log("Checking all platform commands");
 						if(data.uninstallCommands.all) {
 							var prepend = "";
-							if(platform == "mac") {
-								prepend = "echo \"" + opts.password + "\" | sudo -S ";
+							if((platform == "unix")||(platform == "mac")) {
+								if(opts.password != "") {
+									prepend = "echo \"" + opts.password + "\" | sudo -S ";
+								}
 							}
 							//Run through these commands always - all platforms	
 							execCommands(data.uninstallCommands.all, prepend, function(err) {
@@ -469,7 +486,9 @@ function uninstall(addonName, opts)
 						console.log("Checking Unix commands");
 						if((data.uninstallCommands.unix) && (platform == "unix")) {
 							//Run through these commands unix/linux	
-							var prepend = "echo \"" + opts.password + "\" | sudo -S ";
+							if(opts.password != "") {
+								var prepend = "echo \"" + opts.password + "\" | sudo -S ";
+							}
 							execCommands(data.uninstallCommands.unix, prepend, function(err) {
 								callback(err);
 							});
@@ -481,7 +500,9 @@ function uninstall(addonName, opts)
 						console.log("Checking Mac commands");
 						if((data.uninstallCommands.mac) && (platform == "mac")) {
 							//Run through these commands mac
-							var prepend = "echo \"" + opts.password + "\" | sudo -S ";
+							if(opts.password != "") {
+								var prepend = "echo \"" + opts.password + "\" | sudo -S ";
+							}
 							execCommands(data.uninstallCommands.mac, prepend, function(err) {
 								callback(err, 'done');
 							});
@@ -503,7 +524,7 @@ function uninstall(addonName, opts)
 					
 						//Now clear out the folder
 						console.log("Removing folder:" + dirOut);
-						if((platform == "unix")||(platform == "mac")) {
+						if(((platform == "unix")||(platform == "mac"))&&(opts.password != "")) {
 							var rmrf = [ "echo \"" + opts.password + "\" | sudo -S rm -rf " + dirOut ];		//Do an OS level sudo rm dir
 							execCommands(rmrf, "", function(err) {
 								if(err) {
