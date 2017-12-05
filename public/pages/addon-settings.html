@@ -32,7 +32,7 @@ STANDARDHEADER
 								</div>
                       		</div>
                       		
-                      		<p id="waiter" style="color:#AAA;"></p>
+                      		<p id="waiter" style="display: none; color:#AAA;">Started installing ... Please wait.. <br/><img src='../images/ajax-loader.gif' width='28' height='28'></p>
                       
 						
  							<!-- Nav tabs -->
@@ -91,10 +91,6 @@ STANDARDHEADER
 		 	return false;
 		 }
 		 
-		 function startWait() {
-		 	jQuery('#waiter').html("Started installing ... Please wait.. <br/><img src='../images/ajax-loader.gif' width='28' height='28'>");
-		 	return true;
-		 }
 		 
 		 
 		 jQuery(document).ready(function(){         			
@@ -127,6 +123,7 @@ STANDARDHEADER
 					jQuery('#change-folder').html(data);
 				}
 			 }); 
+			 
 		 
 			
 			

@@ -1,7 +1,7 @@
 
 <h4>Add-on Installer</h4>
                                     
-	<form id="search-dir" action="/addon/install-addon" role="form" onsubmit="return startWait();">
+	<form id="install-frm" action="/addon/install-addon" role="form" >
 		<div class="form-group">
 			<label>URL of the Add-on's .zip file (ALLOWCHANGES)</label>
 			<input class="form-control" id="zipfileURL" type="text" name="zipfileURL" value="" placeholder="e.g. https://path.to.your.addon/file.zip">
@@ -31,3 +31,31 @@
 	
 	CURRENTADDONS
 	
+	
+	<script>
+	 jQuery(document).ready(function(){         			
+		
+		 var startedInstalling = false;
+		
+			 
+			 jQuery( "#install-frm" ).submit(function( event ) {
+			  
+			    if(startedInstalling == false) {
+			
+			  		jQuery('#waiter').fadeIn(1000, function() {
+			  					jQuery("#install-frm").submit();
+			  				}); 
+			  		event.preventDefault();
+			  		startedInstalling = true;
+			  		
+			  		
+			  		return false;
+			   	}
+			   
+			   	return true;
+			  
+			  
+			  
+			});
+	});
+	</script>
