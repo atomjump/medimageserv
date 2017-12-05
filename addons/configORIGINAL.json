@@ -38,7 +38,7 @@
 					"runProcess": "node parentdir/addons/view-log/view-log.js",
 					"waitForRequestFinish":  "view-log.html",
 					"active": true
-				},
+				}
 		
 		]
 	}
