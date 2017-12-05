@@ -305,7 +305,7 @@ function openAndRunDescriptor(directory, opts)
 						console.log("Checking Unix commands");
 						if((data.installCommands.unix) && (platform == "unix")) {
 							//Run through these commands on unix/linux
-							prepend = "echo \"" + opts.password + "\" | sudo ";
+							var prepend = "echo \"" + opts.password + "\" | sudo -S ";
 							execCommands(data.installCommands.unix, "", function(err) {
 								callback(err);
 							});
@@ -317,7 +317,7 @@ function openAndRunDescriptor(directory, opts)
 						console.log("Checking Mac commands");
 						if((data.installCommands.mac) && (platform == "mac")) {
 							//Run through these commands on mac
-							prepend = "echo \"" + opts.password + "\" | sudo -S ";
+							var prepend = "echo \"" + opts.password + "\" | sudo -S ";
 							execCommands(data.installCommands.mac, prepend, function(err) {
 								callback(err);
 							});
@@ -469,7 +469,8 @@ function uninstall(addonName, opts)
 						console.log("Checking Unix commands");
 						if((data.uninstallCommands.unix) && (platform == "unix")) {
 							//Run through these commands unix/linux	
-							execCommands(data.uninstallCommands.unix, "", function(err) {
+							var prepend = "echo \"" + opts.password + "\" | sudo -S ";
+							execCommands(data.uninstallCommands.unix, prepend, function(err) {
 								callback(err);
 							});
 						} else {
@@ -480,7 +481,7 @@ function uninstall(addonName, opts)
 						console.log("Checking Mac commands");
 						if((data.uninstallCommands.mac) && (platform == "mac")) {
 							//Run through these commands mac
-							prepend = "echo \"" + opts.password + "\" | sudo -S ";
+							var prepend = "echo \"" + opts.password + "\" | sudo -S ";
 							execCommands(data.uninstallCommands.mac, prepend, function(err) {
 								callback(err, 'done');
 							});
