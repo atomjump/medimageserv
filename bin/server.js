@@ -811,6 +811,14 @@ function addOns(eventType, cb, param1, param2, param3)
 										  if(stdout.lastIndexOf(reloadConfig) > -1) {
 										   		checkConfigCurrent(null, function() {
 										   			//This is run async - refresh the config in the background.
+										   			
+										   			//And reload the header
+										   			readHTMLHeader(function(err) {
+														if(err) {
+															console.log(err);
+														}
+													});
+										   			
 										   		});
 										   }
 								  
@@ -908,6 +916,14 @@ function addOns(eventType, cb, param1, param2, param3)
 											   if(stdout.lastIndexOf(reloadConfig) > -1) {
 													checkConfigCurrent(null, function() {
 														//This is run async - refresh the config in the background.
+														
+														//And reload the header
+														readHTMLHeader(function(err) {
+															if(err) {
+																console.log(err);
+															}
+														});
+														
 													});
 											   }
 											   

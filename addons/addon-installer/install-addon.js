@@ -344,6 +344,7 @@ function openAndRunDescriptor(directory, opts)
 						process.exit(0);
 					} else {
 						console.log("The installation was completed successfully!");
+						console.log("reloadConfig:true");
 						console.log("returnParams:?FINISHED=true&TABSTART=install-addon-tab&MSG=The installation was completed successfully!");
 						process.exit(0);
 					}
