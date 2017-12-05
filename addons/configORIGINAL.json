@@ -35,7 +35,7 @@
 				{
 					"addon": "current-log",
 					"scriptURLName": "current-log",
-					"runProcess": "node parentdir/addons/view-log/view-log.js",
+					"runProcess": "node parentdir/addons/log-viewer/view-log.js",
 					"waitForRequestFinish":  "view-log.html",
 					"active": true
 				}
