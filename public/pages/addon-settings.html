@@ -98,7 +98,7 @@ STANDARDHEADER
 				//Get the current settings HTML snippet via an ajax request
 
 				uri = "/addon/addon-installer-view-settings/";
-				jQuery('#install-addon').html("<img src='../images/ajax-loader.gif' width='28' height='28'>");
+				jQuery('#install-addon').html("<img style='margin:8px;' src='../images/ajax-loader.gif' width='28' height='28'>");
 				jQuery.ajax({
 					url: uri,
 					success: function(data) {
@@ -118,7 +118,7 @@ STANDARDHEADER
 			
 			//Get the current settings HTML snippet via an ajax request
 			uri = "/addon/change-folder-view-settings/";
-			jQuery('#change-folder').html("<img src='../images/ajax-loader.gif' width='28' height='28'>");
+			jQuery('#change-folder').html("<img style='margin:8px;' src='../images/ajax-loader.gif' width='28' height='28'>");
 			jQuery.ajax({
 				url: uri,
 				success: function(data) {
