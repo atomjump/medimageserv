@@ -503,7 +503,7 @@ function uninstall(addonName, opts)
 						//Now clear out the folder
 						console.log("Removing folder:" + dirOut);
 						if((platform == "unix")||(platform == "mac")) {
-							var rmrf[] = [ "echo \"" + opts.password + "\" | sudo -S rm -rf " + dirOut ];		//Do an OS level sudo rm dir
+							var rmrf = [ "echo \"" + opts.password + "\" | sudo -S rm -rf " + dirOut ];		//Do an OS level sudo rm dir
 							execCommands(rmrf, "", function(err) {
 								if(err) {
 									console.log("The uninstallation was not complete.");
