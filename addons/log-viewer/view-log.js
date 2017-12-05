@@ -68,7 +68,7 @@ function getMasterConfig(defaultConfig, callback) {
 
 
 
-function readLog(logFile, plaform, callback) {
+function readLog(logFile, platform, callback) {
 	
 	if((platform == "mac")||(platform == "unix")) {
 		var cmd = "pm2 logs";
