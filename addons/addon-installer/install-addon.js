@@ -129,7 +129,7 @@ function getPlatform() {
 }
 
 //With thanks from http://rajiev.com/download-an-extract-a-zip-file-with-node-js/
-function downloadAndUnzip(filename, url, cb) {
+function downloadAndUnzip(filename, url, opts, cb) {
 	var tmpFilePath = targetAddonsFolder + filename;
 	
 	if(url.startsWith("https")) {
@@ -138,8 +138,6 @@ function downloadAndUnzip(filename, url, cb) {
 			response.on('data', function (data) {
 				fs.appendFileSync(tmpFilePath, data);
 			});
-		
-			//TODO: handle error case
 		
 			response.on('end', function() {
 				  try {
@@ -170,9 +168,7 @@ function downloadAndUnzip(filename, url, cb) {
 			response.on('data', function (data) {
 				fs.appendFileSync(tmpFilePath, data);
 			});
-		
-			//TODO: handle error case
-		
+			
 			response.on('end', function() {
 				try {
 					 var zip = new AdmZip(tmpFilePath);
@@ -246,7 +242,7 @@ function execCommands(commandArray, prepend, cb)
 
 
 
-function openAndRunDescriptor(directory)
+function openAndRunDescriptor(directory, opts)
 {
 
 	//Change into the directory of the add-on
@@ -274,7 +270,7 @@ function openAndRunDescriptor(directory)
 							//Run through these commands always - all platforms	
 							var prepend = "";
 							if(platform == "mac") {
-								prepend = "sudo ";
+								prepend = "echo \"" + opts.password + "\" | sudo -S ";
 							}
 							execCommands(data.installCommands.all, prepend, function(err) {
 								callback(err);
@@ -286,7 +282,7 @@ function openAndRunDescriptor(directory)
 					function(callback) {
 						console.log("Checking Win32 commands");
 						if((data.installCommands.win32) && (platform == "win32")) {
-							//Run through these commands always - all platforms	
+							//Run through these commands on Win32
 							execCommands(data.installCommands.win32, "", function(err) {
 								callback(err);
 							});
@@ -297,7 +293,7 @@ function openAndRunDescriptor(directory)
 					function(callback) {
 						console.log("Checking Win64 commands");
 						if((data.installCommands.win64) && (platform == "win64")) {
-							//Run through these commands always - all platforms	
+							//Run through these commands on Win64
 							execCommands(data.installCommands.win64, "", function(err) {
 								callback(err);
 							});
@@ -308,7 +304,8 @@ function openAndRunDescriptor(directory)
 					function(callback) {
 						console.log("Checking Unix commands");
 						if((data.installCommands.unix) && (platform == "unix")) {
-							//Run through these commands always - all platforms	
+							//Run through these commands on unix/linux
+							prepend = "echo \"" + opts.password + "\" | sudo ";
 							execCommands(data.installCommands.unix, "", function(err) {
 								callback(err);
 							});
@@ -319,8 +316,9 @@ function openAndRunDescriptor(directory)
 					function(callback) {
 						console.log("Checking Mac commands");
 						if((data.installCommands.mac) && (platform == "mac")) {
-							//Run through these commands always - all platforms	
-							execCommands(data.installCommands.mac, "sudo ", function(err) {
+							//Run through these commands on mac
+							prepend = "echo \"" + opts.password + "\" | sudo -S ";
+							execCommands(data.installCommands.mac, prepend, function(err) {
 								callback(err);
 							});
 						} else {
@@ -357,7 +355,7 @@ function openAndRunDescriptor(directory)
 }
 		
 
-function renameFolder(filename, dirname) {
+function renameFolder(filename, dirname, opts) {
 	//Input will be 'wound-0.7.3.zip'
 	//We want to convert '../wound-0.7.3' folder to '../wound' folder
 	//Trim up to 1st digit, or dot '.'. Then trim '-' chars at the end.
@@ -395,7 +393,7 @@ function renameFolder(filename, dirname) {
 	  	return console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=Could not rename the folder.&EXTENDED=" + err);
 	  } else {
 	  	console.log('Success renaming!');
-	  	openAndRunDescriptor(dirOut);
+	  	openAndRunDescriptor(dirOut, opts);
 	  	return;
 	  }
 	})
@@ -435,7 +433,7 @@ function uninstall(addonName)
 						if(data.uninstallCommands.all) {
 							var prepend = "";
 							if(platform == "mac") {
-								prepend = "sudo ";
+								prepend = "echo \"" + opts.password + "\" | sudo -S ";
 							}
 							//Run through these commands always - all platforms	
 							execCommands(data.uninstallCommands.all, prepend, function(err) {
@@ -448,7 +446,7 @@ function uninstall(addonName)
 					function(callback) {
 						console.log("Checking Win32 commands");
 						if((data.uninstallCommands.win32) && (platform == "win32")) {
-							//Run through these commands always - all platforms	
+							//Run through these commands win32
 							execCommands(data.uninstallCommands.win32, "", function(err) {
 								callback(err);
 							});
@@ -459,7 +457,7 @@ function uninstall(addonName)
 					function(callback) {
 						console.log("Checking Win64 commands");
 						if((data.uninstallCommands.win64) && (platform == "win64")) {
-							//Run through these commands always - all platforms	
+							//Run through these commands win64
 							execCommands(data.uninstallCommands.win64, "", function(err) {
 								callback(err);
 							});
@@ -470,7 +468,7 @@ function uninstall(addonName)
 					function(callback) {
 						console.log("Checking Unix commands");
 						if((data.uninstallCommands.unix) && (platform == "unix")) {
-							//Run through these commands always - all platforms	
+							//Run through these commands unix/linux	
 							execCommands(data.uninstallCommands.unix, "", function(err) {
 								callback(err);
 							});
@@ -481,8 +479,9 @@ function uninstall(addonName)
 					function(callback) {
 						console.log("Checking Mac commands");
 						if((data.uninstallCommands.mac) && (platform == "mac")) {
-							//Run through these commands always - all platforms	
-							execCommands(data.uninstallCommands.mac, "sudo ", function(err) {
+							//Run through these commands mac
+							prepend = "echo \"" + opts.password + "\" | sudo -S ";
+							execCommands(data.uninstallCommands.mac, prepend, function(err) {
 								callback(err, 'done');
 							});
 						} else {
@@ -557,16 +556,16 @@ havePermission(configFile, function(err, ret) {
 				  console.log("Filename: " + filename + " URL: " + zipfileURL);
 				  //Get the filename of the path to the URL
   
-				  downloadAndUnzip(filename, zipfileURL, function(err, dirname) {
+				  downloadAndUnzip(filename, zipfileURL, opts, function(err, dirname) {
 					  console.log("Files unzipped");
 	  
-					  renameFolder(filename, dirname);
+					  renameFolder(filename, dirname, opts);
   
 				  });
 			  } 
 		  
 			  if(opts.uninstall) {
-				  uninstall(opts.uninstall);		  
+				  uninstall(opts.uninstall, opts);		  
 			  }
 			  
 			  if((!opts.uninstall)&&(!opts.zipfileURL)) {
