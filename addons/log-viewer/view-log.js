@@ -149,8 +149,8 @@ readConfig(readConfigFile, function(conf, err) {
 				 
 		   } else {
 						   			   			   
-			   
-			   readLog(logFile, getPlatform(), function(err, log) { 
+			   var platform = getPlatform();
+			   readLog(logFile, platform, function(err, log) { 
 			   
 			   			   
 				   if(conf.allowPhotosLeaving == true) {
