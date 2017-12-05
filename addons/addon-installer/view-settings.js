@@ -148,9 +148,9 @@ readConfig(readConfigFile, function(conf, err) {
 			   
 			   
 			   if(conf.allowPhotosLeaving == true) {
-			   		var allowChanges = "Locked";
+			   		var allowChanges = "<i class='fa fa-lock fa-fw'></i>";
 			   } else {
-			   		var allowChanges = "Unlocked";
+			   		var allowChanges = "<i class='fa fa-unlock fa-fw'></i>";
 			   }
 			   
 			   fileWalk(targetAddonsFolder, function(addonArray) {
