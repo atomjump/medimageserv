@@ -30,6 +30,7 @@ var verbose = false;
 
 var configFile = __dirname + '/../../config.json';
 var targetAddonsFolder = __dirname + "/../";
+var tempDir = 'temp-installation/';
 var descriptorFile = "medimage-installer.json";
 
 
@@ -105,6 +106,10 @@ function noTrailSlash(str)
 
 }
 
+
+
+
+
 function getPlatform() {
 	var platform = process.platform;
 	if(verbose == true) console.log(process.platform);
@@ -130,7 +135,7 @@ function getPlatform() {
 
 //With thanks from http://rajiev.com/download-an-extract-a-zip-file-with-node-js/
 function downloadAndUnzip(filename, url, opts, cb) {
-	var tmpFilePath = targetAddonsFolder + filename;
+	var tmpFilePath = targetAddonsFolder + tempDir + filename;
 	
 	if(url.startsWith("https")) {
 		//https
@@ -144,7 +149,7 @@ function downloadAndUnzip(filename, url, opts, cb) {
 					 var zip = new AdmZip(tmpFilePath);
 					 var zipEntries = zip.getEntries(); // an array of ZipEntry records 
 				  
-					 if(zipEntries[0].isDirectory == true) {
+					 if((zipEntries[0].isDirectory == true)&&(zipEntries.length == 1)) {
 						var dirName = zipEntries[0].entryName;	//e.g. "medimage-addon-p4m-0.0.1/"
 				 
 					 } else {
@@ -152,7 +157,7 @@ function downloadAndUnzip(filename, url, opts, cb) {
 					 }				 
 				 
 				 
-				 	zip.extractAllTo(targetAddonsFolder, true);	//Overwrite is the 'true'
+				 	zip.extractAllTo(targetAddonsFolder + tempDir, true);	//Overwrite is the 'true'
 				 } catch(err) {
 				 		console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=There was a problem unzipping the file.&EXTENDED=" + err);
 						process.exit(0);				 
@@ -182,7 +187,7 @@ function downloadAndUnzip(filename, url, opts, cb) {
 					 }				 
 				 
 				 
-				 	zip.extractAllTo(targetAddonsFolder, true);	//Overwrite is the 'true'
+				 	zip.extractAllTo(targetAddonsFolder + tempDir, true);	//Overwrite is the 'true'
 				 } catch(err) {
 				 		console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=There was a problem unzipping the file.&EXTENDED=" + err);
 						process.exit(0);				 
@@ -376,9 +381,9 @@ function renameFolder(filename, dirname, opts) {
 	//We want to convert '../wound-0.7.3' folder to '../wound' folder
 	//Trim up to 1st digit, or dot '.'. Then trim '-' chars at the end.
 	
-	var dirIn = targetAddonsFolder + filename.replace(/.zip/i, "");
+	var dirIn = targetAddonsFolder + tempDir + filename.replace(/.zip/i, "");
 	if(dirname) {
-		dirIn = targetAddonsFolder + noTrailSlash(dirname);
+		dirIn = targetAddonsFolder + tempDir + noTrailSlash(dirname);
 	}
 	
 	//Read in the json descriptor to get an output folder name of the addon
@@ -568,6 +573,32 @@ function uninstall(addonName, opts)
 }
 
 
+removeOldTemp(opts, cb)
+{
+	//Remove the old temporary installer folder
+	//Change back out of our folder
+	process.chdir(targetAddonsFolder);
+	var dirOut = targetAddonsFolder + tempDir;	
+	
+	if(((platform == "unix")||(platform == "mac"))&&(opts.password != "")) {
+		var rmrf = [ "echo \"" + opts.password + "\" | sudo -S rm -rf " + dirOut ];		//Do an OS level sudo rm dir
+		execCommands(rmrf, "", function(err) {
+			if(err) {
+				console.log("The installation was not complete.");
+				console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The installation was not complete. The old temporary folder could not be removed.&EXTENDED=" + err);
+				process.exit(0);
+			} else {
+				cb(null);
+			}
+		});
+	} else {
+		
+		fsExtra.removeSync(dirOut);
+		cb(null);
+	}
+
+}
+
 
 
 
@@ -595,13 +626,16 @@ havePermission(configFile, function(err, ret) {
   
 				  console.log("Filename: " + filename + " URL: " + zipfileURL);
 				  //Get the filename of the path to the URL
+  					
+  				  removeOldTemp(opts, function() {	
   
-				  downloadAndUnzip(filename, zipfileURL, opts, function(err, dirname) {
-					  console.log("Files unzipped");
-	  
-					  renameFolder(filename, dirname, opts);
+					  downloadAndUnzip(filename, zipfileURL, opts, function(err, dirname) {
+						  console.log("Files unzipped");
   
-				  });
+						  renameFolder(filename, dirname, opts);
+
+					  });
+				   });
 			  } 
 		  
 			  if(opts.uninstall) {
