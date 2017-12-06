@@ -673,19 +673,31 @@ havePermission(configFile, function(err, ret) {
 				  console.log("Filename: " + filename + " URL: " + zipfileURL);
 				  //Get the filename of the path to the URL
   					
-  				  removeOldTemp(opts, function() {	
+  				  try {
+					  removeOldTemp(opts, function() {	
   
-					  downloadAndUnzip(filename, zipfileURL, opts, function(err, dirname) {
-						  console.log("Files unzipped");
+						  downloadAndUnzip(filename, zipfileURL, opts, function(err, dirname) {
+							  console.log("Files unzipped");
   
-						  renameFolder(filename, dirname, opts);
+							  renameFolder(filename, dirname, opts);
 
-					  });
-				   });
+						  });
+					   });
+				  } catch(err) {
+				  	 	console.log("returnParams:?FINISHED=false&MSG=The installation was not complete.&EXTENDED=" + err);
+				  	 	process,exit(0);
+				  
+				  }
 			  } 
 		  
 			  if(opts.uninstall) {
-				  uninstall(opts.uninstall, opts);		  
+				  try {
+				  	uninstall(opts.uninstall, opts);
+				  } catch(err) {
+				  		console.log("returnParams:?FINISHED=false&MSG=The installation was not complete.&EXTENDED=" + err);
+				  	 	process,exit(0);
+				  
+				  }		  
 			  }
 			  
 			  if((!opts.uninstall)&&(!opts.zipfileURL)) {
