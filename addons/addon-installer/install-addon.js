@@ -273,7 +273,7 @@ function openAndRunDescriptor(directory, opts)
 	
 	if(fs.existsSync(desc) == true) {
 		try {
-			const data = fsExtra.readJsonSync(desc);
+			var data = fsExtra.readJsonSync(desc);
 		} catch(err) {
 			console.log("Error: there was a problem in the medimage-installer .json file. " + err);
 			console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=There was a problem in the medimage-installer .json file.&EXTENDED=" + err);
@@ -429,7 +429,7 @@ function renameFolder(filename, dirname, opts) {
 	var dirOut = "";
 	if(fs.existsSync(desc) == true) {
 		try {
-			const data = fsExtra.readJsonSync(desc);
+			var data = fsExtra.readJsonSync(desc);
 			if(data) {
 				dirOut = targetAddonsFolder + data.name;
 			}
