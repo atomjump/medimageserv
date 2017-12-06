@@ -145,7 +145,10 @@ function unzipAndRemove(filename, tmpFilePath, cb) {
 		 console.log("Entries length = " + zipEntries.length);
 		 console.log("First entry = " + JSON.stringify(zipEntries[0], null, 6));
 		 if(zipEntries[0].isDirectory == true) {
-			var dirName = zipEntries[0].entryName.replace(filename, "");	//e.g. "medimage-addon-resize/medimage-addon-resize-0.1.0/"
+			var dirName = zipEntries[0].entryName;//
+			//Could be a 2nd dir e.g. "medimage-addon-resize/medimage-addon-resize-0.1.0/"
+			//				or  e.g. "medimage-addon-resize-0.1.0/"
+			// if there is an internal directory
 			console.log("Internal directory in zip:" + dirName);
 		 } else {
 			var dirName = null;
@@ -153,10 +156,22 @@ function unzipAndRemove(filename, tmpFilePath, cb) {
 
 
 		zip.extractAllTo(targetAddonsFolder + tempDir, true);	//Overwrite is the 'true'
+		
+		//Unzipped, now check if we're 2 folders in or 1.
+		if(fs.existsSync(targetAddonsFolder + tempDir + '/' + dirName) == true) {
+			//We're all good
+		} else {
+			//Try without the filename
+			dirName = dirName.replace(filename, "");
+			
+		}
+		
 	 } catch(err) {
 			console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=There was a problem unzipping the file.&EXTENDED=" + err);
 			process.exit(0);				 
 	 }	
+	 
+	 //Remove the temporary .zip file
 	 fs.unlink(tmpFilePath, function(err) {
 	 	if(err) {
 	 		cb(err, null);
