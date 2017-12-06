@@ -162,7 +162,7 @@ readConfig(readConfigFile, function(conf, err) {
 				   
 				   var logOutput = entities.encodeNonUTF(log);
 			  
-				   console.log("returnParams:?LOG=" + logOutput + "&ALLOWCHANGES=" + allowChanges);
+				   console.log("returnParams:?LOG=" + encodeURIComponent(logOutput) + "&ALLOWCHANGES=" + allowChanges);
 			   });
 			   
 			}
