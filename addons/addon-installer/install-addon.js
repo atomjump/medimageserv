@@ -281,8 +281,6 @@ function openAndRunDescriptor(directory, opts)
 		
 		}
 		
-		const data = fsExtra.readJsonSync(desc);
-		
 		
 		if(data) {
 			//Yes there is an installer script to run
@@ -484,7 +482,16 @@ function uninstall(addonName, opts)
 	
 	
 	if(fs.existsSync(desc) == true) {
-		const data = fsExtra.readJsonSync(desc);
+		try {
+			var data = fsExtra.readJsonSync(desc);
+		} catch(err) {
+			console.log("Error: there was a problem in the medimage-installer .json file. " + err);
+			console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=There was a problem in the medimage-installer .json file.&EXTENDED=" + err);
+			process.exit(0);
+		
+		}
+		
+		
 		if(data) {
 			//Yes there is an uninstaller script to run
 			if(data.uninstallCommands) {
