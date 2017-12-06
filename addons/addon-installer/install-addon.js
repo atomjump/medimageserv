@@ -136,66 +136,76 @@ function getPlatform() {
 //With thanks from http://rajiev.com/download-an-extract-a-zip-file-with-node-js/
 function downloadAndUnzip(filename, url, opts, cb) {
 	var tmpFilePath = targetAddonsFolder + tempDir + filename;
-	
-	if(url.startsWith("https")) {
-		//https
-		https.get(url, function(response) {
-			response.on('data', function (data) {
-				fs.appendFileSync(tmpFilePath, data);
-			});
+	fsExtra.ensureDir(targetAddonsFolder + tempDir, function(err) {
+		 if(err) {
+		 		cb(err, null) // => null
+		 } else {
+				// dir has now been created, including the directory it is to be placed in
+				if(url.startsWith("https")) {
+					//https
+					https.get(url, function(response) {
+						response.on('data', function (data) {
+				
+							fs.appendFileSync(tmpFilePath, data);
+						});
 		
-			response.on('end', function() {
-				  try {
-					 var zip = new AdmZip(tmpFilePath);
-					 var zipEntries = zip.getEntries(); // an array of ZipEntry records 
+						response.on('end', function() {
+							  try {
+								 var zip = new AdmZip(tmpFilePath);
+								 var zipEntries = zip.getEntries(); // an array of ZipEntry records 
 				  
-					 if((zipEntries[0].isDirectory == true)&&(zipEntries.length == 1)) {
-						var dirName = zipEntries[0].entryName;	//e.g. "medimage-addon-p4m-0.0.1/"
+								 if((zipEntries[0].isDirectory == true)&&(zipEntries.length == 1)) {
+									var dirName = zipEntries[0].entryName;	//e.g. "medimage-addon-p4m-0.0.1/"
 				 
-					 } else {
-						var dirName = null;
-					 }				 
+								 } else {
+									var dirName = null;
+								 }				 
 				 
 				 
-				 	zip.extractAllTo(targetAddonsFolder + tempDir, true);	//Overwrite is the 'true'
-				 } catch(err) {
-				 		console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=There was a problem unzipping the file.&EXTENDED=" + err);
-						process.exit(0);				 
-				 }	
-				 fs.unlink(tmpFilePath, cb(null, dirName));		//Remove the zip file itself
-			})
-		});
+								zip.extractAllTo(targetAddonsFolder + tempDir, true);	//Overwrite is the 'true'
+							 } catch(err) {
+									console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=There was a problem unzipping the file.&EXTENDED=" + err);
+									process.exit(0);				 
+							 }	
+							 fs.unlink(tmpFilePath, cb(null, dirName));		//Remove the zip file itself
+						})
+					});
 	
 	
-	} else {
-		//http
-		http.get(url, function(response) {
-			response.on('data', function (data) {
-				fs.appendFileSync(tmpFilePath, data);
-			});
+				} else {
+					//http
+					http.get(url, function(response) {
+						response.on('data', function (data) {
+							fs.appendFileSync(tmpFilePath, data);
+						});
 			
-			response.on('end', function() {
-				try {
-					 var zip = new AdmZip(tmpFilePath);
-					 var zipEntries = zip.getEntries(); // an array of ZipEntry records 
+						response.on('end', function() {
+							try {
+								 var zip = new AdmZip(tmpFilePath);
+								 var zipEntries = zip.getEntries(); // an array of ZipEntry records 
 				  
-					 if(zipEntries[0].isDirectory == true) {
-						var dirName = zipEntries[0].entryName;	//e.g. "medimage-addon-p4m-0.0.1/"
+								 if(zipEntries[0].isDirectory == true) {
+									var dirName = zipEntries[0].entryName;	//e.g. "medimage-addon-p4m-0.0.1/"
 				 
-					 } else {
-						var dirName = null;
-					 }				 
+								 } else {
+									var dirName = null;
+								 }				 
 				 
 				 
-				 	zip.extractAllTo(targetAddonsFolder + tempDir, true);	//Overwrite is the 'true'
-				 } catch(err) {
-				 		console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=There was a problem unzipping the file.&EXTENDED=" + err);
-						process.exit(0);				 
-				 }	
-				 fs.unlink(tmpFilePath, cb(null, dirName));		//Remove the zip file itself
-			})
-		});
-	}
+								zip.extractAllTo(targetAddonsFolder + tempDir, true);	//Overwrite is the 'true'
+							 } catch(err) {
+									console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=There was a problem unzipping the file.&EXTENDED=" + err);
+									process.exit(0);				 
+							 }	
+							 fs.unlink(tmpFilePath, cb(null, dirName));		//Remove the zip file itself
+						})
+					});
+				}		  
+				  
+		}
+	})
+	
+
 }
 
 
