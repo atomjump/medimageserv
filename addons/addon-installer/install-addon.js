@@ -136,7 +136,7 @@ function getPlatform() {
 
 function unzipAndRemove(filename, tmpFilePath, cb) {
 	 //Convert filename into one without extension
-	 var filename = filename.replace(/.zip/i, "") . "/";
+	 var filename = filename.replace(/.zip/i, "") + "/";
 	 
 	 try {
 		 var zip = new AdmZip(tmpFilePath);
