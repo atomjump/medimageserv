@@ -396,7 +396,7 @@ function renameFolder(filename, dirname, opts) {
 	
 	var dirIn = targetAddonsFolder + tempDir + nozipFilename;
 	if(dirname) {
-		dirIn = targetAddonsFolder + tempDir + nozipFilename + filenamenoTrailSlash(dirname);
+		dirIn = targetAddonsFolder + tempDir + nozipFilename + noTrailSlash(dirname);
 	}
 	
 	//Read in the json descriptor to get an output folder name of the addon
