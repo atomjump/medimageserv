@@ -577,6 +577,8 @@ function removeOldTemp(opts, cb)
 {
 	//Remove the old temporary installer folder
 	//Change back out of our folder
+	var platform = getPlatform();
+	
 	process.chdir(targetAddonsFolder);
 	var dirOut = targetAddonsFolder + tempDir;	
 	
