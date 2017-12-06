@@ -84,8 +84,7 @@ function readLog(logFile, platform, callback) {
 			  } else {
 				  console.log("Current Logs:" + stdout);
 			  	  
-			  	  //Convert newlines into HTML breaks
-			  	  stdout = stdout.replace(/(?:\r\n|\r|\n)/g, '<br />');
+			  	 
 				  callback(null, stdout);
 			 
 			  }
@@ -163,6 +162,8 @@ readConfig(readConfigFile, function(conf, err) {
 				   }
 				   
 				   var logOutput = entities.encodeNonUTF(log);
+				   //Convert newlines into HTML breaks
+			  	   stdout = stdout.replace(/(?:\r\n|\r|\n)/g, '<br/>');
 			  
 				   console.log("returnParams:?LOG=" + encodeURIComponent(logOutput) + "&ALLOWCHANGES=" + allowChanges);
 			   });
