@@ -167,7 +167,7 @@ function unzipAndRemove(filename, tmpFilePath, cb) {
 		}
 		
 	 } catch(err) {
-			console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=There was a problem unzipping the file.&EXTENDED=" + err);
+			console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=There was a problem unzipping the file.&EXTENDED=" + err + "  Expected folder:" + tempDir);
 			process.exit(0);				 
 	 }	
 	 
