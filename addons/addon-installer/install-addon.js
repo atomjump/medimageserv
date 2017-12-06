@@ -152,7 +152,13 @@ function unzipAndRemove(tmpFilePath, cb) {
 			console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=There was a problem unzipping the file.&EXTENDED=" + err);
 			process.exit(0);				 
 	 }	
-	 fs.unlink(tmpFilePath, cb(null, dirName));		//Remove the zip file itself
+	 fs.unlink(tmpFilePath, function(err) {
+	 	if(err) {
+	 		cb(err, null);
+	 	} else {
+	 		cb(null, dirName);
+	 	}
+	 });		//Remove the zip file itself
 
 } 
 
