@@ -163,7 +163,7 @@ readConfig(readConfigFile, function(conf, err) {
 				   
 				   var logOutput = entities.encodeNonUTF(log);
 				   //Convert newlines into HTML breaks
-			  	   logOutput = logOutput.replace(/(?:\r\n|\r|\n)/g, '<br/>');
+			  	   logOutput = logOutput.replace(/(?&#10;)/g, '<br/>');
 			  
 				   console.log("returnParams:?LOG=" + encodeURIComponent(logOutput) + "&ALLOWCHANGES=" + allowChanges);
 			   });
