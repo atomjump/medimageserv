@@ -661,7 +661,7 @@ havePermission(configFile, function(err, ret) {
 
 			  var opts = queryString.parse(decodeURIComponent(process.argv[2]));
 
-			  if(opts.zipfileURL) {
+			  if((opts.zipfileURL)&&(opts.zipfileURL != "")) {
 				  //If passing in a zip file url to install
 				  var zipfileURL = opts.zipfileURL;
   
@@ -685,7 +685,7 @@ havePermission(configFile, function(err, ret) {
 					   });
 				  } catch(err) {
 				  	 	console.log("returnParams:?FINISHED=false&MSG=The installation was not complete.&EXTENDED=" + err);
-				  	 	process,exit(0);
+				  	 	process.exit(0);
 				  
 				  }
 			  } 
@@ -695,14 +695,15 @@ havePermission(configFile, function(err, ret) {
 				  	uninstall(opts.uninstall, opts);
 				  } catch(err) {
 				  		console.log("returnParams:?FINISHED=false&MSG=The installation was not complete.&EXTENDED=" + err);
-				  	 	process,exit(0);
+				  	 	process.exit(0);
 				  
 				  }		  
 			  }
 			  
 			  if((!opts.uninstall)&&(!opts.zipfileURL)) {
 			  	  console.log("You should enter a 'zipfileURL' or 'uninstall' param.");
-			  
+			  	  console.log("returnParams:?FINISHED=false&MSG=Sorry, we don't seem to have an Add-on requested.");
+				  process.exit(0);
 			  }
   
 
