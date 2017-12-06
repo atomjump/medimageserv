@@ -133,6 +133,30 @@ function getPlatform() {
 
 }
 
+
+function unzipAndRemove(tmpFilePath, cb) {
+	 try {
+		 var zip = new AdmZip(tmpFilePath);
+		 var zipEntries = zip.getEntries(); // an array of ZipEntry records 
+
+		 if((zipEntries[0].isDirectory == true)&&(zipEntries.length == 1)) {
+			var dirName = zipEntries[0].entryName;	//e.g. "medimage-addon-p4m-0.0.1/"
+
+		 } else {
+			var dirName = null;
+		 }				 
+
+
+		zip.extractAllTo(targetAddonsFolder + tempDir, true);	//Overwrite is the 'true'
+	 } catch(err) {
+			console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=There was a problem unzipping the file.&EXTENDED=" + err);
+			process.exit(0);				 
+	 }	
+	 fs.unlink(tmpFilePath, cb(null, dirName));		//Remove the zip file itself
+
+} 
+
+
 //With thanks from http://rajiev.com/download-an-extract-a-zip-file-with-node-js/
 function downloadAndUnzip(filename, url, opts, cb) {
 	var tmpFilePath = targetAddonsFolder + tempDir + filename;
@@ -150,24 +174,7 @@ function downloadAndUnzip(filename, url, opts, cb) {
 						});
 		
 						response.on('end', function() {
-							  try {
-								 var zip = new AdmZip(tmpFilePath);
-								 var zipEntries = zip.getEntries(); // an array of ZipEntry records 
-				  
-								 if((zipEntries[0].isDirectory == true)&&(zipEntries.length == 1)) {
-									var dirName = zipEntries[0].entryName;	//e.g. "medimage-addon-p4m-0.0.1/"
-				 
-								 } else {
-									var dirName = null;
-								 }				 
-				 
-				 
-								zip.extractAllTo(targetAddonsFolder + tempDir, true);	//Overwrite is the 'true'
-							 } catch(err) {
-									console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=There was a problem unzipping the file.&EXTENDED=" + err);
-									process.exit(0);				 
-							 }	
-							 fs.unlink(tmpFilePath, cb(null, dirName));		//Remove the zip file itself
+							 unzipAndRemove(tmpFilePath, cb);
 						})
 					});
 	
@@ -180,24 +187,7 @@ function downloadAndUnzip(filename, url, opts, cb) {
 						});
 			
 						response.on('end', function() {
-							try {
-								 var zip = new AdmZip(tmpFilePath);
-								 var zipEntries = zip.getEntries(); // an array of ZipEntry records 
-				  
-								 if(zipEntries[0].isDirectory == true) {
-									var dirName = zipEntries[0].entryName;	//e.g. "medimage-addon-p4m-0.0.1/"
-				 
-								 } else {
-									var dirName = null;
-								 }				 
-				 
-				 
-								zip.extractAllTo(targetAddonsFolder + tempDir, true);	//Overwrite is the 'true'
-							 } catch(err) {
-									console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=There was a problem unzipping the file.&EXTENDED=" + err);
-									process.exit(0);				 
-							 }	
-							 fs.unlink(tmpFilePath, cb(null, dirName));		//Remove the zip file itself
+							unzipAndRemove(tmpFilePath, cb);
 						})
 					});
 				}		  
