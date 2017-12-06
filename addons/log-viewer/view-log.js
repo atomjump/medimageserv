@@ -15,7 +15,7 @@ var verbose = false;
 //Globals
 var mainConfigFile = __dirname + '/../../config.json';
 var mainMedImagePath = "../../photos/";
-var logFile = "../../logs/output.log";
+var logFile = __dirname + "/../../logs/output.log";
 var exec = require('child_process').exec;
 
 
@@ -93,9 +93,9 @@ function readLog(logFile, platform, callback) {
 		//On Windows logs are now at C:\medimage\logs\output.log. 
 		fs.readFile(logFile, function read(err, data) {
 			if (err) {
-				cb("Sorry, cannot read log file! " + err, null);
+				callback("Sorry, cannot read log file! " + err, null);
 			} else {
-				cb(null, data.substr(0, 10000));		//Limit to 10000 chars
+				callback(null, data.substr(0, 10000));		//Limit to 10000 chars
 			};
 		});
 	}
