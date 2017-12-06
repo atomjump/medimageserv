@@ -573,7 +573,7 @@ function uninstall(addonName, opts)
 }
 
 
-removeOldTemp(opts, cb)
+function removeOldTemp(opts, cb)
 {
 	//Remove the old temporary installer folder
 	//Change back out of our folder
