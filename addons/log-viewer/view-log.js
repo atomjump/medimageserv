@@ -71,7 +71,7 @@ function getMasterConfig(defaultConfig, callback) {
 function readLog(logFile, platform, callback) {
 	
 	if((platform == "mac")||(platform == "unix")) {
-		var cmd = "tail -100 $HOME/.pm2/logs/medimage-server-out-0.log";
+		var cmd = "tail -40 $HOME/.pm2/logs/medimage-server-out-0.log";
 		
 		exec(cmd, {
 			maxBuffer: 2000 * 1024 //quick fix
@@ -156,14 +156,17 @@ readConfig(readConfigFile, function(conf, err) {
 			   			   
 				   if(conf.allowPhotosLeaving == true) {
 						var allowChanges = "<i class='fa fa-lock fa-fw'></i>";
+						var logOutput = "<p>Sorry, please contact your system admin to see these. You will need to change your configuration.</p>";
 				   } else {
 						var allowChanges = "<i class='fa fa-unlock fa-fw'></i>";
+						
+						var logOutput = entities.encodeNonUTF(log);
+				   		//Convert newlines into HTML breaks
+			  	   		logOutput = logOutput.replace(/\&\#10\;/g, '<br/>');
 							
 				   }
 				   
-				   var logOutput = entities.encodeNonUTF(log);
-				   //Convert newlines into HTML breaks
-			  	   logOutput = logOutput.replace(/\&\#10\;/g, '<br/>');
+				
 			  
 				   console.log("returnParams:?LOG=" + encodeURIComponent(logOutput) + "&ALLOWCHANGES=" + allowChanges);
 			   });
