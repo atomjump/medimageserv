@@ -862,7 +862,7 @@ function addOns(eventType, cb, param1, param2, param3)
 								
 									
 								
-									myExec(cmdLine, {
+									exec(cmdLine, {
 											maxBuffer: 2000 * 1024 //quick fix
 										}, (err, stdout, stderr) => {
 									  if (err) {
