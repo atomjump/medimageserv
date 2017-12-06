@@ -368,7 +368,7 @@ function openAndRunDescriptor(directory, opts)
 		}
 	} else {
 		console.log("Warning: no installer script was found");
-		console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=No installer script was found.");
+		console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=No installer script was found.&EXTENDED=Checked: " + desc);
 		process.exit(0);
 	}
 	
