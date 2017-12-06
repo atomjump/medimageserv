@@ -392,9 +392,11 @@ function renameFolder(filename, dirname, opts) {
 	//We want to convert '../wound-0.7.3' folder to '../wound' folder
 	//Trim up to 1st digit, or dot '.'. Then trim '-' chars at the end.
 	
-	var dirIn = targetAddonsFolder + tempDir + filename.replace(/.zip/i, "");
+	var nozipFilename = filename.replace(/.zip/i, "");
+	
+	var dirIn = targetAddonsFolder + tempDir + nozipFilename;
 	if(dirname) {
-		dirIn = targetAddonsFolder + tempDir + noTrailSlash(dirname);
+		dirIn = targetAddonsFolder + tempDir + nozipFilename + filenamenoTrailSlash(dirname);
 	}
 	
 	//Read in the json descriptor to get an output folder name of the addon
