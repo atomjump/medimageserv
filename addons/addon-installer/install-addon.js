@@ -272,7 +272,18 @@ function openAndRunDescriptor(directory, opts)
 	console.log("Checking installer file " + desc);
 	
 	if(fs.existsSync(desc) == true) {
+		try {
+			const data = fsExtra.readJsonSync(desc);
+		} catch(err) {
+			console.log("Error: there was a problem in the medimage-installer .json file. " + err);
+			console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=There was a problem in the medimage-installer .json file.&EXTENDED=" + err);
+			process.exit(0);
+		
+		}
+		
 		const data = fsExtra.readJsonSync(desc);
+		
+		
 		if(data) {
 			//Yes there is an installer script to run
 			if(data.installCommands) {
@@ -417,9 +428,16 @@ function renameFolder(filename, dirname, opts) {
 	console.log("Checking for file:" + desc);
 	var dirOut = "";
 	if(fs.existsSync(desc) == true) {
-		const data = fsExtra.readJsonSync(desc);
-		if(data) {
-			dirOut = targetAddonsFolder + data.name;
+		try {
+			const data = fsExtra.readJsonSync(desc);
+			if(data) {
+				dirOut = targetAddonsFolder + data.name;
+			}
+		} catch(err) {
+			console.log("Error: there was a problem in the medimage-installer .json file.");
+			console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=There was a problem in the medimage-installer .json file.&EXTENDED=" + err);
+			process.exit(0);
+		
 		}
 	}
 	
