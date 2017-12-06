@@ -158,12 +158,13 @@ function unzipAndRemove(filename, tmpFilePath, cb) {
 		zip.extractAllTo(targetAddonsFolder + tempDir, true);	//Overwrite is the 'true'
 		
 		//Unzipped, now check if we're 2 folders in or 1.
-		if(fs.existsSync(targetAddonsFolder + tempDir + '/' + dirName) == true) {
-			//We're all good
-		} else {
-			//Try without the filename
-			dirName = dirName.replace(filename, "");
-			
+		if(dirName) {
+			if(fs.existsSync(targetAddonsFolder + tempDir + '/' + dirName) == true) {
+				//We're all good
+			} else {
+				//Try without the filename
+				dirName = dirName.replace(filename, "");			
+			}
 		}
 		
 	 } catch(err) {
