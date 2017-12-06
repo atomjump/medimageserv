@@ -424,6 +424,9 @@ function openAndRunDescriptor(directory, opts)
 }
 		
 
+
+
+
 function renameFolder(filename, dirname, opts) {
 	//Input will be 'wound-0.7.3.zip'
 	//We want to convert '../wound-0.7.3' folder to '../wound' folder
@@ -433,7 +436,7 @@ function renameFolder(filename, dirname, opts) {
 	
 	var dirIn = targetAddonsFolder + tempDir;
 	if(dirname) {
-		dirIn = targetAddonsFolder + tempDir + nozipFilename + "/" + noTrailSlash(dirname);
+		dirIn = targetAddonsFolder + tempDir + "/" + noTrailSlash(dirname);
 	}
 	
 	//Read in the json descriptor to get an output folder name of the addon
