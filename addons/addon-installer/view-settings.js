@@ -23,7 +23,8 @@ var unallowedFilenameStrings = [
 	".json",
 	".md",
 	".txt",
-	".zip"
+	".zip",
+	"temp-installation"
 ];
 
 

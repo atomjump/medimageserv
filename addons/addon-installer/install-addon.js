@@ -359,10 +359,23 @@ function openAndRunDescriptor(directory, opts)
 						console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The installation was not complete.&EXTENDED=" + err);
 						process.exit(0);
 					} else {
-						console.log("The installation was completed successfully!");
-						console.log("reloadConfig:true");
-						console.log("returnParams:?FINISHED=true&TABSTART=install-addon-tab&MSG=The installation was completed successfully!");
-						process.exit(0);
+						removeOldTemp(opts, function(err) {
+							if(err) {
+								//Could leave a warning
+								console.log("The installation was completed successfully, but the cleanup was not. ");
+								console.log("reloadConfig:true");
+								console.log("returnParams:?FINISHED=true&TABSTART=install-addon-tab&MSG=The installation was completed successfully, but the cleanup was not.&EXTENDED=You should check your add-ons folder and remove the " + tempDir + " folder manually.");
+								process.exit(0);
+							} else {
+								console.log("The installation was completed successfully!");
+								console.log("reloadConfig:true");
+								console.log("returnParams:?FINISHED=true&TABSTART=install-addon-tab&MSG=The installation was completed successfully!");
+								process.exit(0);
+								
+							}
+						
+						})
+						
 					}
 				});
 						
@@ -379,7 +392,7 @@ function openAndRunDescriptor(directory, opts)
 		}
 	} else {
 		console.log("Warning: no installer script was found");
-		console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=No installer script was found.&EXTENDED=Checked: " + desc);
+		console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=No installer script was found.);
 		process.exit(0);
 	}
 	
