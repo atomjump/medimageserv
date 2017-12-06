@@ -862,9 +862,7 @@ function addOns(eventType, cb, param1, param2, param3)
 								
 									
 								
-									exec(cmdLine, {
-											maxBuffer: 2000 * 1024 //quick fix
-										}, (err, stdout, stderr) => {
+									myExec(cmdLine, runBlock.priority, (err, stdout, stderr) => {
 									  if (err) {
 										// node couldn't execute the command
 										console.log("There was a problem running the addon. Error:" + err);
