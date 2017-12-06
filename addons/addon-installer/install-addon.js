@@ -407,7 +407,7 @@ function renameFolder(filename, dirname, opts) {
 	
 	var nozipFilename = filename.replace(/.zip/i, "");
 	
-	var dirIn = targetAddonsFolder + tempDir + nozipFilename;
+	var dirIn = targetAddonsFolder + tempDir;
 	if(dirname) {
 		dirIn = targetAddonsFolder + tempDir + nozipFilename + "/" + noTrailSlash(dirname);
 	}
