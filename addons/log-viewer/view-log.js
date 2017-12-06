@@ -71,7 +71,7 @@ function getMasterConfig(defaultConfig, callback) {
 function readLog(logFile, platform, callback) {
 	
 	if((platform == "mac")||(platform == "unix")) {
-		var cmd = "tail -100 $HOME/.pm2/logs/medimage-error.log";
+		var cmd = "tail -100 $HOME/.pm2/logs/medimage-server-out-0.log";
 		
 		exec(cmd, {
 			maxBuffer: 2000 * 1024 //quick fix
