@@ -25,6 +25,7 @@ require("date-format-lite");
 var mv = require('mv');
 var fs = require('fs');
 var exec = require('child_process').exec;
+var spawn = require('child_process').spawn;
 var drivelist = require('drivelist');
 var uuid = require('node-uuid');
 var fsExtra = require('fs-extra');
@@ -680,6 +681,137 @@ function backupFile(thisPath, outhashdir, finalFileName)
 }
 
 
+function getPlatform() {
+	var platform = process.platform;
+	if(verbose == true) console.log(process.platform);
+	var isWin = /^win/.test(platform);
+	if(verbose == true) console.log("IsWin=" + isWin);
+	if(isWin) {
+		if(process.arch == 'x64') {
+			return "win64";
+		} else {
+			return "win32";
+		}
+	} else {
+		if(platform == "darwin") {
+			return "mac";
+		} else {
+			return "unix";
+		}
+	
+	}
+}
+
+function myExec(cmdLine, priority, cb) {
+	
+	//Does a system exec command, or runs the command as a process with spawn, depending on priority.
+	//In the spawn case, we need a single command, and discrete arguments in the string, which are divided by spaces.
+	//Priority can be 'high', 'medium', 'low', 'glacial'. 
+	//  - 'high' in real-time response situations - in future, this will likely be nodejs included into RAM directly, but
+	//		currently this is the same as 'medium', and it will use spawn only.
+	//  - 'medium' - uses spawn, rather than exec, so a whole shell is not opened, without that additional overhead.
+	//  - 'low' - uses exec, rather than spawn, so a whole shell is opened, but any system command can be used, including pipes, although be careful of the cross-platform limtations.
+	//  - 'glacial' - will use the spawn command (no shell), but will insert our own shell, based on platform, with a background
+	//                 running option set. I.e. in Windows, this is 'cmd.exe /low /s /c', and in unix this is 'nice'
+	//It will call cb with (err, stdout, stderr)
+	
+	
+	switch(priority) {
+		case 'high':	
+		case 'medium':
+			//Break up the cmdLine into 'command', args[]
+			cmds = cmdLine.split(" ");
+			var args = [];
+			var command = "";
+			if(cmds[0]) {
+				command = cmds[0];
+			}
+			
+			if(cmds[1]) {
+				args = cmds.splice(0, 1);
+			}
+					
+			var outputStdOut = "";
+			var outputStdError = "";
+			spawn(cmds[0], args, { maxBuffer: 2000 * 1024 }, cb);
+			
+			const running = spawn(command, args);
+
+			running.stdout.on('data', (data) => {
+			    outputStdOut += data.toString();
+			  
+			});
+
+			running.stderr.on('data', (data) => {
+				outputStdError += data.toString();
+			});
+
+			running.on('close', (code) => {
+			  cb(code, outputStdOut, outputStdError);
+			  console.log(`Child process exited with code ${code}`);
+			});
+			
+		break;
+		
+		case 'low':
+			exec(cmdLine, { maxBuffer: 2000 * 1024 }, cb);		
+		break;
+		
+		case 'glacial':
+			//Get ready 
+			cmds = cmdLine.split(" ");
+			var args = [];
+			var command = "";
+			if(cmds[0]) {
+				args = cmds;
+			}
+			
+			//Now, based off platform, decide to run it slowly
+			var platform = getPlatform();
+			if((platform == "win32")||(platform == "win64")) {
+				command = "cmd.exe"
+				args.unshift('/low','/s','/c');
+			
+			} else {
+				//Unix/mac
+				command = "nice";	
+				args.unshift('-10');		//This is a priority of 10, which is pretty low.				
+			}
+			
+			const running = spawn(command, args);
+
+			running.stdout.on('data', (data) => {
+			    outputStdOut += data.toString();
+			  
+			});
+
+			running.stderr.on('data', (data) => {
+				outputStdError += data.toString();
+			});
+
+			running.on('close', (code) => {
+			  cb(code, outputStdOut, outputStdError);
+			  console.log(`Child process exited with code ${code}`);
+			});			
+		
+		break;
+		
+		default:
+		
+			//Do a full shell script, i.e. the same as 'low'
+			exec(cmdLine, { maxBuffer: 2000 * 1024 }, cb);	
+		
+		break;
+	
+	}
+	
+	return;
+
+}
+
+
+
+
 //Handle 3rd party and our own add-ons
 function addOns(eventType, cb, param1, param2, param3) 
 {
@@ -728,9 +860,9 @@ function addOns(eventType, cb, param1, param2, param3)
 									cmdLine = cmdLine.replace(/param3/g, param3);
 									console.log("Running addon line: " + cmdLine);
 								
+									
 								
-								
-									exec(cmdLine, {
+									myExec(cmdLine, {
 											maxBuffer: 2000 * 1024 //quick fix
 										}, (err, stdout, stderr) => {
 									  if (err) {

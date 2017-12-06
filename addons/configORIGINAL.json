@@ -8,6 +8,7 @@
 					"addon": "change-folder",
 					"scriptURLName": "change-folder-set",
 					"runProcess": "node parentdir/addons/change-folder/set-folder.js param1",
+					"priority": "medium",
 					"waitForRequestFinish":  "addon-settings.html",
 					"active": true
 				},
@@ -15,6 +16,7 @@
 					"addon": "change-folder",
 					"scriptURLName": "change-folder-view-settings",
 					"runProcess": "node parentdir/addons/change-folder/view-settings.js",
+					"priority": "medium",
 					"waitForRequestFinish":  "change-folder-settings.html",
 					"active": true
 				},
@@ -22,6 +24,7 @@
 					"addon": "install-addon",
 					"scriptURLName": "install-addon",
 					"runProcess": "node parentdir/addons/addon-installer/install-addon.js param1",
+					"priority": "glacial",
 					"waitForRequestFinish":  "addon-settings.html",
 					"active": true
 				},
@@ -29,6 +32,7 @@
 					"addon": "install-addon",
 					"scriptURLName": "addon-installer-view-settings",
 					"runProcess": "node parentdir/addons/addon-installer/view-settings.js",
+					"priority": "medium",
 					"waitForRequestFinish":  "install-addon-settings.html",
 					"active": true
 				},
@@ -36,6 +40,7 @@
 					"addon": "current-log",
 					"scriptURLName": "current-log",
 					"runProcess": "node parentdir/addons/log-viewer/view-log.js",
+					"priority": "medium",
 					"waitForRequestFinish":  "view-log.html",
 					"active": true
 				}
