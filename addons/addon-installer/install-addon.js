@@ -134,15 +134,18 @@ function getPlatform() {
 }
 
 
-function unzipAndRemove(tmpFilePath, cb) {
+function unzipAndRemove(filename, tmpFilePath, cb) {
+	 //Convert filename into one without extension
+	 var filename = filename.replace(/.zip/i, "") . "/";
+	 
 	 try {
 		 var zip = new AdmZip(tmpFilePath);
 		 var zipEntries = zip.getEntries(); // an array of ZipEntry records 
 
 		 console.log("Entries length = " + zipEntries.length);
 		 console.log("First entry = " + JSON.stringify(zipEntries[0], null, 6));
-		 if((zipEntries[0].isDirectory == true)&&(zipEntries.length == 1)) {
-			var dirName = zipEntries[0].entryName;	//e.g. "medimage-addon-p4m-0.0.1/"
+		 if(zipEntries[0].isDirectory == true) {
+			var dirName = zipEntries[0].entryName.replace(filename, "");	//e.g. "medimage-addon-resize/medimage-addon-resize-0.1.0/"
 			console.log("Internal directory in zip:" + dirName);
 		 } else {
 			var dirName = null;
@@ -182,7 +185,7 @@ function downloadAndUnzip(filename, url, opts, cb) {
 						});
 		
 						response.on('end', function() {
-							 unzipAndRemove(tmpFilePath, cb);
+							 unzipAndRemove(filename, tmpFilePath, cb);
 						})
 					});
 	
@@ -195,7 +198,7 @@ function downloadAndUnzip(filename, url, opts, cb) {
 						});
 			
 						response.on('end', function() {
-							unzipAndRemove(tmpFilePath, cb);
+							unzipAndRemove(filename, tmpFilePath, cb);
 						})
 					});
 				}		  
