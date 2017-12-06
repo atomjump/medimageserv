@@ -3,10 +3,11 @@
                                     
 	<form id="install-frm" action="/addon/install-addon" role="form" >
 		<div class="form-group">
-			<label>Add-on .zip URL ALLOWCHANGES</label>
+			<label>Package .zip URL ALLOWCHANGES</label>
 			<input class="form-control" id="zipfileURL" type="text" name="zipfileURL" value="" placeholder="e.g. https://path.to.your.addon/file.zip">
 			
-			<p class="help-block">Note: This address should be on the internet somewhere, not your local machine. <a href="javascript:" onclick="jQuery('#tipURL').slideToggle(); return false;">Tip</a> <span id="tipURL" style="display: none;">You can usually 'right click' on a download link in a browser and click 'Copy Link', or similar, to get this address.</span></p>
+			<p class="help-block">Note: This address should be on the internet somewhere, not your local machine. <a href="javascript:" onclick="jQuery('#tipURL').slideToggle(); return false;">Tip</a></p>
+			<p id="tipURL" style="display: none;">You can usually 'right click' on a download link in a browser and click 'Copy Link', or similar, to get this address.</p>
 			<p class="help-block"><b>Warning:</b> Please make sure you trust the source of the .zip file you are installing.</p>
 			<p class="help-block"><a href="javascript:" onclick="jQuery('#passwordBlock').slideToggle(); return false;">Enter Admin Password</a> (optional)</p>
 		
