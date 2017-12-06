@@ -141,7 +141,7 @@ function unzipAndRemove(tmpFilePath, cb) {
 
 		 if((zipEntries[0].isDirectory == true)&&(zipEntries.length == 1)) {
 			var dirName = zipEntries[0].entryName;	//e.g. "medimage-addon-p4m-0.0.1/"
-
+			console.log("Internal directory in zip:" + dirName);
 		 } else {
 			var dirName = null;
 		 }				 
