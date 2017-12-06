@@ -95,7 +95,7 @@ function readLog(logFile, platform, callback) {
 			if (err) {
 				callback("Sorry, cannot read log file! " + err, null);
 			} else {
-				callback(null, data.substr(0, 10000));		//Limit to 10000 chars
+				callback(null, data.toString().substr(0, 10000));		//Limit to 10000 chars
 			};
 		});
 	}
