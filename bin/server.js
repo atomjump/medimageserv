@@ -757,7 +757,10 @@ function myExec(cmdLine, priority, cb) {
 			var lib = require(scriptPath);
 			lib.medImage(argv, function(err, retVal) {
 				
-				if(!err) {
+				console.log("Returned");
+				if(err) {
+					console.log("Error:" + err);
+				} else {
 					console.log("return val = " + JSON.stringify(retVal));
 					if(retVal) {
 						if(!retVal.stdout) resp.stdout = "";		//Ensure not undefined
@@ -767,9 +770,7 @@ function myExec(cmdLine, priority, cb) {
 						cb("","","");
 		
 					}
-				} else {
-					console.log("Error:" + err);
-				}
+				} 
 			
 			});
 								
