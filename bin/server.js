@@ -838,11 +838,13 @@ function myExec(cmdLine, priority, cb) {
 			var running = spawn(command, args);
 
 			running.stdout.on('data', (data) => {
+				console.log(`child stdout:\n${data}`);
 			    outputStdOut += data.toString();
 			  
 			});
 
 			running.stderr.on('data', (data) => {
+				console.log(`child stderr:\n${data}`);
 				outputStdError += data.toString();
 			});
 
