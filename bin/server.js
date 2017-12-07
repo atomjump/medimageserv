@@ -746,7 +746,8 @@ function myExec(cmdLine, priority, cb) {
 			
 			if(cmds[2]) {
 				//Params
-				argv = cmds.splice(0, 2);
+				cmds.splice(0, 2);
+				argv = cmds;
 			} else {
 				//No arguments
 				argv = [];
@@ -754,18 +755,20 @@ function myExec(cmdLine, priority, cb) {
 			
 			console.log("Global id:" + globalId + " scriptPath:" + scriptPath + " argv:" + JSON.stringify(argv));
 			
-			if(!addons[globalId]) {
+			var resp = require(scriptPath);
+			cb(resp[0], resp[1], resp[2]);
+			
+			/*if(!addons[globalId]) {
 				
 				//Require for the first time
-				addons.push(globalId);  
-				addons[globalId] = require(scriptPath).fromMedImageParent;
+				addons[globalId] = require(scriptPath);
 				
 				//Now call the function in the addon's module	
 				addons[globalId].fromMedImageParent(cb);	
 			} else {
 				//We have already 'required' this. Call the function in the addon-script
 				addons[globalId].fromMedImageParent(cb);	
-			}
+			}*/
 								
  					
 			//Wait till finished - the add-on will callback via cb();
