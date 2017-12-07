@@ -735,7 +735,7 @@ function myExec(cmdLine, priority, cb) {
 			var outputStdError = "";
 			spawn(cmds[0], args, { maxBuffer: 2000 * 1024 }, cb);
 			
-			const running = spawn(command, args);
+			var running = spawn(command, args);
 
 			running.stdout.on('data', (data) => {
 			    outputStdOut += data.toString();
@@ -778,7 +778,7 @@ function myExec(cmdLine, priority, cb) {
 				args.unshift('-10');		//This is a priority of 10, which is pretty low.				
 			}
 			
-			const running = spawn(command, args);
+			var running = spawn(command, args);
 
 			running.stdout.on('data', (data) => {
 			    outputStdOut += data.toString();
