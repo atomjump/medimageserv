@@ -790,6 +790,7 @@ function myExec(cmdLine, priority, cb) {
 			var running = spawn(command, args);
 
 			running.stdout.on('data', (data) => {
+				console.log(data.toString());
 			    outputStdOut += data.toString();
 			  
 			});
