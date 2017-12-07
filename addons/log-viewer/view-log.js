@@ -82,10 +82,25 @@ function readLog(logFile, platform, callback) {
 				callback(err, "");
 	
 			  } else {
-				  console.log("Current Logs:" + stdout);
+				  console.log("Output Logs:" + stdout);
+				  var fullLog = "Output Logs:\n\n" + stdout;
+				  
+				  var cmd = "tail -40 $HOME/.pm2/logs/medimage-server-out-0.log";
+				  
+				  //Now add the error log to that
+				  exec(cmd, {
+						maxBuffer: 2000 * 1024 //quick fix
+					}, (err, stdout, stderr) => {
+						  if (err) {
+							// node couldn't execute the command
+							console.log("There was a problem running the addon. Error:" + err);
+							callback(err, "");
+				  		  } else {
 			  	  
-			  	 
-				  callback(null, stdout);
+			  	 				fullLog = fullLog + "\n\nError Logs:\n\n" + stdout;
+				  		    	callback(null, fullLog);
+				  		}
+				  	});
 			 
 			  }
 		});		//End of the exec
