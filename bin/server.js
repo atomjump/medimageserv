@@ -785,9 +785,10 @@ function myExec(cmdLine, priority, cb) {
 					
 			var outputStdOut = "";
 			var outputStdError = "";
-			spawn(command, args, { maxBuffer: 2000 * 1024 }, cb);
+			var running = spawn(command, args);		//, { maxBuffer: 2000 * 1024 }, cb
 			
-			var running = spawn(command, args);
+			outputStdOut = "Started running " + command + ".\n";		//Testing
+		
 
 			running.stdout.on('data', (data) => {
 				console.log(data.toString());
@@ -836,7 +837,6 @@ function myExec(cmdLine, priority, cb) {
 			}
 			
 			var running = spawn(command, args);
-			console.log("Started running " + command);
 
 			running.stdout.on('data', (data) => {
 				console.log(`child stdout:\n${data}`);
