@@ -789,7 +789,7 @@ function myExec(cmdLine, priority, cb) {
 			var outputStdOut = "";
 			var outputStdError = "";
 			
-			console.log("About to run command:" + command);
+			console.log("About to run command:" + command + JSON.stringify(args));
 			var running = spawn(command, args);
 			
 			outputStdOut = "Started running " + command + ".\n";		//Testing
