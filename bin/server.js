@@ -771,7 +771,7 @@ function myExec(cmdLine, priority, cb) {
 					console.log("Error:" + err);
 				}
 			
-			);
+			});
 								
  					
 			//Wait till finished - the add-on will callback via cb();
