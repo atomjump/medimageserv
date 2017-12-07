@@ -783,7 +783,6 @@ function myExec(cmdLine, priority, cb) {
 				}
 			}
 			
-			console.log("Command line param 1:" + cmds[1]);
 			if(cmds[1]) {
 				cmds.splice(0, 1);
 				var args = cmds;
@@ -792,31 +791,27 @@ function myExec(cmdLine, priority, cb) {
 			var outputStdOut = "";
 			var outputStdError = "";
 			
-			console.log("About to run command:" + command + " Args:" + JSON.stringify(args));
 			var running = spawn(command, args);
 			
-			outputStdOut = "Started running " + command + ".\n";		//Testing
-		
 
 			running.stdout.on('data', (data) => {
-			    console.log(data.toString());
+			    if(verbose == true) console.log(data.toString());
 			    outputStdOut += data.toString();
 			  
 			});
 
 			running.stderr.on('data', (data) => {
-				console.log(data.toString());
+				if(verbose == true) console.log(data.toString());
 				outputStdError += data.toString();
 			});
 
 			running.on('close', (code, signal) => {
-			  console.log(`Child process exited with code ${code} ` + outputStdOut);
+			  if(verbose == true) console.log(`Child process exited with code ${code} ` + outputStdOut);
 			  if(signal) {
 			  	  cb(code, outputStdOut, outputStdError);
 			  } else {
 			  	  cb(null, outputStdOut, outputStdError);
 			  }
-			  //console.log(`Child process exited with code ${code}`);
 			});
 			
 		break;
