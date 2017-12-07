@@ -21,6 +21,10 @@ var fsExtra = require('fs-extra');
 var async = require('async');
 var exec = require('child_process').exec;
 
+const Entities = require('html-entities').AllHtmlEntities;
+ 
+const entities = new Entities();
+
 
 
 var httpsFlag = false;				//whether we are serving up https (= true) or http (= false)
@@ -239,21 +243,45 @@ function execCommands(commandArray, prepend, cb)
 				
 						var cmd = prepend + commandArray[cnt];
 						console.log("Running command: " + cmd);
-						exec(commandArray[cnt], {
-								maxBuffer: 2000 * 1024 //max buffer size
-							}, (err, stdout, stderr) => {
-								 if (err) {
-									// node couldn't execute the command
-									var msg = "There was a problem running the command " + cmd + ". Error:" + err;	// "\n\nStdout:" + stdout;
-									console.log(msg);
-									callback(msg.toString().substr(0,500));
+						
+						try {
+							exec(commandArray[cnt], {
+									maxBuffer: 2000 * 1024 //max buffer size
+								}, (err, stdout, stderr) => {
+									 if (err) {
+										// node couldn't execute the command
+										var msg = "Command: " + cmd + ". Error:" + err;
+										console.log(msg);
+										//Get rid of any strange chars
+										msg = entities.encodeNonUTF(msg);
+								
+										//Remove newlines
+										msg = msg.replace(/\&\#10\;/g, '').substr(0,500);
+										
+										console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The installation was not complete. There was a problem running the one of the installation commands.&EXTENDED=" + msg);
+										process.exit(0);
+										
+										callback(msg);
 							
-								 } else {
+									 } else {
 					  
-									  console.log("Stdout from command:" + stdout);
-									  callback(null);
-								 }
-						 });	//End of exec
+										  console.log("Stdout from command:" + stdout);
+										  callback(null);
+									 }
+							 });	//End of exec
+						 } catch(err) {
+						 		var msg = "There was a problem running the command " + cmd;
+						 		var ext = err;
+						 	
+						 		//Get rid of any strange chars
+						 		ext = entities.encodeNonUTF(ext);
+						 		
+						 		//Remove newlines
+						 		ext = ext.replace(/\&\#10\;/g, '').substr(0,500);	
+						 				console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The installation was not complete. There was a problem running the one of the installation commands.&EXTENDED=" + cmd + " Error:" + ext);
+								process.exit(0);
+						 
+						 }
 					
 					  },	//End of async eachOf single item
 					  function(err){
