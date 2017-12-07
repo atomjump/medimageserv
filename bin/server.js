@@ -756,13 +756,13 @@ function myExec(cmdLine, priority, cb) {
 				
 				//Require for the first time
 				addons.push(globalId);  
-				addons[globalId] = require(scriptPath);
+				addons[globalId] = require(scriptPath).fromMedImageParent;
 				
 				//Now call the function in the addon's module	
-				addons[globalId].fromMedImageParent(cb);	
+				addons[globalId](cb);	
 			} else {
 				//We have already 'required' this. Call the function in the addon-script
-				addons[globalId].fromMedImageParent(cb);	
+				addons[globalId](cb);	
 			}
 								
  					
