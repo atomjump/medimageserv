@@ -633,9 +633,20 @@ function backupFile(thisPath, outhashdir, finalFileName)
 							} else {
 								try {
 									console.log("Copying " + thisPath + " to " + target);
-									fsExtra.copySync(thisPath, target);
-									ensurePhotoReadableWindows(target);
-									callback(null);
+									fsExtra.copy(thisPath, target, err => {
+									  if (err) {
+									  	 callback(err);
+									  } else {
+										 
+									     ensurePhotoReadableWindows(target);
+										 callback(null);
+									  }
+
+									  
+									}) // copies file
+
+									
+									
 								} catch (err) {
 									console.error('Warning: there was a problem backing up: ' + err.message);
 									callback(null);
