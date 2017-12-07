@@ -763,8 +763,8 @@ function myExec(cmdLine, priority, cb) {
 				} else {
 					console.log("return val = " + JSON.stringify(retVal));
 					if(retVal) {
-						if(!retVal.stdout) resp.stdout = "";		//Ensure not undefined
-						if(!retVal.stderr) resp.stderr = "";
+						if(!retVal.stdout) retVal.stdout = "";		//Ensure not undefined
+						if(!retVal.stderr) retVal.stderr = "";
 						cb(retVal.err, retVal.stdout, retVal.stderr);
 					} else {
 						cb("","","");
