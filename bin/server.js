@@ -633,7 +633,7 @@ function backupFile(thisPath, outhashdir, finalFileName)
 							} else {
 								try {
 									console.log("Copying " + thisPath + " to " + target);
-									fsExtra.copy(thisPath, target, err => {
+									fsExtra.copy(thisPath, target, function(err) {
 									  if (err) {
 									  	 callback(err);
 									  } else {
