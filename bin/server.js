@@ -798,9 +798,13 @@ function myExec(cmdLine, priority, cb) {
 				outputStdError += data.toString();
 			});
 
-			running.on('close', (code) => {
-			  cb(code, outputStdOut, outputStdError);
-			  console.log(`Child process exited with code ${code}`);
+			running.on('close', (code, signal) => {
+			  if(signal) {
+			  	  cb(code, outputStdOut, outputStdError);
+			  } else {
+			  	  cb(null, outputStdOut, outputStdError);
+			  }
+			  //console.log(`Child process exited with code ${code}`);
 			});
 			
 		break;
