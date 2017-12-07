@@ -25,7 +25,7 @@ require("date-format-lite");
 var mv = require('mv');
 var fs = require('fs');
 var exec = require('child_process').exec;
-var spawn = require('child_process');
+var spawn = require('child_process').spawn;
 var drivelist = require('drivelist');
 var uuid = require('node-uuid');
 var fsExtra = require('fs-extra');
@@ -849,8 +849,12 @@ function myExec(cmdLine, priority, cb) {
 				outputStdError += data.toString();
 			});
 
-			running.on('close', (code) => {
-			  cb(code, outputStdOut, outputStdError);
+			running.on('close', (code, signal) => {
+			  if(signal) {
+			  	  cb(code, outputStdOut, outputStdError);
+			  } else {
+			  	  cb(null, outputStdOut, outputStdError);
+			  }
 			  console.log(`Child process exited with code ${code}`);
 			});			
 		
