@@ -71,6 +71,8 @@ var flapState = false;
 var webProxy = null;				//For download requests from the internet, use a local proxy server at this URL
 									//See: http://stackoverflow.com/questions/23585371/proxy-authentication-in-node-js-with-module-request
 
+var addons = [];					//Addon included modules.
+
 
 //Handle a process sigint to quit smoothly
 process.on('SIGINT', function() {
@@ -718,8 +720,9 @@ function myExec(cmdLine, priority, cb) {
 	//Does a system exec command, or runs the command as a process with spawn, depending on priority.
 	//In the spawn case, we need a single command, and discrete arguments in the string, which are divided by spaces.
 	//Priority can be 'high', 'medium', 'low', 'glacial'. 
-	//  - 'high' in real-time response situations - in future, this will likely be nodejs included into RAM directly, but
-	//		currently this is the same as 'medium', and it will use spawn only.
+	//  - 'high' in real-time response situations - nodejs included into RAM directly. The first word is used
+	//		as the global identifier for the js module when it gets included (only once included).
+	//      2nd word is the path to the .js file, and then the following params are written into argv.
 	//  - 'medium' - uses spawn, rather than exec, so a whole shell is not opened, without that additional overhead.
 	//  - 'low' - uses exec, rather than spawn, so a whole shell is opened, but any system command can be used, including pipes, although be careful of the cross-platform limtations.
 	//  - 'glacial' - will use the spawn command (no shell), but will insert our own shell, based on platform, with a background
@@ -729,6 +732,44 @@ function myExec(cmdLine, priority, cb) {
 	
 	switch(priority) {
 		case 'high':	
+			cmds = cmdLine.split(" ");
+			var argv = [];
+			var globalId = {};
+			var scriptPath = "";
+			if(cmds[0]) {
+				globalId = cmds[0];
+			}
+			
+			if(cmds[1]) {
+				scriptPath = cmds[1];			
+			}
+			
+			if(cmds[2]) {
+				//Params
+				argv = cmds.splice(0, 2);
+			} else {
+				//No arguments
+				argv = [];
+			}
+			
+			if(!addons[globalId]) {
+				
+				//Require for the first time
+				addons.push(globalId);  
+				addons[globalId] = require(scriptPath);
+				
+			} else {
+				//We have already 'required' this. Call the function in the addon-script
+			}
+			
+			//Now call the function in the addon's module				
+ 			addons[globalId].fromMedImageParent(cb);			
+			//Wait till finished - the add-on will callback via cb();
+			
+		
+		break;
+		
+		
 		case 'medium':
 			//Break up the cmdLine into 'command', args[]
 			cmds = cmdLine.split(" ");
@@ -816,7 +857,7 @@ function myExec(cmdLine, priority, cb) {
 	
 	}
 	
-	return;
+	//No return here - we should rely on the cb() to return;
 
 }
 
