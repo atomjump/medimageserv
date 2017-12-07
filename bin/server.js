@@ -756,6 +756,8 @@ function myExec(cmdLine, priority, cb) {
 			console.log("Global id:" + globalId + " scriptPath:" + scriptPath + " argv:" + JSON.stringify(argv));
 			
 			var resp = require(scriptPath);
+			if(!resp.stdout) resp.stdout = "";		//Ensure not undefined
+			if(!resp.stderr) resp.stderr = "";
 			cb(resp.err, resp.stdout, resp.stderr);
 			
 			/*if(!addons[globalId]) {
