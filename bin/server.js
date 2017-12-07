@@ -25,7 +25,7 @@ require("date-format-lite");
 var mv = require('mv');
 var fs = require('fs');
 var exec = require('child_process').exec;
-var spawn = require('child_process').spawn;
+var spawn = require('child_process');
 var drivelist = require('drivelist');
 var uuid = require('node-uuid');
 var fsExtra = require('fs-extra');
@@ -785,13 +785,12 @@ function myExec(cmdLine, priority, cb) {
 					
 			var outputStdOut = "";
 			var outputStdError = "";
-			var running = spawn(command, args);		//, { maxBuffer: 2000 * 1024 }, cb
+			var running = spawn(command, args);
 			
 			outputStdOut = "Started running " + command + ".\n";		//Testing
 		
 
 			running.stdout.on('data', (data) => {
-				console.log(data.toString());
 			    outputStdOut += data.toString();
 			  
 			});
