@@ -785,7 +785,7 @@ function myExec(cmdLine, priority, cb) {
 			
 			console.log("Command line param 1:" + cmds[1]);
 			if(cmds[1]) {
-				args = cmds.splice(0, 1);
+				args = cmds.splice(1, 0);
 			}
 					
 			var outputStdOut = "";
