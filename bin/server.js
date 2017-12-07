@@ -785,7 +785,7 @@ function myExec(cmdLine, priority, cb) {
 					
 			var outputStdOut = "";
 			var outputStdError = "";
-			spawn(cmds[0], args, { maxBuffer: 2000 * 1024 }, cb);
+			spawn(command, args, { maxBuffer: 2000 * 1024 }, cb);
 			
 			var running = spawn(command, args);
 
