@@ -755,17 +755,23 @@ function myExec(cmdLine, priority, cb) {
 			if(verbose == true) console.log("Global id:" + globalId + " scriptPath:" + scriptPath + " argv:" + JSON.stringify(argv));
 			
 			var lib = require(scriptPath);
-			var retVal = lib.medImage(argv);
+			lib.medImage(argv, function(err, retVal) {
+				
+				if(!err) {
+					console.log("return val = " + JSON.stringify(retVal));
+					if(retVal) {
+						if(!retVal.stdout) resp.stdout = "";		//Ensure not undefined
+						if(!retVal.stderr) resp.stderr = "";
+						cb(retVal.err, retVal.stdout, retVal.stderr);
+					} else {
+						cb("","","");
+		
+					}
+				} else {
+					console.log("Error:" + err);
+				}
 			
-			console.log("return val = " + JSON.stringify(retVal));
-			if(retVal) {
-				if(!retVal.stdout) resp.stdout = "";		//Ensure not undefined
-				if(!retVal.stderr) resp.stderr = "";
-				cb(retVal.err, retVal.stdout, retVal.stderr);
-			} else {
-				cb("","","");
-			
-			}
+			);
 								
  					
 			//Wait till finished - the add-on will callback via cb();
