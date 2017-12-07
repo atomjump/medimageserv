@@ -755,9 +755,15 @@ function myExec(cmdLine, priority, cb) {
 			if(verbose == true) console.log("Global id:" + globalId + " scriptPath:" + scriptPath + " argv:" + JSON.stringify(argv));
 			
 			var resp = require(scriptPath)(argv);
-			if(!resp.stdout) resp.stdout = "";		//Ensure not undefined
-			if(!resp.stderr) resp.stderr = "";
-			cb(resp.err, resp.stdout, resp.stderr);
+			
+			if(resp) {
+				if(!resp.stdout) resp.stdout = "";		//Ensure not undefined
+				if(!resp.stderr) resp.stderr = "";
+				cb(resp.err, resp.stdout, resp.stderr);
+			} else {
+				cb("","","");
+			
+			}
 								
  					
 			//Wait till finished - the add-on will callback via cb();
