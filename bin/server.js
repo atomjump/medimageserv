@@ -754,9 +754,9 @@ function myExec(cmdLine, priority, cb) {
 			
 			if(verbose == true) console.log("Global id:" + globalId + " scriptPath:" + scriptPath + " argv:" + JSON.stringify(argv));
 			
-			var lib = require(scriptPath)(argv);
+			var lib = require(scriptPath);
+			var retVal = lib.medImage(argv);
 			
-			var retVal = lib.medImage();
 			if(retVal) {
 				if(!retVal.stdout) resp.stdout = "";		//Ensure not undefined
 				if(!retVal.stderr) resp.stderr = "";
