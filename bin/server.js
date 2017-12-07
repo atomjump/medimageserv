@@ -752,6 +752,8 @@ function myExec(cmdLine, priority, cb) {
 				argv = [];
 			}
 			
+			console.log("Global id:" + globalId + " scriptPath:" + scriptPath + " argv:" + JSON.stringify(argv));
+			
 			if(!addons[globalId]) {
 				
 				//Require for the first time
