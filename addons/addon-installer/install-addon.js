@@ -246,7 +246,7 @@ function execCommands(commandArray, prepend, cb)
 									// node couldn't execute the command
 									var msg = "There was a problem running the command " + cmd + ". Error:" + err;	// "\n\nStdout:" + stdout;
 									console.log(msg);
-									callback(msg);
+									callback(msg.toString().substr(0,500));
 							
 								 } else {
 					  
