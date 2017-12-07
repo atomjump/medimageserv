@@ -773,7 +773,6 @@ function myExec(cmdLine, priority, cb) {
 		case 'medium':
 			//Break up the cmdLine into 'command', args[]
 			cmds = cmdLine.split(" ");
-			console.log("Command line:" + cmdLine);
 			var args = [];
 			var command = "";
 			if(cmds[0]) {
