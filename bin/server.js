@@ -754,12 +754,13 @@ function myExec(cmdLine, priority, cb) {
 			
 			if(verbose == true) console.log("Global id:" + globalId + " scriptPath:" + scriptPath + " argv:" + JSON.stringify(argv));
 			
-			var resp = require(scriptPath)(argv);
+			var lib = require(scriptPath)(argv);
 			
-			if(resp) {
-				if(!resp.stdout) resp.stdout = "";		//Ensure not undefined
-				if(!resp.stderr) resp.stderr = "";
-				cb(resp.err, resp.stdout, resp.stderr);
+			var retVal = lib.medImage();
+			if(retVal) {
+				if(!retVal.stdout) resp.stdout = "";		//Ensure not undefined
+				if(!retVal.stderr) resp.stderr = "";
+				cb(retVal.err, retVal.stdout, retVal.stderr);
 			} else {
 				cb("","","");
 			
