@@ -783,6 +783,7 @@ function myExec(cmdLine, priority, cb) {
 				}
 			}
 			
+			console.log("Command line param 1:" + cmds[1]);
 			if(cmds[1]) {
 				args = cmds.splice(0, 1);
 			}
@@ -790,7 +791,7 @@ function myExec(cmdLine, priority, cb) {
 			var outputStdOut = "";
 			var outputStdError = "";
 			
-			console.log("About to run command:" + command + JSON.stringify(args));
+			console.log("About to run command:" + command + " Args:" + JSON.stringify(args));
 			var running = spawn(command, args);
 			
 			outputStdOut = "Started running " + command + ".\n";		//Testing
