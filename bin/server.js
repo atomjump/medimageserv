@@ -757,6 +757,7 @@ function myExec(cmdLine, priority, cb) {
 			var lib = require(scriptPath);
 			var retVal = lib.medImage(argv);
 			
+			console.log("return val = " + JSON.stringify(retVal));
 			if(retVal) {
 				if(!retVal.stdout) resp.stdout = "";		//Ensure not undefined
 				if(!retVal.stderr) resp.stderr = "";
