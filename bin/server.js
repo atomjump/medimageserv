@@ -759,10 +759,10 @@ function myExec(cmdLine, priority, cb) {
 				addons[globalId] = require(scriptPath).fromMedImageParent;
 				
 				//Now call the function in the addon's module	
-				addons[globalId](cb);	
+				addons[globalId].fromMedImageParent(cb);	
 			} else {
 				//We have already 'required' this. Call the function in the addon-script
-				addons[globalId](cb);	
+				addons[globalId].fromMedImageParent(cb);	
 			}
 								
  					
