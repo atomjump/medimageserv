@@ -85,7 +85,7 @@ function readLog(logFile, platform, callback) {
 				  console.log("Output Logs:" + stdout);
 				  var fullLog = "Output Logs:\n\n" + stdout;
 				  
-				  var cmd = "tail -40 $HOME/.pm2/logs/medimage-server-out-0.log";
+				  var cmd = "tail -40 $HOME/.pm2/logs/medimage-server-err-0.log";
 				  
 				  //Now add the error log to that
 				  exec(cmd, {
