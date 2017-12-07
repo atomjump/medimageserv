@@ -836,6 +836,7 @@ function myExec(cmdLine, priority, cb) {
 			}
 			
 			var running = spawn(command, args);
+			console.log("Started running " + command);
 
 			running.stdout.on('data', (data) => {
 				console.log(`child stdout:\n${data}`);
