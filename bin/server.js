@@ -1074,7 +1074,8 @@ function addOns(eventType, cb, param1, param2, param3)
 											//Forward on to this page afterwards
 										  	 var waitForIt = evs[cnt].waitForRequestFinish;
 										} 
-								
+										
+										//Pass through the priority
 										myExec(cmdLine, evs[cnt].priority, (err, stdout, stderr) => {
 										  if (err) {
 											// node couldn't execute the command
