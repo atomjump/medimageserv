@@ -777,6 +777,9 @@ function myExec(cmdLine, priority, cb) {
 			var command = "";
 			if(cmds[0]) {
 				command = cmds[0];
+				if(command == "node") {
+					command = process.env.NODE_PATH;		//Get the system node path
+				}
 			}
 			
 			if(cmds[1]) {
