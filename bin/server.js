@@ -1075,7 +1075,7 @@ function addOns(eventType, cb, param1, param2, param3)
 										  	 var waitForIt = evs[cnt].waitForRequestFinish;
 										} 
 								
-										exec(cmdLine, (err, stdout, stderr) => {
+										myExec(cmdLine, evs[cnt].priority, (err, stdout, stderr) => {
 										  if (err) {
 											// node couldn't execute the command
 											console.log("There was a problem running the addon. Error:" + err);
