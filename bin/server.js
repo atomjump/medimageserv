@@ -791,11 +791,13 @@ function myExec(cmdLine, priority, cb) {
 		
 
 			running.stdout.on('data', (data) => {
+			    console.log(data.toString());
 			    outputStdOut += data.toString();
 			  
 			});
 
 			running.stderr.on('data', (data) => {
+				console.log(data.toString());
 				outputStdError += data.toString();
 			});
 
