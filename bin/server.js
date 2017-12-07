@@ -801,6 +801,7 @@ function myExec(cmdLine, priority, cb) {
 			});
 
 			running.on('close', (code, signal) => {
+			  console.log(`Child process exited with code ${code} ` + outputStdOut);
 			  if(signal) {
 			  	  cb(code, outputStdOut, outputStdError);
 			  } else {
