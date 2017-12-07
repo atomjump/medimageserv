@@ -82,8 +82,8 @@ function readLog(logFile, platform, callback) {
 				callback(err, "");
 	
 			  } else {
-				  console.log("%3Cb%3EOutput%20Logs%3A%3C%2Fb%3E" + stdout);
-				  var fullLog = "Output Logs:\n\n" + stdout;
+				  console.log("Output Logs:" + stdout);
+				  var fullLog = "OUTPUT LOGS:\n\n" + stdout;
 				  
 				  var cmd = "tail -40 $HOME/.pm2/logs/medimage-server-error-0.log";
 				  
@@ -97,7 +97,7 @@ function readLog(logFile, platform, callback) {
 							callback(err, "");
 				  		  } else {
 			  	  
-			  	 				fullLog = fullLog + "\n\n%3Cb%3EError%20Logs%3A%3C%2Fb%3E\n\n" + stdout;
+			  	 				fullLog = fullLog + "\n\nERROR LOGS:\n\n" + stdout;
 				  		    	callback(null, fullLog);
 				  		}
 				  	});
