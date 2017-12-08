@@ -53,7 +53,7 @@ var addonsConfigFile = __dirname + '/../addons/config.json';
 var htmlHeaderFile = __dirname + '/../public/components/header.html';
 var htmlHeaderCode = "";				//This is loaded from disk on startup
 var noFurtherFiles = "none";			//This gets piped out if there are no further files in directory
-var pairingURL = "https://atomjump.com/med-genid.php";
+var pairingURL = "http://atomjump.org/med-genid.php";  //Redirects to an https connection
 var listenPort = 5566;
 var remoteReadTimer = null;
 var globalId = "";
@@ -1668,7 +1668,9 @@ function handleServer(_req, _res) {
 					   var options = {};
 					   if(webProxy) {
 					   	 options.proxy = webProxy;
-					   }
+					   } 
+					   options.follow = 1;		//Allow redirection once to the secure page.
+					   
 
 					   needle.post(fullPairingUrl, data, options, function(error, response) {
 						  if (!error && response.statusCode == 200) {
