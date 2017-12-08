@@ -641,9 +641,10 @@ function backupFile(thisPath, outhashdir, finalFileName)
 									thisPath = upath.normalize(thisPath).replace("//","/").trim();		//Remove double slashes
 									target = upath.normalize(target).replace("//","/").trim();
 									
-									console.log("Copying " + thisPath + " to " + target);
+									
 									
 									if(thisPath !== target) {
+										console.log("Copying " + thisPath + " to " + target);
 										fsExtra.copy(thisPath, target, function(err) {
 										  if (err) {
 											 callback(err);
