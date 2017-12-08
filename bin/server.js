@@ -851,13 +851,13 @@ function myExec(cmdLine, priority, cb) {
 			var running = spawn(command, args);
 
 			running.stdout.on('data', (data) => {
-				console.log(`child stdout:\n${data}`);
+				if(verbose == true) console.log(data.toString());
 			    outputStdOut += data.toString();
 			  
 			});
 
 			running.stderr.on('data', (data) => {
-				console.log(`child stderr:\n${data}`);
+				if(verbose == true) console.log(data.toString());
 				outputStdError += data.toString();
 			});
 
