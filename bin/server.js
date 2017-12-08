@@ -867,7 +867,6 @@ function myExec(cmdLine, priority, cb) {
 			  } else {
 			  	  cb(null, outputStdOut, outputStdError);
 			  }
-			  console.log(`Child process exited with code ${code}`);
 			});			
 		
 		break;
