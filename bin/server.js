@@ -607,6 +607,8 @@ function backupFile(thisPath, outhashdir, finalFileName)
 	//					this is included in the finalFileName below.
 	// finalFileName:  the photo or other file name itself e.g. photo-01-09-17-12-54-56.jpg
 	
+	
+	
 	//Read in the config file
 	fs.readFile(configFile, function read(err, data) {
 		if (err) {
@@ -636,19 +638,35 @@ function backupFile(thisPath, outhashdir, finalFileName)
 							} else {
 								try {
 									
-									thisPath = upath.normalize(thisPath).replace("//","/");		//Remove double slashes
-									target = upath.normalize(target).replace("//","/");
+									thisPath = upath.normalize(thisPath).replace("//","/").trim();		//Remove double slashes
+									target = upath.normalize(target).replace("//","/").trim();
 									
 									console.log("Copying " + thisPath + " to " + target);
 									
-									if(thisPath != target) {
+									if(thisPath !== target) {
 										fsExtra.copy(thisPath, target, function(err) {
 										  if (err) {
 											 callback(err);
 										  } else {
 										 
 											 ensurePhotoReadableWindows(target);
-											 callback(null);
+											
+											 //And finally, remove the old file, if the option is set
+											 if( typeof content.keepMaster === 'undefined') {
+													//Not considered
+											 } else {
+													if(content.keepMaster == false) {
+														fsExtra.remove(thisPath, function(err) {
+														  if (err) {
+															console.error('Warning: there was a problem removing: ' + err.message)
+														  } else {
+															console.log('Removed the file: ' + thisPath);
+															callback(null);
+														  }
+														});
+													}
+
+											 }
 										  }
 
 									  
@@ -674,21 +692,7 @@ function backupFile(thisPath, outhashdir, finalFileName)
 						   console.log('ERR:' + err);
 						 } else {
 						   console.log('Completed all backups!');
-						   //And finally, remove the old file, if the option is set
-							if( typeof content.keepMaster === 'undefined') {
-								//Not considered
-							} else {
-								if(content.keepMaster == false) {
-									fsExtra.remove(thisPath, function(err) {
-									  if (err) {
-										console.error('Warning: there was a problem removing: ' + err.message)
-									  } else {
-										console.log('Removed the file: ' + thisPath);
-									  }
-									});
-								}
-	
-							}
+						   
 					   
 					   
 						   return;
