@@ -634,18 +634,27 @@ function backupFile(thisPath, outhashdir, finalFileName)
 								callback(err);
 							} else {
 								try {
+									
+									thisPath = path.normalize(thisPath);
+									target = path.normalize(target);
 									console.log("Copying " + thisPath + " to " + target);
-									fsExtra.copy(thisPath, target, function(err) {
-									  if (err) {
-									  	 callback(err);
-									  } else {
+									
+									if(thisPath != target) {
+										fsExtra.copy(thisPath, target, function(err) {
+										  if (err) {
+											 callback(err);
+										  } else {
 										 
-									     ensurePhotoReadableWindows(target);
-										 callback(null);
-									  }
+											 ensurePhotoReadableWindows(target);
+											 callback(null);
+										  }
 
 									  
-									}) // copies file
+										}) // copies file
+									} else {
+										//Same file
+										callback(null);
+									}
 
 									
 									
