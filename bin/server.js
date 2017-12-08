@@ -692,7 +692,7 @@ function backupFile(thisPath, outhashdir, finalFileName)
 						if(err) {
 						   console.log('ERR:' + err);
 						 } else {
-						   console.log('Completed all backups!');
+						   if(verbose == true) console.log('Completed all backups!');
 						   
 					   
 					   
