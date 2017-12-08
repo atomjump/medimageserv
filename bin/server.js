@@ -21,6 +21,7 @@ var http = require('http');
 var https = require('https');
 var util = require('util');
 var path = require("path");
+var upath = require("upath");
 require("date-format-lite");
 var mv = require('mv');
 var fs = require('fs');
@@ -635,8 +636,9 @@ function backupFile(thisPath, outhashdir, finalFileName)
 							} else {
 								try {
 									
-									thisPath = path.normalize(thisPath);
-									target = path.normalize(target);
+									thisPath = upath.normalize(thisPath).replace("//","/");		//Remove double slashes
+									target = upath.normalize(target).replace("//","/");
+									
 									console.log("Copying " + thisPath + " to " + target);
 									
 									if(thisPath != target) {
