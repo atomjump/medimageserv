@@ -768,7 +768,7 @@ havePermission(configFile, function(err, ret) {
 			}
 		} else {
 			//No permission, sorry
-			console.log("returnParams:?FINISHED=false&MSG=Sorry, you don't have permission to install add-ons. Please check your config.json. " + ret);
+			console.log("returnParams:?FINISHED=false&MSG=Sorry, you don't have permission to install or uninstall add-ons. Please check your config.json.");
 		}
 	}
 });
