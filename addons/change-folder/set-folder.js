@@ -134,7 +134,7 @@ function updateConfig(newdir, cb) {
 				var content = JSON.parse(data);
 
 
-				if(content.allowPhotosLeaving == false) {	//For security purposes, only allow this change through the interface if we are a client machine
+				if(content.lockDown == false) {	//For security purposes, only allow this change through the interface if we are a client machine
 
 					content.backupTo = [ newdir ];
 

@@ -148,7 +148,7 @@ readConfig(readConfigFile, function(conf, err) {
 						   			   			   
 			   
 			   
-			   if(conf.allowPhotosLeaving == true) {
+			   if(conf.lockDown == true) {
 			   		var allowChanges = "<i class='fa fa-lock fa-fw'></i>";
 			   } else {
 			   		var allowChanges = "<i class='fa fa-unlock fa-fw'></i>";

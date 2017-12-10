@@ -6,5 +6,6 @@
       "allowPhotosLeaving": false,
       "allowGettingRemotePhotos": true,
       "webProxy": null,
-      "keepMaster": false
+      "keepMaster": false,
+      "lockDown": false
 }

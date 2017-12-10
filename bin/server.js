@@ -314,38 +314,65 @@ function checkConfigCurrent(setProxy, cb) {
 
 			 }
 
-			//Get the current drives
-			drivelist.list(function(error, disks) {
-				if (error) throw error;
 
-				for(var cnt=0; cnt< disks.length; cnt++) {
-					//On each drive, create a backup standard directory for photos
-					if(verbose == true) console.log("Drive detected:" + JSON.stringify(disks[cnt]));
-					var drive = disks[cnt].mountpoint;
+			if(content.onStartBackupDriveDetect == true) {
+				//Get the current drives - if we want to auto-detect them when they get inserted
+				drivelist.list(function(error, disks) {
+					if (error) {
+						console.log("Warning: couldn't get the current drives for BackupDriveDetect. Error:" + error);
+				
+					} else {
 
-					if(drive) {
+						for(var cnt=0; cnt< disks.length; cnt++) {
+							//On each drive, create a backup standard directory for photos
+							if(verbose == true) console.log("Drive detected:" + JSON.stringify(disks[cnt]));
+							var drive = disks[cnt].mountpoint;
 
-					    if(serverParentDir().indexOf(drive) < 0) {
-						    //Drive is not included in this server parent dir, therefore talking about a different drive
+							if(drive) {
 
-						    //Create the dir
-						    if (!fs.existsSync(path.normalize(drive + outdirDefaultParent))){
-							    fs.mkdirSync(path.normalize(drive + outdirDefaultParent));
-						    }
+								if(serverParentDir().indexOf(drive) < 0) {
+									//Drive is not included in this server parent dir, therefore talking about a different drive
 
-						    if (!fs.existsSync(path.normalize(drive + outdirDefaultParent + outdirPhotos))){
-							    fs.mkdirSync(path.normalize(drive + outdirDefaultParent + outdirPhotos));
-						    }
+									//Create the dir
+									if (!fs.existsSync(path.normalize(drive + outdirDefaultParent))){
+										fs.mkdirSync(path.normalize(drive + outdirDefaultParent));
+									}
 
-						    //Append to the file's array if user has configured it as such
-						    if(content.onStartBackupDriveDetect == true) {
-						    	content.backupTo = pushIfNew(content.backupTo, drive + outdirDefaultParent + outdirPhotos);
-						    }
-					    }
-					}
-				}
+									if (!fs.existsSync(path.normalize(drive + outdirDefaultParent + outdirPhotos))){
+										fs.mkdirSync(path.normalize(drive + outdirDefaultParent + outdirPhotos));
+									}
 
-				//Write the file nicely formatted again
+									//Append to the file's array if user has configured it as such
+									if(content.onStartBackupDriveDetect == true) {
+										content.backupTo = pushIfNew(content.backupTo, drive + outdirDefaultParent + outdirPhotos);
+									}
+								}
+							}
+						}
+						
+						
+						 //Write the config file nicely formatted again, after we've added the new backup drives
+						fs.writeFile(configFile, JSON.stringify(content, null, 6), function(err) {
+							if(err) {
+								cb(err);
+							}
+
+							if(verbose == true) console.log("The config file was saved!");
+
+							//Now start any ping to read from a remote server
+							if((content.readProxy) && (content.readProxy != "")) {
+								startReadRemoteServer(content.readProxy);
+
+							}
+							cb(null);
+						});
+						
+					}			
+
+				 });
+			 } else {
+			 
+			 	 //Write the config file nicely formatted again
 				fs.writeFile(configFile, JSON.stringify(content, null, 6), function(err) {
 					if(err) {
 						cb(err);
@@ -360,8 +387,11 @@ function checkConfigCurrent(setProxy, cb) {
 					}
 					cb(null);
 				});
-
-			 });
+			 			 
+			 
+			 }
+			 
+			
 
 
 		};

@@ -82,12 +82,12 @@ readConfig(readConfigFile, function(conf, err) {
 						   			   			   
 			   var oldFolder = "";
 			   if(conf.backupTo) {
-				   if((conf.backupTo[0]) && (conf.allowPhotosLeaving == false)) {		//The allowPhotosLeaving should be a client, not a proxy - hide the folder on a proxy
+				   if((conf.backupTo[0]) && (conf.lockDown == false)) {		//The allowPhotosLeaving should be a client, not a proxy - hide the folder on a proxy
 						oldFolder = conf.backupTo[0];
 				   }
 			   }
 			   
-			   if(conf.allowPhotosLeaving == true) {
+			   if(conf.lockDown == true) {
 			   		var allowChanges = "<i class='fa fa-lock fa-fw'></i>";
 			   } else {
 			   		var allowChanges = "<i class='fa fa-unlock fa-fw'></i>";

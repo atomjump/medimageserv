@@ -169,7 +169,7 @@ readConfig(readConfigFile, function(conf, err) {
 			   readLog(logFile, platform, function(err, log) { 
 			   
 			   			   
-				   if(conf.allowPhotosLeaving == true) {
+				   if(conf.lockDown == true) {
 						var allowChanges = "<i class='fa fa-lock fa-fw'></i>";
 						var logOutput = "<p>Sorry, please contact your system admin to see these. You will need to change your configuration.</p>";
 				   } else {
