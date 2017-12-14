@@ -814,7 +814,7 @@ function myExec(cmdLine, priority, cb) {
 						if(!retVal.stdout) retVal.stdout = "";		//Ensure not undefined
 						if(!retVal.stderr) retVal.stderr = "";
 						console.log("Calling back out of myExec");
-						cb(retVal.err, retVal.stdout, retVal.stderr);
+						cb(err, retVal.stdout, retVal.stderr);
 					} else {
 						console.log("Calling back out of myExec");
 						cb(null,"","");
@@ -990,7 +990,7 @@ function addOns(eventType, cb, param1, param2, param3)
 								
 									
 								
-									myExec(cmdLine, runBlock.priority, (err, stdout, stderr) => {
+									myExec(cmdLine, runBlock.priority, function(err, stdout, stderr) {
 									  if (err) {
 										// node couldn't execute the command
 										console.log("There was a problem running the addon. Error:" + err);
@@ -1152,7 +1152,7 @@ function addOns(eventType, cb, param1, param2, param3)
 										} 
 										
 										//Pass through the priority
-										myExec(cmdLine, evs[cnt].priority, (err, stdout, stderr) => {
+										myExec(cmdLine, evs[cnt].priority, function(err, stdout, stderr) {
 										  if (err) {
 											// node couldn't execute the command
 											console.log("There was a problem running the addon. Error:" + err);
