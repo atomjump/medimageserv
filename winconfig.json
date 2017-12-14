@@ -7,5 +7,6 @@
       "allowGettingRemotePhotos": true,
       "webProxy": null,
       "keepMaster": false,
-      "lockDown": false
+      "lockDown": false,
+      "basicAuthent": "changeme"
 }
