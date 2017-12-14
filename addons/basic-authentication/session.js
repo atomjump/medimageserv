@@ -116,7 +116,10 @@ function request(argv, cb) {
 					if(opts.pass) {
 						//We have passed through a password
 						//Check it is correct
-						if(conf.viewPassword === opts.pass) {
+						
+var passw = conf.viewPassword;
+if(globalConfig && globalConfig.basicAuthent) passw = globalConfig.basicAuthent;
+						if(passw === opts.pass) {
 							//Logged in OK!
 						
 							var sessionId = generateSession(conf);
