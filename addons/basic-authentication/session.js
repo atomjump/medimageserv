@@ -104,9 +104,7 @@ function request(argv, cb) {
 	
 
 		var opts = queryString.parse(param);	
-	
-		console.log("opts:" + JSON.stringify(opts));
-	
+		
 		readConfig(readConfigFile, function(conf, err) {
 
 		   if(err) {
