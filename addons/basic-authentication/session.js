@@ -71,7 +71,13 @@ function readConfig(confFile, cb) {
 		//Write to a json file with the current drive.  This can be removed later manually by user, or added to
 		fs.readFile(confFile, function read(err, data) {
 			if (err) {
-					cb(null, "Sorry, cannot read config file! " + err);
+//Create our own config
+globalRAMSessionConfig = {
+   viewPassword: "changeme";
+   sessions: []
+}
+cb(globalRAMSessionConfig, null);
+		
 			} else {
 				globalRAMSessionConfig = JSON.parse(data);		//Note: TODO if data is an 'undefined' value this function will break
 
