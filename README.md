@@ -93,7 +93,8 @@ These are located in the file config.json.
 * **allowPhotosLeaving**  If set to 'true', this allows photos to leave the machine and be downloaded by other installations of the server. Leave 'true' for proxy servers, but false for client Windows machines.
 * **allowGettingRemotePhotos**  If set to 'true', this allows photos to be downloaded from a remote proxy server. If this is a proxy server, this should be set to 'false', otherwise for client Windows machines, set to 'true'.
 * **webProxy** If your web browser usually requires a proxy server (i.e. for normal web requests), then use the option"webProxy", in this format: "http://yourUser:yourPassword@webProxyIPaddress:webProxyPort"
-* **lockDown** You can switch a server into 'lock down' mode, where the interface cannot change any settings, add-ons, or see any technical logs, by setting this to 'true'.
+* **lockDown** You can switch a server into 'lock down' mode, where the interface cannot change any settings, add-ons, or see any technical logs, by setting this to 'true'. Ver >= 1.3.6
+* **basicAuthent** Enter a human readable password for addons that need some light security. This is a global password visible only within the config file (anyone with file level access to the server can see this). Ver >= 1.3.8
 
 
 
