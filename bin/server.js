@@ -351,7 +351,7 @@ function checkConfigCurrent(setProxy, cb) {
 						}
 						
 					
-					
+globalConfig = content;
 						
 						 //Write the config file nicely formatted again, after we've added the new backup drives
 						fs.writeFile(configFile, JSON.stringify(content, null, 6), function(err) {
@@ -373,7 +373,9 @@ function checkConfigCurrent(setProxy, cb) {
 
 				 });
 			 } else {
-			 
+				 
+globalConfig = content;
+				 
 			 	 //Write the config file nicely formatted again
 				fs.writeFile(configFile, JSON.stringify(content, null, 6), function(err) {
 					if(err) {
