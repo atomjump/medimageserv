@@ -42,7 +42,7 @@ function generateSession(conf) {
 
 
 
-function writeConfig(confFile, content, cb) {
+function writeConfigSes(confFile, content, cb) {
 	//Note: we store the sessions in RAM, and only write them every now and then
 	//Write the file nicely formatted again
 	fs.writeFile(confFile, JSON.stringify(content, null, 6), function(err) {
@@ -61,7 +61,7 @@ function writeConfig(confFile, content, cb) {
 }
 
 
-function readConfig(confFile, cb) {
+function readConfigSes(confFile, cb) {
 	//Reads and updates config with a newdir in the output photos - this will overwrite all other entries there
 	//Returns cb(err) where err = null, or a string with the error
 
@@ -93,7 +93,7 @@ function readConfig(confFile, cb) {
 
 
 
-function request(argv, cb) {
+function sesRequest(argv, cb) {
 
 
 		var param = decodeURIComponent(argv);
@@ -105,7 +105,7 @@ function request(argv, cb) {
 
 		var opts = queryString.parse(param);	
 		
-		readConfig(readConfigFile, function(conf, err) {
+		readConfigSes(readConfigFile, function(conf, err) {
 
 		   if(err) {
 			 var resp = {
@@ -204,7 +204,7 @@ function doRegular(cb) {
 			
 			//Don't need to keep writing to disk, unless there is a new session
 			globalRAMSessionConfig.updated = false;	
-			writeConfig(readConfigFile, globalRAMSessionConfig, function(err) {
+			writeConfigSes(readConfigFile, globalRAMSessionConfig, function(err) {
 			
 				if(err) {
 					console.log("There was an error writing the session data: " + err);
@@ -216,6 +216,9 @@ function doRegular(cb) {
 			});		
 		}
 	
+	} else {
+		//Read in the config from before
+		readConfigSes(confFile, function(conf, err) {});
 	}
 }
 
@@ -229,7 +232,7 @@ module.exports = {
 	medImage : function(argv, callback) {
 
 
-			request(argv[0], function(err, output) {
+			sesRequest(argv[0], function(err, output) {
 
 				
 				var ret = {};
