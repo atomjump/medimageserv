@@ -805,6 +805,8 @@ function myExec(cmdLine, priority, cb) {
 			if(verbose == true) console.log("Global id:" + globalId + " scriptPath:" + scriptPath + " argv:" + JSON.stringify(argv));
 			
 			var lib = require(scriptPath);
+			
+			var mycb = cb;
 			lib.medImage(argv, function(err, retVal) {
 				console.log("Have come back");	//TESTING IN
 				if(err) {
@@ -814,10 +816,10 @@ function myExec(cmdLine, priority, cb) {
 						if(!retVal.stdout) retVal.stdout = "";		//Ensure not undefined
 						if(!retVal.stderr) retVal.stderr = "";
 						console.log("Calling back out of myExec: " + retVal.stdout + "   stderr:" + retVal.stderr);
-						cb(null, retVal.stdout, retVal.stderr);
+						mycb(null, retVal.stdout, retVal.stderr);
 					} else {
 						console.log("Calling back out of myExec with blanks");
-						cb(null,"","");
+						mycb(null,"","");
 		
 					}
 				} 
