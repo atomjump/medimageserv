@@ -73,7 +73,7 @@ var webProxy = null;				//For download requests from the internet, use a local p
 									//See: http://stackoverflow.com/questions/23585371/proxy-authentication-in-node-js-with-module-request
 
 var addons = [];					//Addon included modules.
-
+global.globalConfig = null;
 
 //Handle a process sigint to quit smoothly
 process.on('SIGINT', function() {
@@ -350,6 +350,8 @@ function checkConfigCurrent(setProxy, cb) {
 							}
 						}
 						
+					
+					
 						
 						 //Write the config file nicely formatted again, after we've added the new backup drives
 						fs.writeFile(configFile, JSON.stringify(content, null, 6), function(err) {
