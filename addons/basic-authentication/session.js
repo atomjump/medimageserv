@@ -121,8 +121,8 @@ function request(argv, cb) {
 						//We have passed through a password
 						//Check it is correct
 						
-var passw = conf.viewPassword;
-if(globalConfig && globalConfig.basicAuthent) passw = globalConfig.basicAuthent;
+						var passw = conf.viewPassword;
+						if(globalConfig && globalConfig.basicAuthent) passw = globalConfig.basicAuthent;
 						if(passw === opts.pass) {
 							//Logged in OK!
 						
