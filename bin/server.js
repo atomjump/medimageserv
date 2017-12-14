@@ -806,15 +806,18 @@ function myExec(cmdLine, priority, cb) {
 			
 			var lib = require(scriptPath);
 			lib.medImage(argv, function(err, retVal) {
+				console.log("Have come back");	//TESTING IN
 				if(err) {
 					console.log("Error:" + err);
 				} else {
 					if(retVal) {
 						if(!retVal.stdout) retVal.stdout = "";		//Ensure not undefined
 						if(!retVal.stderr) retVal.stderr = "";
+						console.log("Calling back out of myExec");
 						cb(retVal.err, retVal.stdout, retVal.stderr);
 					} else {
-						cb("","","");
+						console.log("Calling back out of myExec");
+						cb(null,"","");
 		
 					}
 				} 
