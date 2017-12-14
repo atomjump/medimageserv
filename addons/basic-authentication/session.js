@@ -218,7 +218,7 @@ function doRegular(cb) {
 	
 	} else {
 		//Read in the config from before
-		readConfigSes(confFile, function(conf, err) {});
+		readConfigSes(readConfigFile, function(conf, err) {});
 	}
 }
 
