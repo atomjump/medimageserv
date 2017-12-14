@@ -813,10 +813,10 @@ function myExec(cmdLine, priority, cb) {
 					if(retVal) {
 						if(!retVal.stdout) retVal.stdout = "";		//Ensure not undefined
 						if(!retVal.stderr) retVal.stderr = "";
-						console.log("Calling back out of myExec");
-						cb(err, retVal.stdout, retVal.stderr);
+						console.log("Calling back out of myExec: " + retVal.stdout + "   stderr:" + retVal.stderr);
+						cb(null, retVal.stdout, retVal.stderr);
 					} else {
-						console.log("Calling back out of myExec");
+						console.log("Calling back out of myExec with blanks");
 						cb(null,"","");
 		
 					}
