@@ -808,17 +808,15 @@ function myExec(cmdLine, priority, cb) {
 			
 			var mycb = cb;
 			lib.medImage(argv, function(err, retVal) {
-				console.log("Have come back");	//TESTING IN
 				if(err) {
 					console.log("Error:" + err);
+					mycb(err, "", "");
 				} else {
 					if(retVal) {
 						if(!retVal.stdout) retVal.stdout = "";		//Ensure not undefined
 						if(!retVal.stderr) retVal.stderr = "";
-						console.log("Calling back out of myExec: " + retVal.stdout + "   stderr:" + retVal.stderr);
 						mycb(null, retVal.stdout, retVal.stderr);
 					} else {
-						console.log("Calling back out of myExec with blanks");
 						mycb(null,"","");
 		
 					}
@@ -935,8 +933,7 @@ function myExec(cmdLine, priority, cb) {
 	
 	}
 	
-	//No return here - we should rely on the cb() to return;
-
+	return;
 }
 
 
