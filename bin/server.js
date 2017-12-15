@@ -47,7 +47,7 @@ var outdirPhotos = '/photos';			//These should have a slash before, and no slash
 var defaultTitle = "image";
 var currentDisks = [];
 var configFile = __dirname + '/../config.json';	//Default location is one directory back
-var newConfigFile = '/../newconfig.json';	//This is for a new install generally - it will auto-create from this file
+var newConfigFile = '/../config-original/linORIGINALconfig.json';	//This is for a new install generally - it will auto-create from this file
 						//if the config doesn't yet exist
 var addonsConfigFile = __dirname + '/../addons/config.json';
 var htmlHeaderFile = __dirname + '/../public/components/header.html';
