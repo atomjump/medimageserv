@@ -19,7 +19,8 @@ Then:
 sudo npm install pm2@latest -g
 sudo npm install medimage -g
 cd "$(npm prefix -global)/lib/node_modules/medimage/" 
-cp addons/configORIGINAL.json addons/config.json
+sudo cp config-original/linORIGINALconfig.json config.json
+sudo cp addons/configORIGINAL.json addons/config.json
 pm2 start npm --name "medimage-server" -- start
 ./medimage-server.sh; cd ~
 pm2 save
