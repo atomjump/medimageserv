@@ -16,14 +16,13 @@ See https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-a
 Then:
 
 ```
-sudo npm install pm2@latest -g
-sudo npm install medimage -g
-cd "$(npm prefix -global)/lib/node_modules/medimage/" 
-sudo cp config-original/linORIGINALconfig.json config.json
-sudo cp addons/configORIGINAL.json addons/config.json
-pm2 start npm --name "medimage-server" -- start ./medimage-server.sh; cd ~
-pm2 save
-pm2 startup     
+eval "$(curl -fsSL -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/atomjump/medimageserv-linstaller/master/install)"     
+```
+
+(Or for a super user installation, which is sometimes required) 
+
+```
+eval "$(curl -fsSL -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/atomjump/medimageserv-linstaller/master/install-root)"     
 ```
 
 And run the command the last command displays, to get autostart at boot-up.
@@ -133,27 +132,19 @@ sudo npm install -g medimage -production
 ## Upgrade script
 
 
-The current way to upgrade medimage server:
+The way to upgrade Medimage Server:
 
 ```
-pm2 delete medimage-server
-sudo mv "$(npm prefix -global)/lib/node_modules/medimage/config.json" /var/tmp
-sudo mv "$(npm prefix -global)/lib/node_modules/medimage/addons" /var/tmp
-sudo mv "$(npm prefix -global)/lib/node_modules/medimage/photos" /var/tmp
-sudo npm install -g medimage
-sudo mv /var/tmp/config.json "$(npm prefix -global)/lib/node_modules/medimage/"
-sudo rm -rf "$(npm prefix -global)/lib/node_modules/medimage/addons" 
-sudo mv /var/tmp/addons "$(npm prefix -global)/lib/node_modules/medimage/" 
-sudo rm -rf "$(npm prefix -global)/lib/node_modules/medimage/photos"
-sudo mv /var/tmp/photos "$(npm prefix -global)/lib/node_modules/medimage/"
-cd "$(npm prefix -global)/lib/node_modules/medimage/" 
-pm2 start npm --name "medimage-server" -- start
-cd ~
+eval "$(curl -fsSL -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/atomjump/medimageserv-linstaller/master/upgrade)" 
 ```
 
-But, please note, that any files in the lib/node_modules/medimage/ directory may be removed,
-during the 'npm install' command. If you store any other files such as keys, ensure you
-copy them out as above.
+But, please note, that any files in the lib/node_modules/medimage/ directory may be removed, during the 'npm install' command. If you store any other files such as keys, ensure you copy them out before running this command.
+
+(Or for a super user installation, which is sometimes required) 
+
+```
+eval "$(curl -fsSL -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/atomjump/medimageserv-linstaller/master/upgrade-root)" 
+```
 
 You also may wish to save your config file somewhere else first, and then run:
 
@@ -162,4 +153,15 @@ npm config set medimage:configFile /path/to/your/medimage/config.json
 ```
 Your settings will be kept between upgrades, provided the config.json is out of your global medimage directory,
 without having to copy them out.
+
+
+
+
+## Uninstall script
+
+To remove any instances of MedImage Server:
+
+```
+eval "$(curl -fsSL -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/atomjump/medimageserv-linstaller/master/uninstall)" 
+```
 
