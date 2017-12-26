@@ -21,11 +21,12 @@ sudo npm install medimage -g
 cd "$(npm prefix -global)/lib/node_modules/medimage/" 
 sudo cp config-original/linORIGINALconfig.json config.json
 sudo cp addons/configORIGINAL.json addons/config.json
-pm2 start npm --name "medimage-server" -- start
-./medimage-server.sh; cd ~
+pm2 start npm --name "medimage-server" -- start ./medimage-server.sh; cd ~
 pm2 save
-pm2 startup     (and run the command it outputs, to get autostart at boot-up)
+pm2 startup     
 ```
+
+And run the command the last command displays, to get autostart at boot-up.
 
 You may have to open the firewall to port 5566 for reading and writing eg.:
 ```
