@@ -2010,7 +2010,7 @@ function handleServer(_req, _res) {
 										}
 																				
 										var outdir = __dirname + "/../public/pages/" + newLocation;
-										if(verbose == true) console.log("Serving up file:" + outdir + " Replace:" + JSON.stringify(replace));
+										if(verbose == true) console.log("Serving up file:" + outdir);
 										
 										//Since this is dynamic content we don't want to cache it.
 										if((res.headersSent) && (res.headersSent == true)) {
