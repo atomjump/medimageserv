@@ -115,7 +115,7 @@ function pushIfNew(arry, str) {
 
 function serverParentDir() {
 	//Get the current parent directory. E.g from C:\snapvolt\bin it will be relative ..\..\ = 'C:'
-	var curdir = path.normalize(__dirname + "/..");
+	var curdir = normalizeInclWinNetworks(__dirname + "/..");
 	return curdir;
 }
 
@@ -334,12 +334,12 @@ function checkConfigCurrent(setProxy, cb) {
 									//Drive is not included in this server parent dir, therefore talking about a different drive
 
 									//Create the dir
-									if (!fs.existsSync(path.normalize(drive + outdirDefaultParent))){
-										fs.mkdirSync(path.normalize(drive + outdirDefaultParent));
+									if (!fs.existsSync(normalizeInclWinNetworks(drive + outdirDefaultParent))){
+										fs.mkdirSync(normalizeInclWinNetworks(drive + outdirDefaultParent));
 									}
 
-									if (!fs.existsSync(path.normalize(drive + outdirDefaultParent + outdirPhotos))){
-										fs.mkdirSync(path.normalize(drive + outdirDefaultParent + outdirPhotos));
+									if (!fs.existsSync(normalizeInclWinNetworks(drive + outdirDefaultParent + outdirPhotos))){
+										fs.mkdirSync(normalizeInclWinNetworks(drive + outdirDefaultParent + outdirPhotos));
 									}
 
 									//Append to the file's array if user has configured it as such
@@ -410,7 +410,7 @@ function fileWalk(startDir, cb)
    var items = [];
    if(verbose == true) console.log("Searching:" + startDir);
 
-   if (fsExtra.existsSync(path.normalize(startDir))){
+   if (fsExtra.existsSync(normalizeInclWinNetworks(startDir))){
        try {
            var walk = klaw(startDir);
 
@@ -476,7 +476,7 @@ function download(uri, callback){
 				dirFile = trimChar(dirFile.replace(globalId + '/', '')); //remove our id and any slashes around it
 
 
-				var createFile = path.normalize(trailSlash(serverParentDir()) + trailSlash(outdirPhotos) + dirFile);
+				var createFile = normalizeInclWinNetworks(trailSlash(serverParentDir()) + trailSlash(outdirPhotos) + dirFile);
 
 
 				if(verbose == true) console.log("Creating file:" + createFile);
@@ -632,6 +632,25 @@ function trailSlash(str)
 }
 
 
+function normalizeInclWinNetworks(path)
+{
+	//Tests to see if the path is a Windows network path first, if so, handle this case slightly differently
+	//to a normal upath.normalization.
+	//Run this before 
+	if((path[0] == "\\")&&(path[1] == "\\")) {
+		
+		return "\/" + upath.normalize(path);		//Prepend the first slash
+	} else {
+		if((path[0] == "\/")&&(path[1] == "\/")) {
+			//In unix style syntax, but still a windows style network path
+			return "\/" + upath.normalize(path);		//Prepend the first slash
+		} else {
+			return upath.normalize(path);
+		}
+	}
+
+}
+
 
 
 function backupFile(thisPath, outhashdir, finalFileName)
@@ -672,8 +691,8 @@ function backupFile(thisPath, outhashdir, finalFileName)
 							} else {
 								try {
 									
-									thisPath = upath.normalize(thisPath).replace("//","/").trim();		//Remove double slashes
-									target = upath.normalize(target).replace("//","/").trim();
+									thisPath = normalizeInclWinNetworks(thisPath).replace("//","/").trim();		//Remove double slashes
+									target = normalizeInclWinNetworks(target).replace("//","/").trim();
 									
 									
 									
@@ -1048,13 +1067,13 @@ function addOns(eventType, cb, param1, param2, param3)
 													// outhashdir:   the directory path of the file relative to the root photos dir /photos. But if blank, 
 													//					this is included in the finalFileName below.
 													// finalFileName:  the photo or other file name itself e.g. photo-01-09-17-12-54-56.jpgvar thisPath = path.dirname(backupArray[cnt]);
-													var photoParentDir = path.normalize(serverParentDir() + outdirPhotos);
+													var photoParentDir = normalizeInclWinNetworks(serverParentDir() + outdirPhotos);
 													if(verbose == true) console.log("Backing up requested files from script");
 													if(verbose == true) console.log("photoParentDir=" + photoParentDir);
-													var finalFileName = path.normalize(backupArray[cnt]);
+													var finalFileName = normalizeInclWinNetworks(backupArray[cnt]);
 													finalFileName = finalFileName.replace(photoParentDir,"").trim();		//Remove the photo's directory from the filename
 													if(verbose == true) console.log("finalFileName=" + finalFileName);
-													var thisPath = path.normalize(backupArray[cnt].trim());
+													var thisPath = normalizeInclWinNetworks(backupArray[cnt].trim());
 													if(verbose == true) console.log("thisPath=" + thisPath);
 													backupAtEnd.push({ "thisPath": thisPath,
 																		"finalFileName": finalFileName });
@@ -1228,13 +1247,13 @@ function addOns(eventType, cb, param1, param2, param3)
 														// outhashdir:   the directory path of the file relative to the root photos dir /photos. But if blank, 
 														//					this is included in the finalFileName below.
 														// finalFileName:  the photo or other file name itself e.g. photo-01-09-17-12-54-56.jpgvar thisPath = path.dirname(backupArray[cnt]);
-														var photoParentDir = path.normalize(serverParentDir() + outdirPhotos);
+														var photoParentDir = normalizeInclWinNetworks(serverParentDir() + outdirPhotos);
 														if(verbose == true) console.log("Backing up requested files from script");
 														if(verbose == true) console.log("photoParentDir=" + photoParentDir);
-														var finalFileName = path.normalize(backupArray[cnt]);
+														var finalFileName = normalizeInclWinNetworks(backupArray[cnt]);
 														finalFileName = finalFileName.replace(photoParentDir,"");		//Remove the photo's directory from the filename
 											   			if(verbose == true) console.log("finalFileName=" + finalFileName);
-											   			var thisPath = path.normalize(backupArray[cnt]);
+											   			var thisPath = normalizeInclWinNetworks(backupArray[cnt]);
 											   			if(verbose == true) console.log("thisPath=" + thisPath);
 											   			backupFile(thisPath, "", finalFileName);
 											   		}
@@ -1400,7 +1419,7 @@ function getFileFromUserStr(inFile)
 		}  //end of loop
 	
 		finalFileName = finalFileName + '.jpg';
-		return path.normalize(outhashdir + '/' + finalFileName);
+		return normalizeInclWinNetworks(outhashdir + '/' + finalFileName);
 }
 
 
@@ -1464,7 +1483,7 @@ function handleServer(_req, _res) {
 					var title = files.file1[0].originalFilename;
 
 					res.writeHead(200, {'content-type': 'text/plain'});
-				  	res.write('Received upload successfully! Check ' + path.normalize(parentDir + outdirPhotos) + ' for your image.\n\n');
+				  	res.write('Received upload successfully! Check ' + normalizeInclWinNetworks(parentDir + outdirPhotos) + ' for your image.\n\n');
 				  	res.end();
 
 
@@ -1515,19 +1534,19 @@ function handleServer(_req, _res) {
 
 					//Check the directory exists, and create
 
-					if (!fs.existsSync(path.normalize(parentDir + outdirPhotos))){
+					if (!fs.existsSync(normalizeInclWinNetworks(parentDir + outdirPhotos))){
 				   		if(verbose == true) console.log('Creating dir:' + path.normalize(parentDir + outdirPhotos));
 
-	   					fsExtra.mkdirsSync(path.normalize(parentDir + outdirPhotos));
+	   					fsExtra.mkdirsSync(normalizeInclWinNetworks(parentDir + outdirPhotos));
 				  		if(verbose == true) console.log('Created OK dir:' + path.normalize(parentDir + outdirPhotos));
 
 					}
 
 					//Create the final hash outdir
 					outdir = parentDir + outdirPhotos + outhashdir;
-					if (!fs.existsSync(path.normalize(outdir))){
-						if(verbose == true) console.log('Creating dir:' + path.normalize(outdir));
-						fsExtra.mkdirsSync(path.normalize(outdir));
+					if (!fs.existsSync(normalizeInclWinNetworks(outdir))){
+						if(verbose == true) console.log('Creating dir:' + normalizeInclWinNetworks(outdir));
+						fsExtra.mkdirsSync(normalizeInclWinNetworks(outdir));
 						if(verbose == true) console.log('Created OK');
 
 					}
@@ -1773,8 +1792,8 @@ function handleServer(_req, _res) {
 						 return;
 					 }
 
-					 var outdir = path.normalize(parentDir + outdirPhotos + '/' + codeDir);
-					 var compareWith = path.normalize(parentDir + outdirPhotos);
+					 var outdir = normalizeInclWinNetworks(parentDir + outdirPhotos + '/' + codeDir);
+					 var compareWith = normalizeInclWinNetworks(parentDir + outdirPhotos);
 
 					 if(verbose == true) console.log("Output directory to scan " + outdir + ". Must include:" + compareWith);
 					 //For security purposes the path must include the parentDir and outdiePhotos in a complete form
@@ -1975,7 +1994,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
   //  }
 
   
-  var sections = path.normalize(fullFile).split("?");
+  var sections = normalizeInclWinNetworks(fullFile).split("?");
   var normpath = sections[0];		//Ignore any query parameters to the right	
 
   if(verbose == true) console.log(normpath);
