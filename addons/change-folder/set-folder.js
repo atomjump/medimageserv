@@ -166,12 +166,31 @@ function updateConfig(newdir, cb) {
 
 }
 
+function normalizeInclWinNetworks(path)
+{
+	//Tests to see if the path is a Windows network path first, if so, handle this case slightly differently
+	//to a normal upath.normalization.
+	//Run this before 
+	if((path[0] == "\\")&&(path[1] == "\\")) {
+		
+		return "\/" + upath.normalize(path);		//Prepend the first slash
+	} else {
+		if((path[0] == "\/")&&(path[1] == "\/")) {
+			//In unix style syntax, but still a windows style network path
+			return "\/" + upath.normalize(path);		//Prepend the first slash
+		} else {
+			return upath.normalize(path);
+		}
+	}
+
+}
+
 
 
 if(process.argv[2]) {
 
   var opts = queryString.parse(decodeURIComponent(process.argv[2]));
-  var photoDir = upath.normalize(decodeURIComponent(opts.newFolder));
+  var photoDir = normalizeInclWinNetworks(decodeURIComponent(opts.newFolder));
   
   //Remove any trailing slashes
   photoDir = noTrailSlash(photoDir);

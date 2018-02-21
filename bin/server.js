@@ -667,7 +667,7 @@ function backupFile(thisPath, outhashdir, finalFileName)
 
 						fsExtra.ensureDir(trailSlash(content.backupTo[cnt]) + trailSlash(outhashdir), function(err) {
 							if(err) {
-								console.log("Warning: Could not create directory for backup: " + content.backupTo[cnt] + " Err:" + err);
+								console.log("Warning: Could not create directory for backup: " + trailSlash(content.backupTo[cnt]) + trailSlash(outhashdir) + " Err:" + err);
 								callback(err);
 							} else {
 								try {
