@@ -720,24 +720,23 @@ function backupFile(thisPath, outhashdir, finalFileName, opts, cb)
 						
 						}
 						
+						var targetDir = normalizeInclWinNetworks(trailSlash(content.backupTo[cnt]) + trailSlash(outhashdir));
 						if(outhashdir) {
-							var target = trailSlash(content.backupTo[cnt]) + trailSlash(outhashdir) + finalFileName;
+							var target = targetDir + finalFileName;
 							} else {
 							var target = trailSlash(content.backupTo[cnt]) + finalFileName;
 						}
+						target = normalizeInclWinNetworks(target.trim());
+						thisPath = normalizeInclWinNetworks(thisPath.trim());		//OLD: Remove double slashes. Normalize will handle that
+						
 						if(verbose == true) console.log("Backing up " + thisPath + " to:" + target);
 
-						fsExtra.ensureDir(trailSlash(content.backupTo[cnt]) + trailSlash(outhashdir), function(err) {
+						fsExtra.ensureDir(targetDir, function(err) {
 							if(err) {
-								console.log("Warning: Could not create directory for backup: " + trailSlash(content.backupTo[cnt]) + trailSlash(outhashdir) + " Err:" + err);
+								console.log("Warning: Could not create directory for backup: " + targetDir + " Err:" + err);
 								callback(err);
 							} else {
 								try {
-									
-									thisPath = normalizeInclWinNetworks(thisPath.trim());		//OLD: Remove double slashes. Normalize will handle that
-									target = normalizeInclWinNetworks(target.trim());
-									
-									
 									
 									if(thisPath !== target) {
 										console.log("Copying " + thisPath + " to " + target);
@@ -800,7 +799,7 @@ function backupFile(thisPath, outhashdir, finalFileName, opts, cb)
 						// All tasks are done now
 						if(err) {
 						   console.log('ERR:' + err);
-						   cb(err);
+						   cb(err, null);
 						 } else {
 						   if(verbose == true) console.log('Completed all backups!');					   
 						   cb(null, target);
