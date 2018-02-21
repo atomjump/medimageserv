@@ -672,6 +672,8 @@ function backupFile(thisPath, outhashdir, finalFileName, opts, cb)
 	//Will call cb once all are completed, with (err, null) if there was an error, or (null, newPath) if none
 	// where newPath is the last output file path (a single file only - most useful when opts.first is true)
 	
+	var lastNewPath = thisPath;
+	
 	if(!opts) {
 		opts = {};
 	}
@@ -727,7 +729,9 @@ function backupFile(thisPath, outhashdir, finalFileName, opts, cb)
 							var target = trailSlash(content.backupTo[cnt]) + finalFileName;
 						}
 						target = normalizeInclWinNetworks(target.trim());
+						lastNewPath = target;		//Record for the return journey
 						thisPath = normalizeInclWinNetworks(thisPath.trim());		//OLD: Remove double slashes. Normalize will handle that
+						
 						
 						if(verbose == true) console.log("Backing up " + thisPath + " to:" + target);
 
@@ -769,12 +773,12 @@ function backupFile(thisPath, outhashdir, finalFileName, opts, cb)
 													callback(err, null);
 												  } else {
 													console.log('Removed the file: ' + thisPath);
-													callback(null, target);
+													callback(null);
 												  }
 												});
 													
 											 } else {
-											 	callback(null, target);
+											 	callback(null);
 											 }
 										  }
 
@@ -782,7 +786,7 @@ function backupFile(thisPath, outhashdir, finalFileName, opts, cb)
 										}) // copies file
 									} else {
 										//Same file
-										callback(null, target);
+										callback(null);
 									}
 
 									
@@ -795,14 +799,14 @@ function backupFile(thisPath, outhashdir, finalFileName, opts, cb)
 						});
 					
 					},	//End of async eachOf single item
-					  function(err, target){
+					  function(err){
 						// All tasks are done now
 						if(err) {
 						   console.log('ERR:' + err);
 						   cb(err, null);
 						 } else {
 						   if(verbose == true) console.log('Completed all backups!');					   
-						   cb(null, target);
+						   cb(null, lastNewPath);
 						 }
 					   }
 				); //End of async eachOf all items
@@ -811,7 +815,7 @@ function backupFile(thisPath, outhashdir, finalFileName, opts, cb)
 				
 			} else { //End of check there is a backup
 			
-				cb(null, thisPath);		//Ouput the same file.
+				cb(null, lastNewPath);		//Ouput the same file.
 			}
 			
 		} //End of no error on reading config
