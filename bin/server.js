@@ -530,26 +530,31 @@ function download(uri, callback){
 										}
 
 										
-
-										addOns("photoWritten", function(err, normalBackup) {
-											if(err) {
-												console.log("Error writing file:" + err);
-											} else {
-												if(verbose == true) console.log("Add-on completed running");
-											
-											}
-											
-											if(normalBackup == true) {
-												//Now we have finished processing the file via the addons,
-												//backup the standard files if 'normal' is the case
-												backupFile(createFile, "", dirFile);
-											}
-									
+										backupFile(createFile, "", dirFile, { "first": true, "secondary": false, "keepOriginal": "useMasterConfig" }, function(err, newPath) {
 										
-										}, createFile);
+											if(err) {
+												console.log("Error moving file. Err:" + err); 
+											
+											} else {
+												addOns("photoWritten", function(err, normalBackup) {
+													if(err) {
+														console.log("Error writing file:" + err);
+													} else {
+														if(verbose == true) console.log("Add-on completed running");
+											
+													}
+											
+													if(normalBackup == true) {
+														//Now we have finished processing the file via the addons,
+														//backup the standard files if 'normal' is the case
+														backupFile(createFile, "", dirFile, { "first": false, "secondary": true, "keepOriginal": true });
+													}
+												}, newPath);
+											}
 
-
-										callback(null);
+										}); //End of backup first file
+										
+										callback(null);		//Carry on with normal operations, with the addons working in the background
 									} else {
 										console.log("2nd close event");
 									}
@@ -653,12 +658,33 @@ function normalizeInclWinNetworks(path)
 
 
 
-function backupFile(thisPath, outhashdir, finalFileName)
+function backupFile(thisPath, outhashdir, finalFileName, opts, cb)
 {
 	// thisPath:  full path of the file to be backed up from the root file system
 	// outhashdir:   the directory path of the file relative to the root photos dir /photos. But if blank, 
 	//					this is included in the finalFileName below.
 	// finalFileName:  the photo or other file name itself e.g. photo-01-09-17-12-54-56.jpg
+	// opts: 
+	//    {first: true} 				Process the first on the list (defaults to true)
+	//    {secondary: true}  			Process the remainder paths on the list (defaults to true)
+	//    {keepOriginal: false}		    Keep the original file (defaults to "useMasterConfig").
+	//											which takes this value from the config file
+	//Will call cb once all are completed, with (err, null) if there was an error, or (null, newPath) if none
+	// where newPath is the last output file path (a single file only - most useful when opts.first is true)
+	
+	if(!opts) {
+		opts = {};
+	}
+	if(!opts.first) {
+		opts.first = true;
+	}
+	if(!opts.secondary) {
+		opts.secondary = true;
+	}
+	if(!opts.keepOriginal) {
+		opts.keepOriginal = "useMasterConfig";
+	}
+	
 	
 	
 	
@@ -666,16 +692,33 @@ function backupFile(thisPath, outhashdir, finalFileName)
 	fs.readFile(configFile, function read(err, data) {
 		if (err) {
 			console.log("Warning: Error reading config file for backup options: " + err);
+			cb(err);
 		} else {
 			var content = JSON.parse(data);
 
 
 			if(content.backupTo) {
+			
+				
+			
 				//Loop through all the backup directories
 				async.eachOf(content.backupTo,
 					// 2nd param is the function that each item is passed to
 					function(runBlock, cnt, callback){
 				
+						
+						if((cnt == 0) && (opts.first == false)) {
+							//Early exist on this one
+							callback(null);
+							return;
+						}
+						
+						if((cnt > 0)&& (opts.secondary == false)) {
+							//Early exist on this one
+							callback(null);
+							return;
+						
+						}
 						
 						if(outhashdir) {
 							var target = trailSlash(content.backupTo[cnt]) + trailSlash(outhashdir) + finalFileName;
@@ -691,8 +734,8 @@ function backupFile(thisPath, outhashdir, finalFileName)
 							} else {
 								try {
 									
-									thisPath = normalizeInclWinNetworks(thisPath).replace("//","/").trim();		//Remove double slashes
-									target = normalizeInclWinNetworks(target).replace("//","/").trim();
+									thisPath = normalizeInclWinNetworks(thisPath.trim());		//OLD: Remove double slashes. Normalize will handle that
+									target = normalizeInclWinNetworks(target.trim());
 									
 									
 									
@@ -700,26 +743,39 @@ function backupFile(thisPath, outhashdir, finalFileName)
 										console.log("Copying " + thisPath + " to " + target);
 										fsExtra.copy(thisPath, target, function(err) {
 										  if (err) {
-											 callback(err);
+											 callback(err, null);
 										  } else {
 										 
 											 ensurePhotoReadableWindows(target);
 											
 											 //And finally, remove the old file, if the option is set
-											 if( typeof content.keepMaster === 'undefined') {
-													//Not considered
+											 if(opts.keepOriginal == "useMasterConfig") {
+											 
+											 	//Determine whether to keep the original photo file based off the global setting
+												opts.keepOriginal = true;
+												if( typeof content.keepMaster === 'undefined') {
+																		//Not considered
+												 } else {
+														if(content.keepMaster == false) {
+															 opts.keepOriginal = false;
+														}
+												 }
+											 }
+											 
+											 if(opts.keepOriginal == false) {
+											 
+												fsExtra.remove(thisPath, function(err) {
+												  if (err) {
+													console.error('Warning: there was a problem removing: ' + err.message)
+													callback(err, null);
+												  } else {
+													console.log('Removed the file: ' + thisPath);
+													callback(null, target);
+												  }
+												});
+													
 											 } else {
-													if(content.keepMaster == false) {
-														fsExtra.remove(thisPath, function(err) {
-														  if (err) {
-															console.error('Warning: there was a problem removing: ' + err.message)
-														  } else {
-															console.log('Removed the file: ' + thisPath);
-															callback(null);
-														  }
-														});
-													}
-
+											 	callback(null, target);
 											 }
 										  }
 
@@ -727,14 +783,14 @@ function backupFile(thisPath, outhashdir, finalFileName)
 										}) // copies file
 									} else {
 										//Same file
-										callback(null);
+										callback(null, target);
 									}
 
 									
 									
 								} catch (err) {
 									console.error('Warning: there was a problem backing up: ' + err.message);
-									callback(null);
+									callback(err, null);
 								}
 							}
 						});
@@ -744,20 +800,22 @@ function backupFile(thisPath, outhashdir, finalFileName)
 						// All tasks are done now
 						if(err) {
 						   console.log('ERR:' + err);
+						   cb(err);
 						 } else {
-						   if(verbose == true) console.log('Completed all backups!');
-						   
-					   
-					   
-						   return;
+						   if(verbose == true) console.log('Completed all backups!');					   
+						   cb(null);
 						 }
 					   }
 				); //End of async eachOf all items
 				
 				
 				
+			} else { //End of check there is a backup
+			
+				cb(null);
 			}
-		}
+			
+		} //End of no error on reading config
 
 	});
 }
@@ -783,6 +841,12 @@ function getPlatform() {
 	
 	}
 }
+
+
+
+
+
+
 
 function myExec(cmdLine, priority, cb) {
 	
@@ -1123,7 +1187,7 @@ function addOns(eventType, cb, param1, param2, param3)
 								   
 								   //Carry out the backups after all commands have finished
 								   for(var cnt = 0; cnt < backupAtEnd.length; cnt++) {	
-								   		backupFile(backupAtEnd[cnt].thisPath, "", backupAtEnd[cnt].finalFileName);
+								   		backupFile(backupAtEnd[cnt].thisPath, "", backupAtEnd[cnt].finalFileName,  { "first": false, "secondary": true, "keepOriginal": true });
 								   }
 								   
 								   
@@ -1255,7 +1319,7 @@ function addOns(eventType, cb, param1, param2, param3)
 											   			if(verbose == true) console.log("finalFileName=" + finalFileName);
 											   			var thisPath = normalizeInclWinNetworks(backupArray[cnt]);
 											   			if(verbose == true) console.log("thisPath=" + thisPath);
-											   			backupFile(thisPath, "", finalFileName);
+											   			backupFile(thisPath, "", finalFileName, { "first": false, "secondary": true, "keepOriginal": true });
 											   		}
 											   	}
 											   
@@ -1535,10 +1599,10 @@ function handleServer(_req, _res) {
 					//Check the directory exists, and create
 
 					if (!fs.existsSync(normalizeInclWinNetworks(parentDir + outdirPhotos))){
-				   		if(verbose == true) console.log('Creating dir:' + path.normalize(parentDir + outdirPhotos));
+				   		if(verbose == true) console.log('Creating dir:' + normalizeInclWinNetworks(parentDir + outdirPhotos));
 
 	   					fsExtra.mkdirsSync(normalizeInclWinNetworks(parentDir + outdirPhotos));
-				  		if(verbose == true) console.log('Created OK dir:' + path.normalize(parentDir + outdirPhotos));
+				  		if(verbose == true) console.log('Created OK dir:' + normalizeInclWinNetworks(parentDir + outdirPhotos));
 
 					}
 
@@ -1572,33 +1636,40 @@ function handleServer(_req, _res) {
 							ensurePhotoReadableWindows(fullPath);
 							
 							
-							addOns("photoWritten", function(err, normalBackup) {
-											if(err) {
-												console.log("Error writing file:" + err);
-											} else {
-												if(verbose == true) console.log("Add-on completed running");
-											
-											}
-											
-											if(normalBackup == true) {
-												//Now we have finished processing the file via the addons,
-												//backup the standard files if 'normal' is the case
-												
-												//Now copy to any other backup directories
-												if(verbose == true) console.log("Backups:");
-												var thisPath = fullPath;
-
-												//Now backup to any directories specified in the config
-												backupFile(thisPath, outhashdir, finalFileName);
 							
-												
-												
-												//OLD:backupFile(createFile, "", dirFile);
-											}
+							
+							
+							//Now move the file into the first backup location (the one the user has set)
+							backupFile(fullPath, outhashdir, finalFileName, { "first": true, "secondary": false, "keepOriginal": "useMasterConfig" }, function(err, newPath) { 
+							
+								if(err) {
+									console.log("Sorry, we couldn't copy the file there. Err:" + err);								
+								} else {
+								 
+									//Run the addons events on this new photo
+									addOns("photoWritten", function(err, normalBackup) {
+										if(err) {
+											console.log("Error writing file:" + err);
+										} else {
+											if(verbose == true) console.log("Add-on completed running");
+								
+										}
+								
+										if(normalBackup == true) {
+											//Now we have finished processing the file via the addons,
+											//backup the standard files if 'normal' is the case
 									
-										
-										}, fullPath);
+											//Now copy to any other backup directories
+											if(verbose == true) console.log("Backups:");
+											var thisPath = fullPath;
+
+											//Now backup to any directories specified in the config
+											backupFile(outhashdir, outhashdir, finalFileName, { "first": false, "secondary": true, "keepOriginal": true });
+										}
+									}, newPath);
+								}
 							
+							});		//End of backup first file
 
 							
 							
