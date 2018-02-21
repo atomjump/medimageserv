@@ -692,7 +692,7 @@ function backupFile(thisPath, outhashdir, finalFileName, opts, cb)
 	fs.readFile(configFile, function read(err, data) {
 		if (err) {
 			console.log("Warning: Error reading config file for backup options: " + err);
-			cb(err);
+			cb(err, null);
 		} else {
 			var content = JSON.parse(data);
 
@@ -796,14 +796,14 @@ function backupFile(thisPath, outhashdir, finalFileName, opts, cb)
 						});
 					
 					},	//End of async eachOf single item
-					  function(err){
+					  function(err, target){
 						// All tasks are done now
 						if(err) {
 						   console.log('ERR:' + err);
 						   cb(err);
 						 } else {
 						   if(verbose == true) console.log('Completed all backups!');					   
-						   cb(null);
+						   cb(null, target);
 						 }
 					   }
 				); //End of async eachOf all items
@@ -812,7 +812,7 @@ function backupFile(thisPath, outhashdir, finalFileName, opts, cb)
 				
 			} else { //End of check there is a backup
 			
-				cb(null);
+				cb(null, thisPath);		//Ouput the same file.
 			}
 			
 		} //End of no error on reading config
