@@ -686,6 +686,9 @@ function backupFile(thisPath, outhashdir, finalFileName, opts, cb)
 	if(!opts.keepOriginal) {
 		opts.keepOriginal = "useMasterConfig";
 	}
+	if(!cb) {
+		cb = function() {};
+	}
 	
 	
 	
