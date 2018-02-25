@@ -1201,7 +1201,7 @@ function addOns(eventType, cb, param1, param2, param3)
 										var finalFileName = normalizeInclWinNetworks(param1);
 										finalFileName = finalFileName.replace(photoParentDir,"").trim();		//Remove the photo's directory from the filename
 										if(verbose == true) console.log("finalFileName=" + finalFileName);
-										var thisPath = normalizeInclWinNetworks(finalFileName);
+										var thisPath = normalizeInclWinNetworks(param1);
 										if(verbose == true) console.log("thisPath=" + thisPath);
 																			
 										
