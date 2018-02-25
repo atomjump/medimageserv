@@ -1184,18 +1184,33 @@ function addOns(eventType, cb, param1, param2, param3)
 									if((runBlock.useTargetFolderFile)&&(runBlock.useTargetFolderFile == true)) {
 										
 										
-										//Start with a backup of the file in param1, and replace that for the photoWritten command param1
-										backupFile(param1, "", finalFileName, { }, function(err, newPath) {
+										var photoParentDir = normalizeInclWinNetworks(serverParentDir() + outdirPhotos);
+										if(verbose == true) console.log("Backing up requested files from script");
+										if(verbose == true) console.log("photoParentDir=" + photoParentDir);
+										var finalFileName = normalizeInclWinNetworks(backupArray[cnt]);
+										finalFileName = finalFileName.replace(photoParentDir,"").trim();		//Remove the photo's directory from the filename
+										if(verbose == true) console.log("finalFileName=" + finalFileName);
+										var thisPath = normalizeInclWinNetworks(param1);
+										if(verbose == true) console.log("thisPath=" + thisPath);
+																			
 										
-											runCommandPhotoWritten(runBlock, backupAtEnd, newPath, param2, param3, function(err) {
-												if(err) {
-													callback(err);
-												} else {											
-													//Note: we must call back here once the system command has finished. This allows us
-													//to go on to the next command, sequentially, though each command is run async
-													callback(null);
-												}											
-											});
+										//Start with a backup of the file in param1, and replace that for the photoWritten command param1
+										backupFile(thisPath, "", finalFileName, { }, function(err, newPath) {
+										
+											if(err) {
+												callback(err, null);
+											} else {
+										
+												runCommandPhotoWritten(runBlock, backupAtEnd, newPath, param2, param3, function(err) {
+													if(err) {
+														callback(err);
+													} else {											
+														//Note: we must call back here once the system command has finished. This allows us
+														//to go on to the next command, sequentially, though each command is run async
+														callback(null);
+													}											
+												});
+											}
 										
 										});
 									} else {
