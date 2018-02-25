@@ -723,10 +723,11 @@ function backupFile(thisPath, outhashdir, finalFileName, opts, cb)
 						
 						if(outhashdir) {
 							var targetDir = normalizeInclWinNetworks(trailSlash(content.backupTo[cnt]) + trailSlash(outhashdir));
-							var target = targetDir + finalFileName;
 						} else {
-							var target = trailSlash(content.backupTo[cnt]) + finalFileName;
+							var targetDir = normalizeInclWinNetworks(trailSlash(content.backupTo[cnt]);
+							
 						}
+						var target = targetDir + finalFileName;
 						target = normalizeInclWinNetworks(target.trim());
 						lastNewPath = target;		//Record for the return journey
 						thisPath = normalizeInclWinNetworks(thisPath.trim());		//OLD: Remove double slashes. Normalize will handle that
