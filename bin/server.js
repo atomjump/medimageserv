@@ -720,10 +720,11 @@ function backupFile(thisPath, outhashdir, finalFileName, opts, cb)
 						
 						}
 						
-						var targetDir = normalizeInclWinNetworks(trailSlash(content.backupTo[cnt]) + trailSlash(outhashdir));
+						
 						if(outhashdir) {
+							var targetDir = normalizeInclWinNetworks(trailSlash(content.backupTo[cnt]) + trailSlash(outhashdir));
 							var target = targetDir + finalFileName;
-							} else {
+						} else {
 							var target = trailSlash(content.backupTo[cnt]) + finalFileName;
 						}
 						target = normalizeInclWinNetworks(target.trim());
