@@ -1038,7 +1038,7 @@ function runCommandPhotoWritten(runBlock, backupAtEnd, param1, param2, param3, c
 	myExec(cmdLine, runBlock.priority, function(err, stdout, stderr) {
 	  if (err) {
 		// node couldn't execute the command
-		console.log("There was a problem running the addon. Error:" + err);
+		console.log("There was a problem running the addon. Error:" + err + "\n\nStdout:" + stdout + "\n\nStderr:" + stderr);
 		cb(err);
 		
 	  } else {
@@ -1277,7 +1277,7 @@ function addOns(eventType, cb, param1, param2, param3)
 										myExec(cmdLine, evs[cnt].priority, function(err, stdout, stderr) {
 										  if (err) {
 											// node couldn't execute the command
-											console.log("There was a problem running the addon. Error:" + err);
+											console.log("There was a problem running the addon. Error:" + err + "\n\nStdout:" + stdout + "\n\nStderr:" + stderr);
 											return;
 										  }
 
