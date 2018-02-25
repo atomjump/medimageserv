@@ -1165,6 +1165,9 @@ function addOns(eventType, cb, param1, param2, param3)
 						var backupAtEnd = [];
 						
 						
+						console.log("PARAM1:" + param1);
+						
+						
 						//Asyncronously call each item, but in sequential order. This means the process could
 						//be doing something processor intensive without holding up the main server, but still allow
 						//each add-on to potentially process sequentially. This could be useful for chaining image resizing,
@@ -1184,13 +1187,21 @@ function addOns(eventType, cb, param1, param2, param3)
 									if((runBlock.useTargetFolderFile)&&(runBlock.useTargetFolderFile == true)) {
 										
 										
+										
+										var cmdLine = runBlock.runProcess;
+										cmdLine = cmdLine.replace(/parentdir/g, serverParentDir());
+	
+										cmdLine = cmdLine.replace(/param1/g, param1);
+										cmdLine = cmdLine.replace(/param2/g, param2);
+										cmdLine = cmdLine.replace(/param3/g, param3);
+										
 										var photoParentDir = normalizeInclWinNetworks(serverParentDir() + outdirPhotos);
 										if(verbose == true) console.log("Backing up requested files from script");
 										if(verbose == true) console.log("photoParentDir=" + photoParentDir);
 										var finalFileName = normalizeInclWinNetworks(param1);
 										finalFileName = finalFileName.replace(photoParentDir,"").trim();		//Remove the photo's directory from the filename
 										if(verbose == true) console.log("finalFileName=" + finalFileName);
-										var thisPath = normalizeInclWinNetworks(param1);
+										var thisPath = normalizeInclWinNetworks(finalFileName);
 										if(verbose == true) console.log("thisPath=" + thisPath);
 																			
 										
