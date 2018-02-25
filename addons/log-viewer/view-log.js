@@ -119,14 +119,16 @@ function readLog(logFile, platform, callback) {
 					callback("Sorry, cannot open the log file! " + err, null);
 				} else {
 		  			
+		  			if(visibleLen > stats.size) visibleLen = stats.size;
+		  			const b = new Buffer(visibleLen);
+		  			
 		  			//Now try to read from the end
-					fs.read(fd, Buffer.alloc(visibleLen), 0, visibleLen, stats.size - visibleLen, function postRead(err, bytesRead, buffer) {
+					fs.read(fd, b, 0, visibleLen, stats.size - visibleLen, function postRead(err, bytesRead, buffer) {
 				  
 						if(err) {
 							callback("Sorry, cannot read the log file! " + err, null);
 						} else {
-							//console.log(buffer.toString('utf8'));
-							callback(null, buffer.toString('utf8'));
+							callback(null, buffer.toString());
 						}
 					});	//End of read
 				}
