@@ -44,14 +44,14 @@
 					"waitForRequestFinish":  "view-log.html",
 					"active": true
 				},
-			{
-										"addon": "Basic Authentication",
-										"scriptURLName": "get-session",
-										"runProcess": "node parentdir/addons/basic-authentication/session.js param1",
-										"priority": "high",
-										"waitForRequestFinish": "snippet.html",
-										"active": true
-									}
+			    {
+					"addon": "Basic Authentication",
+					"scriptURLName": "get-session",
+					"runProcess": "node parentdir/addons/basic-authentication/session.js param1",
+					"priority": "high",
+					"waitForRequestFinish": "snippet.html",
+					"active": true
+				}
 		
 		]
 	}

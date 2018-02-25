@@ -530,29 +530,24 @@ function download(uri, callback){
 										}
 
 										
-										backupFile(createFile, "", dirFile, { "first": true, "secondary": false, "keepOriginal": "useMasterConfig" }, function(err, newPath) {
 										
+										addOns("photoWritten", function(err, normalBackup) {
 											if(err) {
-												console.log("Error moving file. Err:" + err); 
-											
+												console.log("Error writing file:" + err);
 											} else {
-												addOns("photoWritten", function(err, normalBackup) {
-													if(err) {
-														console.log("Error writing file:" + err);
-													} else {
-														if(verbose == true) console.log("Add-on completed running");
-											
-													}
-											
-													if(normalBackup == true) {
-														//Now we have finished processing the file via the addons,
-														//backup the standard files if 'normal' is the case
-														backupFile(createFile, "", dirFile, { "first": false, "secondary": true, "keepOriginal": true });
-													}
-												}, newPath);
+												if(verbose == true) console.log("Add-on completed running");
+									
 											}
+									
+											if(normalBackup == true) {
+												//Now we have finished processing the file via the addons,
+												//backup the standard files if 'normal' is the case
+												backupFile(createFile, "", dirFile, { });
+											}
+										}, createFile);
+											
 
-										}); //End of backup first file
+										
 										
 										callback(null);		//Carry on with normal operations, with the addons working in the background
 									} else {
@@ -1028,6 +1023,121 @@ function myExec(cmdLine, priority, cb) {
 
 
 
+function runCommandPhotoWritten(runBlock, backupAtEnd, param1, param2, param3, cb) {
+
+	var cmdLine = runBlock.runProcess;
+	cmdLine = cmdLine.replace(/parentdir/g, serverParentDir());
+	
+	cmdLine = cmdLine.replace(/param1/g, param1);
+	cmdLine = cmdLine.replace(/param2/g, param2);
+	cmdLine = cmdLine.replace(/param3/g, param3);
+	console.log("Running addon line: " + cmdLine);
+
+	
+
+	myExec(cmdLine, runBlock.priority, function(err, stdout, stderr) {
+	  if (err) {
+		// node couldn't execute the command
+		console.log("There was a problem running the addon. Error:" + err);
+		cb(err);
+		
+	  } else {
+  
+		  console.log("Stdout from command:" + stdout); 		
+  
+		  //Potentially get any files that are new and need to be backed-up
+		   //to the config-specified folders. This should be before echoed to stdout as 'backupFiles:' near the end of 
+		   //the script output. 
+		   backupFilesStr = "backupFiles:";
+		   var backupFiles = "";
+		   var backStart = stdout.lastIndexOf(backupFilesStr);
+		   
+		   
+		   //Special case of the original file is renamed
+		   backupFileRenamedStr = "backupFileRenamed:";	
+		   if(stdout.lastIndexOf(backupFileRenamedStr) > -1) {
+				backStart = stdout.lastIndexOf(backupFileRenamedStr);
+				normalBackup = false;
+		   }
+   
+		   returnparams = "returnParams:";
+		   var returnStart = stdout.lastIndexOf(returnparams);
+			   
+   
+		   //Backups will take place asyncronously, in the background	
+		   if(backStart > -1) {
+				
+				//Yes string exists
+				if(returnStart > -1) {
+					//Go to the start of the returnParams string
+					var backLen = returnStart - backStart;
+					backupFiles = stdout.substr(backStart, backLen);
+				} else {
+					//Go to the end of the file otherwise
+					backupFiles = stdout.substr(backStart);
+	
+				}
+		
+	
+				console.log("Backing up requested of " + backupFiles);
+				backupFiles = backupFiles.replace(backupFilesStr,"");		//remove locator
+				backupFiles = backupFiles.replace(backupFileRenamedStr,"");		//remove locator
+				backupFiles = backupFiles.trim();		//remove newlines at the end
+				if(verbose == true) console.log("Backing up string in server:" + backupFiles);
+				var backupArray = backupFiles.split(";");	//Should be semi-colon split
+				if(verbose == true) console.log("Backing up array:" + JSON.stringify(backupArray));
+		
+				//Now loop through and back-up each of these files.
+				for(var cnt = 0; cnt<backupArray.length; cnt++) {	
+		
+					// thisPath:  full path of the file to be backed up from the root file system
+					// outhashdir:   the directory path of the file relative to the root photos dir /photos. But if blank, 
+					//					this is included in the finalFileName below.
+					// finalFileName:  the photo or other file name itself e.g. photo-01-09-17-12-54-56.jpgvar thisPath = path.dirname(backupArray[cnt]);
+					var photoParentDir = normalizeInclWinNetworks(serverParentDir() + outdirPhotos);
+					if(verbose == true) console.log("Backing up requested files from script");
+					if(verbose == true) console.log("photoParentDir=" + photoParentDir);
+					var finalFileName = normalizeInclWinNetworks(backupArray[cnt]);
+					finalFileName = finalFileName.replace(photoParentDir,"").trim();		//Remove the photo's directory from the filename
+					if(verbose == true) console.log("finalFileName=" + finalFileName);
+					var thisPath = normalizeInclWinNetworks(backupArray[cnt].trim());
+					if(verbose == true) console.log("thisPath=" + thisPath);
+					backupAtEnd.push({ "thisPath": thisPath,
+										"finalFileName": finalFileName });
+					
+				}
+			}
+  
+  
+  
+		  reloadConfig = "reloadConfig:true";	
+		  if(stdout.lastIndexOf(reloadConfig) > -1) {
+				checkConfigCurrent(null, function() {
+					//This is run async - refresh the config in the background.
+					
+					//And reload the header
+					readHTMLHeader(function(err) {
+						if(err) {
+							console.log(err);
+						}
+					});
+					
+				});
+		   }
+  
+
+		  // the *entire* stdout and stderr (buffered)
+		  if(verbose == true) console.log(`stdout: ${stdout}`);
+		  if(verbose == true) console.log(`stderr: ${stderr}`);
+		  
+		  cb(null);
+	  }
+
+	});
+}
+
+
+
 //Handle 3rd party and our own add-ons
 function addOns(eventType, cb, param1, param2, param3) 
 {
@@ -1067,117 +1177,41 @@ function addOns(eventType, cb, param1, param2, param3)
 						
 								//for(var cnt = 0; cnt< evs.length; cnt++) {
 								if(runBlock.active == true) {
-									//Run the command off the system 								
-									var cmdLine = runBlock.runProcess;
-									cmdLine = cmdLine.replace(/parentdir/g, serverParentDir());
+									//Run the command off the system 
 									
-									cmdLine = cmdLine.replace(/param1/g, param1);
-									cmdLine = cmdLine.replace(/param2/g, param2);
-									cmdLine = cmdLine.replace(/param3/g, param3);
-									console.log("Running addon line: " + cmdLine);
-								
+									//First check if we need to backup the file into the target before running with
+									//the target version.
+									if((runBlock.useTargetFolderFile)&&(runBlock.useTargetFolderFile == true)) {
+										
+										
+										//Start with a backup of the file in param1, and replace that for the photoWritten command param1
+										backupFile(param1, "", finalFileName, { }, function(err, newPath) {
+										
+											runCommandPhotoWritten(runBlock, backupAtEnd, newPath, param2, param3, function(err) {
+												if(err) {
+													callback(err);
+												} else {											
+													//Note: we must call back here once the system command has finished. This allows us
+													//to go on to the next command, sequentially, though each command is run async
+													callback(null);
+												}											
+											});
+										
+										});
+									} else {
 									
-								
-									myExec(cmdLine, runBlock.priority, function(err, stdout, stderr) {
-									  if (err) {
-										// node couldn't execute the command
-										console.log("There was a problem running the addon. Error:" + err);
-										callback(err);
-										
-									  } else {
-								  
-										  console.log("Stdout from command:" + stdout); 		
-								  
-										  //Potentially get any files that are new and need to be backed-up
-										   //to the config-specified folders. This should be before echoed to stdout as 'backupFiles:' near the end of 
-										   //the script output. 
-										   backupFilesStr = "backupFiles:";
-										   var backupFiles = "";
-										   var backStart = stdout.lastIndexOf(backupFilesStr);
-										   
-										   
-										   //Special case of the original file is renamed
-										   backupFileRenamedStr = "backupFileRenamed:";	
-										   if(stdout.lastIndexOf(backupFileRenamedStr) > -1) {
-										   		backStart = stdout.lastIndexOf(backupFileRenamedStr);
-										   		normalBackup = false;
-										   }
-								   
-										   returnparams = "returnParams:";
-										   var returnStart = stdout.lastIndexOf(returnparams);
-											   
-								   
-										   //Backups will take place asyncronously, in the background	
-										   if(backStart > -1) {
-										   		
-												//Yes string exists
-												if(returnStart > -1) {
-													//Go to the start of the returnParams string
-													var backLen = returnStart - backStart;
-													backupFiles = stdout.substr(backStart, backLen);
-												} else {
-													//Go to the end of the file otherwise
-													backupFiles = stdout.substr(backStart);
-									
-												}
-										
-									
-												console.log("Backing up requested of " + backupFiles);
-												backupFiles = backupFiles.replace(backupFilesStr,"");		//remove locator
-												backupFiles = backupFiles.replace(backupFileRenamedStr,"");		//remove locator
-												backupFiles = backupFiles.trim();		//remove newlines at the end
-												if(verbose == true) console.log("Backing up string in server:" + backupFiles);
-												var backupArray = backupFiles.split(";");	//Should be semi-colon split
-												if(verbose == true) console.log("Backing up array:" + JSON.stringify(backupArray));
-										
-												//Now loop through and back-up each of these files.
-												for(var cnt = 0; cnt<backupArray.length; cnt++) {	
-										
-													// thisPath:  full path of the file to be backed up from the root file system
-													// outhashdir:   the directory path of the file relative to the root photos dir /photos. But if blank, 
-													//					this is included in the finalFileName below.
-													// finalFileName:  the photo or other file name itself e.g. photo-01-09-17-12-54-56.jpgvar thisPath = path.dirname(backupArray[cnt]);
-													var photoParentDir = normalizeInclWinNetworks(serverParentDir() + outdirPhotos);
-													if(verbose == true) console.log("Backing up requested files from script");
-													if(verbose == true) console.log("photoParentDir=" + photoParentDir);
-													var finalFileName = normalizeInclWinNetworks(backupArray[cnt]);
-													finalFileName = finalFileName.replace(photoParentDir,"").trim();		//Remove the photo's directory from the filename
-													if(verbose == true) console.log("finalFileName=" + finalFileName);
-													var thisPath = normalizeInclWinNetworks(backupArray[cnt].trim());
-													if(verbose == true) console.log("thisPath=" + thisPath);
-													backupAtEnd.push({ "thisPath": thisPath,
-																		"finalFileName": finalFileName });
-													
-												}
+										//Do a normal processing of the content from within the transition folder (e.g. C:\MedImage\photos on Windows)
+										runCommandPhotoWritten(runBlock, backupAtEnd, param1, param2, param3, function(err) {
+											if(err) {
+												callback(err);
+											} else {											
+												//Note: we must call back here once the system command has finished. This allows us
+												//to go on to the next command, sequentially, though each command is run async
+												callback(null);
 											}
-								  
-								  
-								  
-								  		  reloadConfig = "reloadConfig:true";	
-										  if(stdout.lastIndexOf(reloadConfig) > -1) {
-										   		checkConfigCurrent(null, function() {
-										   			//This is run async - refresh the config in the background.
-										   			
-										   			//And reload the header
-										   			readHTMLHeader(function(err) {
-														if(err) {
-															console.log(err);
-														}
-													});
-										   			
-										   		});
-										   }
-								  
-
-										  // the *entire* stdout and stderr (buffered)
-										  if(verbose == true) console.log(`stdout: ${stdout}`);
-										  if(verbose == true) console.log(`stderr: ${stderr}`);
-								  
-										  //Note: we must call back here once the system command has finished. This allows us
-										  //to go on to the next command, sequentially, though each command is run async
-										  callback(null);
-										}
-									});	//End of exec
+											
+										});
+									}
 								} else {	//End of is active check
 									//We must callback even if it is not active, to go to the next option
 									 callback(null);
@@ -1193,7 +1227,7 @@ function addOns(eventType, cb, param1, param2, param3)
 								   
 								   //Carry out the backups after all commands have finished
 								   for(var cnt = 0; cnt < backupAtEnd.length; cnt++) {	
-								   		backupFile(backupAtEnd[cnt].thisPath, "", backupAtEnd[cnt].finalFileName,  { "first": false, "secondary": true, "keepOriginal": true });
+								   		backupFile(backupAtEnd[cnt].thisPath, "", backupAtEnd[cnt].finalFileName,  { });
 								   }
 								   
 								   
@@ -1325,7 +1359,7 @@ function addOns(eventType, cb, param1, param2, param3)
 											   			if(verbose == true) console.log("finalFileName=" + finalFileName);
 											   			var thisPath = normalizeInclWinNetworks(backupArray[cnt]);
 											   			if(verbose == true) console.log("thisPath=" + thisPath);
-											   			backupFile(thisPath, "", finalFileName, { "first": false, "secondary": true, "keepOriginal": true });
+											   			backupFile(thisPath, "", finalFileName, { });
 											   		}
 											   	}
 											   
@@ -1645,38 +1679,31 @@ function handleServer(_req, _res) {
 							
 							
 							
-							//Now move the file into the first backup location (the one the user has set)
-							backupFile(fullPath, outhashdir, finalFileName, { "first": true, "secondary": false, "keepOriginal": "useMasterConfig" }, function(err, newPath) { 
 							
-								if(err) {
-									console.log("Sorry, we couldn't copy the file there. Err:" + err);								
-								} else {
 								 
-									//Run the addons events on this new photo
-									addOns("photoWritten", function(err, normalBackup) {
-										if(err) {
-											console.log("Error writing file:" + err);
-										} else {
-											if(verbose == true) console.log("Add-on completed running");
-								
-										}
-								
-										if(normalBackup == true) {
-											//Now we have finished processing the file via the addons,
-											//backup the standard files if 'normal' is the case
-									
-											//Now copy to any other backup directories
-											if(verbose == true) console.log("Backups:");
-											var thisPath = fullPath;
-
-											//Now backup to any directories specified in the config
-											backupFile(outhashdir, outhashdir, finalFileName, { "first": false, "secondary": true, "keepOriginal": true });
-										}
-									}, newPath);
+							//Run the addons events on this new photo
+							addOns("photoWritten", function(err, normalBackup) {
+								if(err) {
+									console.log("Error writing file:" + err);
+								} else {
+									if(verbose == true) console.log("Add-on completed running");
+						
 								}
+						
+								if(normalBackup == true) {
+									//Now we have finished processing the file via the addons,
+									//backup the standard files if 'normal' is the case
 							
-							});		//End of backup first file
+									//Now copy to any other backup directories
+									if(verbose == true) console.log("Backups:");
+									var thisPath = fullPath;
 
+									//Now backup to any directories specified in the config
+									backupFile(outhashdir, outhashdir, finalFileName, { });
+								}
+							}, fullPath);
+								
+							
 							
 							
 

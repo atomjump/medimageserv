@@ -106,13 +106,34 @@ function readLog(logFile, platform, callback) {
 		});		//End of the exec
 	} else {
 		//On Windows logs are now at C:\medimage\logs\output.log. 
-		fs.readFile(logFile, function read(err, data) {
-			if (err) {
-				callback("Sorry, cannot read log file! " + err, null);
-			} else {
-				callback(null, data.toString().substr(0, 10000));		//Limit to 10000 chars
-			};
+		
+		var visibleLen = 10000;    //Limit to 10000 chars, at the end of the file
+		
+		fs.stat(logFile, function postStat(err, stats) {
+		  if(err) {
+		  	callback("Sorry, cannot find the log file! " + err, null);	
+		  } else {
+		  	  //Try to open the file
+			  fs.open(logFile, 'r', function postOpen(err, fd) {
+				if(err) {
+					callback("Sorry, cannot open the log file! " + err, null);
+				} else {
+		  			
+		  			//Now try to read from the end
+					fs.read(fd, Buffer.alloc(visibleLen), 0, visibleLen, stats.size - visibleLen, function postRead(err, bytesRead, buffer) {
+				  
+						if(err) {
+							callback("Sorry, cannot read the log file! " + err, null);
+						} else {
+							//console.log(buffer.toString('utf8'));
+							callback(null, buffer.toString('utf8'));
+						}
+					});	//End of read
+				}
+			  });	//end of open log file
+		   }	//End of not finding log file
 		});
+		
 	}
 	
 	
