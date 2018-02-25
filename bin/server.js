@@ -1187,7 +1187,7 @@ function addOns(eventType, cb, param1, param2, param3)
 										var photoParentDir = normalizeInclWinNetworks(serverParentDir() + outdirPhotos);
 										if(verbose == true) console.log("Backing up requested files from script");
 										if(verbose == true) console.log("photoParentDir=" + photoParentDir);
-										var finalFileName = normalizeInclWinNetworks(backupArray[cnt]);
+										var finalFileName = normalizeInclWinNetworks(param1);
 										finalFileName = finalFileName.replace(photoParentDir,"").trim();		//Remove the photo's directory from the filename
 										if(verbose == true) console.log("finalFileName=" + finalFileName);
 										var thisPath = normalizeInclWinNetworks(param1);
