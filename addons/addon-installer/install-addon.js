@@ -299,7 +299,7 @@ function downloadAndUnzip(filename, url, opts, cb) {
 				request({ url: url, followAllRedirects: true }).on('response', function(response) {
 					console.log(response.statusCode) // 200
 					console.log(response.headers['content-type']) // 'image/png'
-				  }).pipe(fs.createWriteStream(filename));
+				  }).pipe(fs.createWriteStream(tmpFilePath));
 				//TEMPOUTunzipAndRemoveNew(filename, tmpFilePath, cb);
 				
 				/*
