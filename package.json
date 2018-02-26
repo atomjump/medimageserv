@@ -11,7 +11,6 @@
     "start": "node bin/server.js"
   },
   "dependencies": {
-    "adm-zip": "^0.4.7",
     "async": "^2.6.0",
     "connect": "*",
     "date-format-lite": "*",
@@ -39,8 +38,7 @@
     "url": "^0.11.0",
     "html-entities": "*",
     "uuid": "*",
-    "unzip": "*",
-    "request": "*"
+    "unzip": "*"
   },
   "repository": {
     "type": "git",

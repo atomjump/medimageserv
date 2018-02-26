@@ -10,7 +10,6 @@ Unzips, and then runs each of the commands in a
 
 var url = require("url");
 var path = require("path");
-var AdmZip = require('adm-zip');
 var unzip = require('unzip');
 var request = require('request');
 var path = require("path");
@@ -236,55 +235,7 @@ function unzipAndRemoveNew(filename, tmpFilePath, cb) {
 } 
 
 
-//Old function using AdmZip
-function unzipAndRemove(filename, tmpFilePath, cb) {
-	 //Convert filename into one without extension
-	 var filename = filename.replace(/.zip/i, "") + "/";
-	 
-	 try {
-		 var zip = new AdmZip(tmpFilePath);
-		 var zipEntries = zip.getEntries(); // an array of ZipEntry records 
 
-		 console.log("Entries length = " + zipEntries.length);
-		 console.log("First entry = " + JSON.stringify(zipEntries[0], null, 6));
-		 if(zipEntries[0].isDirectory == true) {
-			var dirName = zipEntries[0].entryName;//
-			//Could be a 2nd dir e.g. "medimage-addon-resize/medimage-addon-resize-0.1.0/"
-			//				or  e.g. "medimage-addon-resize-0.1.0/"
-			// if there is an internal directory
-			console.log("Internal directory in zip:" + dirName);
-		 } else {
-			var dirName = null;
-		 }				 
-
-
-		zip.extractAllTo(targetAddonsFolder + tempDir, true);	//Overwrite is the 'true'
-		
-		//Unzipped, now check if we're 2 folders in or 1.
-		if(dirName) {
-			if(fs.existsSync(targetAddonsFolder + tempDir + '/' + dirName) == true) {
-				//We're all good
-			} else {
-				//Try without the filename
-				dirName = dirName.replace(filename, "");			
-			}
-		}
-		
-	 } catch(err) {
-			console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=There was a problem unzipping the file.&EXTENDED=" + err + "  Expected folder:" + tempDir);
-			process.exit(0);				 
-	 }	
-	 
-	 //Remove the temporary .zip file
-	 fs.unlink(tmpFilePath, function(err) {
-	 	if(err) {
-	 		cb(err, null);
-	 	} else {
-	 		cb(null, dirName);
-	 	}
-	 });		//Remove the zip file itself
-
-} 
 
 
 //With thanks from http://rajiev.com/download-an-extract-a-zip-file-with-node-js/
@@ -318,39 +269,7 @@ function downloadAndUnzip(filename, url, opts, cb) {
 							console.log("2nd close event");
 						}
 					});  
-				  
-				  
-				  
-				//TEMPOUTunzipAndRemoveNew(filename, tmpFilePath, cb);
-				
-				/*
-				if(url.startsWith("https")) {
-					//https
-					
-					request.get(url, function(response) {
-						response.on('data', function (data) {
-				
-							fs.appendFileSync(tmpFilePath, data);
-						});
-		
-						response.on('end', function() {
-							 unzipAndRemoveNew(filename, tmpFilePath, cb);
-						})
-					});
-	
-	
-				} else {
-					//http
-					request.get(url, function(response) {
-						response.on('data', function (data) {
-							fs.appendFileSync(tmpFilePath, data);
-						});
-			
-						response.on('end', function() {
-							unzipAndRemoveNew(filename, tmpFilePath, cb);
-						})
-					});
-				}	*/	  
+				   
 				  
 		}
 	})
