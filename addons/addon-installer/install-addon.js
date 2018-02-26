@@ -300,6 +300,35 @@ function downloadAndUnzip(filename, url, opts, cb) {
 					console.log(response.statusCode) // 200
 					console.log(response.headers['content-type']) // 'image/png'
 				  }).pipe(fs.createWriteStream(tmpFilePath));
+				  
+				  
+				  
+				  
+				  
+				var stream = request({url: uri, pool: separateReqPool, forever: true, followAllRedirects: true });
+				var alreadyClosed = false;
+				stream.pipe(fs.createWriteStream(tmpFilePath)
+								.on('error', function(err) {
+									console.log("Error writing to file");
+									cb(err, null);
+								})
+							)
+					.on('close', function() {
+
+						console.log("Downloaded successfully!" + createFile);
+						if(alreadyClosed == false) {
+							alreadyClosed = true;
+
+							//Downloaded in here
+							unzipAndRemoveNew(filename, tmpFilePath, cb);
+							
+						} else {
+							console.log("2nd close event");
+						}
+					});  
+				  
+				  
+				  
 				//TEMPOUTunzipAndRemoveNew(filename, tmpFilePath, cb);
 				
 				/*
