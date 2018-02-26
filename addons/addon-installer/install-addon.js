@@ -295,6 +295,11 @@ function downloadAndUnzip(filename, url, opts, cb) {
 		 		cb(err, null) // => null
 		 } else {
 				// dir has now been created, including the directory it is to be placed in
+				
+				request(url).pipe(fs.createWriteStream(filename));
+				unzipAndRemoveNew(filename, tmpFilePath, cb);
+				
+				/*
 				if(url.startsWith("https")) {
 					//https
 					
@@ -321,7 +326,7 @@ function downloadAndUnzip(filename, url, opts, cb) {
 							unzipAndRemoveNew(filename, tmpFilePath, cb);
 						})
 					});
-				}		  
+				}	*/	  
 				  
 		}
 	})
