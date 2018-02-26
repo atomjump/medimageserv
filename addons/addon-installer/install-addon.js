@@ -297,8 +297,8 @@ function downloadAndUnzip(filename, url, opts, cb) {
 				// dir has now been created, including the directory it is to be placed in
 				if(url.startsWith("https")) {
 					//https
-					https.request
-					https.get(url, function(response) {
+					
+					request.get(url, function(response) {
 						response.on('data', function (data) {
 				
 							fs.appendFileSync(tmpFilePath, data);
@@ -312,7 +312,7 @@ function downloadAndUnzip(filename, url, opts, cb) {
 	
 				} else {
 					//http
-					http.get(url, function(response) {
+					request.get(url, function(response) {
 						response.on('data', function (data) {
 							fs.appendFileSync(tmpFilePath, data);
 						});
