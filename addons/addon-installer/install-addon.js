@@ -296,11 +296,11 @@ function downloadAndUnzip(filename, url, opts, cb) {
 		 } else {
 				// dir has now been created, including the directory it is to be placed in
 				
-				request(url).on('response', function(response) {
+				request({ url: url, followAllRedirects: true }).on('response', function(response) {
 					console.log(response.statusCode) // 200
 					console.log(response.headers['content-type']) // 'image/png'
 				  }).pipe(fs.createWriteStream(filename));
-				unzipAndRemoveNew(filename, tmpFilePath, cb);
+				//TEMPOUTunzipAndRemoveNew(filename, tmpFilePath, cb);
 				
 				/*
 				if(url.startsWith("https")) {
