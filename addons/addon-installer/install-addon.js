@@ -11,6 +11,7 @@ Unzips, and then runs each of the commands in a
 var url = require("url");
 var path = require("path");
 var AdmZip = require('adm-zip');
+var unzip = require('unzip');
 var path = require("path");
 var upath = require("upath");
 var queryString = require('querystring');
@@ -138,6 +139,103 @@ function getPlatform() {
 }
 
 
+
+function unzipAndRemoveNew(filename, tmpFilePath, cb) {
+	 //filename is e.g. 'medimage-addon-ehr-medtech32-0.0.4.zip'
+	 //tmpFilePath is the full path e.g. 'C:/medimage/addons/medimage-addon-ehr-medtech32-0.0.4.zip'
+	 //Convert filename into one without extension
+	 var possFileName = filename.replace(/.zip/i, "") + "/";
+	 
+	 try {
+
+		fs.createReadStream(tmpFilePath).pipe(unzip.Extract({ path: targetAddonsFolder + tempDir }))
+			.on('close', function() {
+		  	  console.log("Finished");
+		  	 		
+				//Check if our files are one directory in
+				var dir = "";
+				var fileCnt = 0;
+				var dirCnt = 0;
+				
+				fs.readdirSync(targetAddonsFolder + tempDir).forEach(file => {
+				  console.log(file);
+				  if(fs.lstatSync(targetAddonsFolder + tempDir + '/' + file).isDirectory()) {
+				  	console.log("Is a directory");
+				  	dir = file;
+				  	dirCnt ++;
+				  } else {
+				  	if(file[0] == '.') {
+				  		console.log("Is a hidden file - not counted");
+				  	} else {
+						console.log("Is a file");
+						fileCnt ++;
+					}
+				  }
+				})
+				
+				if((fileCnt == 0)&&(dirCnt == 1)) {
+					//Yes at least one directory in
+					var dirName = dir;
+					
+					//Now check if we're two directories in
+					var fileCnt = 0;
+					var dirCnt = 0;
+					var dir = "";
+					
+					fs.readdirSync(targetAddonsFolder + tempDir + '/' + dirName).forEach(file => {
+					  console.log(file);
+					  if(fs.lstatSync(targetAddonsFolder + tempDir + '/' + file).isDirectory()) {
+						console.log("Is a directory");
+						dir = file;
+						dirCnt ++;
+					  } else {
+						if(file[0] == '.') {
+							console.log("Is a hidden file - not counted");
+						} else {
+							console.log("Is a file");
+							fileCnt ++;
+						}
+					  }
+					})
+					
+					if((fileCnt == 0)&&(dirCnt == 1)) {
+						//Yes, we're two directories in. Append this to the output directory
+						dirName = dirName + "/" + dir;
+					
+					}
+					
+					
+				
+				} else {
+				
+					var dirName = "";
+				}
+		
+				console.log("Output dirname = '" + dirName +"'");
+		
+				 
+				 //Remove the temporary .zip file
+				 fs.unlink(tmpFilePath, function(err) {
+					if(err) {
+						cb(err, null);
+					} else {
+						cb(null, dirName);
+					}
+				 });		//Remove the zip file itself
+				 
+		
+			  });		
+	 } catch(err) {
+			console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=There was a problem unzipping the file.&EXTENDED=" + err + "  Expected folder:" + tempDir);
+			process.exit(0);				 
+	 }	
+	 
+	
+
+} 
+
+
+//Old function using AdmZip
 function unzipAndRemove(filename, tmpFilePath, cb) {
 	 //Convert filename into one without extension
 	 var filename = filename.replace(/.zip/i, "") + "/";
@@ -205,7 +303,7 @@ function downloadAndUnzip(filename, url, opts, cb) {
 						});
 		
 						response.on('end', function() {
-							 unzipAndRemove(filename, tmpFilePath, cb);
+							 unzipAndRemoveNew(filename, tmpFilePath, cb);
 						})
 					});
 	
@@ -218,7 +316,7 @@ function downloadAndUnzip(filename, url, opts, cb) {
 						});
 			
 						response.on('end', function() {
-							unzipAndRemove(filename, tmpFilePath, cb);
+							unzipAndRemoveNew(filename, tmpFilePath, cb);
 						})
 					});
 				}		  
