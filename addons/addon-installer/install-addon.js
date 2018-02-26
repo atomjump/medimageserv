@@ -296,16 +296,8 @@ function downloadAndUnzip(filename, url, opts, cb) {
 		 } else {
 				// dir has now been created, including the directory it is to be placed in
 				
-				request({ url: url, followAllRedirects: true }).on('response', function(response) {
-					console.log(response.statusCode) // 200
-					console.log(response.headers['content-type']) // 'image/png'
-				  }).pipe(fs.createWriteStream(tmpFilePath));
-				  
-				  
-				  
-				  
-				  
-				var stream = request({url: uri, pool: separateReqPool, forever: true, followAllRedirects: true });
+								  
+				var stream = request({url: url, pool: separateReqPool, forever: true, followAllRedirects: true });
 				var alreadyClosed = false;
 				stream.pipe(fs.createWriteStream(tmpFilePath)
 								.on('error', function(err) {
