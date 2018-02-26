@@ -185,7 +185,7 @@ function unzipAndRemoveNew(filename, tmpFilePath, cb) {
 					
 					fs.readdirSync(targetAddonsFolder + tempDir + '/' + dirName).forEach(file => {
 					  console.log(file);
-					  if(fs.lstatSync(targetAddonsFolder + tempDir + '/' + file).isDirectory()) {
+					  if(fs.lstatSync(targetAddonsFolder + tempDir + '/' + dirName + '/' + file).isDirectory()) {
 						console.log("Is a directory");
 						dir = file;
 						dirCnt ++;
