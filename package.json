@@ -39,7 +39,8 @@
     "url": "^0.11.0",
     "html-entities": "*",
     "uuid": "*",
-    "unzip": "*"
+    "unzip": "*",
+    "request": "*"
   },
   "repository": {
     "type": "git",

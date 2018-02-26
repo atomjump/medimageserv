@@ -12,6 +12,7 @@ var url = require("url");
 var path = require("path");
 var AdmZip = require('adm-zip');
 var unzip = require('unzip');
+var request = require('request');
 var path = require("path");
 var upath = require("upath");
 var queryString = require('querystring');
@@ -296,6 +297,7 @@ function downloadAndUnzip(filename, url, opts, cb) {
 				// dir has now been created, including the directory it is to be placed in
 				if(url.startsWith("https")) {
 					//https
+					https.request
 					https.get(url, function(response) {
 						response.on('data', function (data) {
 				
