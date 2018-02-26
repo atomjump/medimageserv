@@ -165,7 +165,7 @@ function unzipAndRemoveNew(filename, tmpFilePath, cb) {
 				  	dir = file;
 				  	dirCnt ++;
 				  } else {
-				  	if(file[0] == '.') {
+				  	if((file[0] == '.')||(file == filename)) {
 				  		console.log("Is a hidden file - not counted");
 				  	} else {
 						console.log("Is a file");
@@ -297,7 +297,7 @@ function downloadAndUnzip(filename, url, opts, cb) {
 				// dir has now been created, including the directory it is to be placed in
 				
 								  
-				var stream = request({url: url, pool: separateReqPool, forever: true, followAllRedirects: true });
+				var stream = request({url: url, forever: true, followAllRedirects: true });
 				var alreadyClosed = false;
 				stream.pipe(fs.createWriteStream(tmpFilePath)
 								.on('error', function(err) {
@@ -307,7 +307,7 @@ function downloadAndUnzip(filename, url, opts, cb) {
 							)
 					.on('close', function() {
 
-						console.log("Downloaded successfully!" + createFile);
+						console.log("Downloaded successfully!" + tmpFilePath);
 						if(alreadyClosed == false) {
 							alreadyClosed = true;
 
