@@ -341,7 +341,7 @@ function execCommands(commandArray, prepend, cb)
 								  
 								  	  //Error. Code in 'code'
 									  // node couldn't execute the command
-										var msg = "Command: " + cmd + ". Error:" + err;
+										var msg = "Command: " + cmd + ". Error:" + outputStdOut;
 										console.log(msg);
 										
 										//Send to the log anyway
@@ -359,11 +359,11 @@ function execCommands(commandArray, prepend, cb)
 										//process.exit(0);
 										
 										callback(finalMsg);
-								  } else {
-								  	   console.log("Stdout from command:" + outputStdOut);
+								 } else {
+								 	   console.log("Stdout from command:" + outputStdOut);
 									   callback(null, outputStdOut);
 									 
-								  }
+								 }
 								});		
 								
 						
