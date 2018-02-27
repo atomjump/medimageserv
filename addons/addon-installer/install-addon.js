@@ -355,10 +355,10 @@ function execCommands(commandArray, prepend, cb)
 										//Remove newlines
 										msg = msg.replace(/\&\#10\;/g, '').substr(0,500);
 										
-										console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The installation was not complete. There was a problem running the one of the installation commands.&EXTENDED=" + msg);
+										var finalMsg = "returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The installation was not complete. There was a problem running the one of the installation commands.&EXTENDED=" + msg;
 										//process.exit(0);
 										
-										callback(msg);
+										callback(finalMsg);
 								  } else {
 								  	   console.log("Stdout from command:" + outputStdOut);
 									   callback(null, outputStdOut);
@@ -421,8 +421,8 @@ function execCommands(commandArray, prepend, cb)
 						 		
 						 		//Remove newlines
 						 		ext = ext.replace(/\&\#10\;/g, '').substr(0,500);	
-						 				console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The installation was not complete. There was a problem running the one of the installation commands.&EXTENDED=" + cmd + " Error:" + ext);
-						 		callback(err);
+						 		var finalMsg = "returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The installation was not complete. There was a problem running the one of the installation commands.&EXTENDED=" + cmd + " Error:" + ext;
+						 		callback(finalMsg);
 								//process.exit(0);
 						 
 						 }
@@ -432,7 +432,6 @@ function execCommands(commandArray, prepend, cb)
 						// All tasks are done now
 						console.log("All tasks finished");
 						if(err) {
-						   console.log('ERROR:' + err);
 						   cb(err);
 						 } else {
 						   console.log('Completed all commands successfully!');
@@ -553,7 +552,8 @@ function openAndRunDescriptor(directory, opts)
 					// result now equals 'done'
 					if(err) {
 						console.log("The installation was not complete.");
-						console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The installation was not complete.&EXTENDED=" + err);
+						console.log(err);
+						//Should already be in this format:  console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The installation was not complete.&EXTENDED=" + err);
 						process.exit(0);
 					} else {
 						removeOldTemp(opts, function(err) {
