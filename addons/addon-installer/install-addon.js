@@ -21,6 +21,7 @@ var fs = require('fs');
 var fsExtra = require('fs-extra');
 var async = require('async');
 var exec = require('child_process').exec;
+var spawn = require('child_process').spawn;
 
 const Entities = require('html-entities').AllHtmlEntities;
  
