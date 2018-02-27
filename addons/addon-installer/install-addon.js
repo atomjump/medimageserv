@@ -293,7 +293,7 @@ function execCommands(commandArray, prepend, cb)
 						console.log("Running command: " + cmd);
 						
 						try {
-							exec(commandArray[cnt], {
+							var runningCommand = exec(commandArray[cnt], {
 									maxBuffer: 2000 * 1024 //max buffer size
 								}, (err, stdout, stderr) => {
 									 if (err) {
@@ -323,6 +323,11 @@ function execCommands(commandArray, prepend, cb)
 										  callback(null);
 									 }
 							 });	//End of exec
+							 
+							 //Keep displaying something to stdout
+							 runningCommand.stdout.on('data', function(data) {
+								console.log(data); 
+							 });
 						 } catch(err) {
 						 		var msg = "There was a problem running the command " + cmd;
 						 		var ext = err;
