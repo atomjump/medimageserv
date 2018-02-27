@@ -355,7 +355,7 @@ function execCommands(commandArray, prepend, cb)
 										msg = msg.replace(/\&\#10\;/g, '').substr(0,500);
 										
 										console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The installation was not complete. There was a problem running the one of the installation commands.&EXTENDED=" + msg);
-										process.exit(0);
+										//process.exit(0);
 										
 										callback(msg);
 								  } else {
@@ -421,7 +421,8 @@ function execCommands(commandArray, prepend, cb)
 						 		//Remove newlines
 						 		ext = ext.replace(/\&\#10\;/g, '').substr(0,500);	
 						 				console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The installation was not complete. There was a problem running the one of the installation commands.&EXTENDED=" + cmd + " Error:" + ext);
-								process.exit(0);
+						 		callback(err);
+								//process.exit(0);
 						 
 						 }
 					
