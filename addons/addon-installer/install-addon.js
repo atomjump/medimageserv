@@ -51,7 +51,6 @@ function getMasterConfig(defaultConfig, callback) {
 			callback(err, "");
 	
 		  } else {
-			  console.log("Stdout from command:" + stdout);
 			  if((stdout != "")&&(!stdout.startsWith("undefined"))) {
 			  	 callback(null, stdout.trim());
 			  
@@ -278,6 +277,13 @@ function downloadAndUnzip(filename, url, opts, cb) {
 
 }
 
+function removeUnreadableChars(str)
+{
+	str = str.replace(/\&quot\;/g, '');
+	str = str.replace(/\&\#10\;/g, '');
+
+}
+
 
 function execCommands(commandArray, prepend, cb) 
 {
@@ -353,7 +359,7 @@ function execCommands(commandArray, prepend, cb)
 										msg = entities.encodeNonUTF(msg);
 								
 										//Remove newlines
-										msg = msg.replace(/\&\#10\;/g, '').substr(0,500);
+										msg = removeUnreadableChars(msg).substr(0,500);
 										
 										var finalMsg = "returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The installation was not complete. There was a problem running one of the installation commands.&EXTENDED=" + msg;
 										//process.exit(0);
@@ -420,7 +426,8 @@ function execCommands(commandArray, prepend, cb)
 						 		ext = entities.encodeNonUTF(ext);
 						 		
 						 		//Remove newlines
-						 		ext = ext.replace(/\&quot\;/g, '').replace(/\&\#10\;/g, '').substr(0,500);	
+						 		
+						 		ext = removeUnreadableChars(msg).substr(0,500);	
 						 		var finalMsg = "returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The installation was not complete. There was a problem running the one of the installation commands.&EXTENDED=" + cmd + " Error:" + ext;
 						 		callback(finalMsg);
 								//process.exit(0);
