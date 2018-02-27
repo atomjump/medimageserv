@@ -337,7 +337,7 @@ function execCommands(commandArray, prepend, cb)
 								});
 
 								running.on('close', (code, signal) => {
-								  if(signal) {
+								  if(code != 0) {
 								  
 								  	  //Error. Code in 'code'
 									  // node couldn't execute the command
