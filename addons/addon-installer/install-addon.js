@@ -300,7 +300,13 @@ function execCommands(commandArray, prepend, cb)
 										// node couldn't execute the command
 										var msg = "Command: " + cmd + ". Error:" + err;
 										console.log(msg);
-										//Get rid of any strange chars
+										
+										//Send to the log anyway
+						 				console.log("Stdout:" + stdout);
+						 				console.log("Stderr:" + stderr);
+										
+										
+										//Get rid of any strange chars before sending back to GUI
 										msg = entities.encodeNonUTF(msg);
 								
 										//Remove newlines
@@ -320,6 +326,8 @@ function execCommands(commandArray, prepend, cb)
 						 } catch(err) {
 						 		var msg = "There was a problem running the command " + cmd;
 						 		var ext = err;
+						 	
+						 		console.log("Error:" + err);
 						 	
 						 		//Get rid of any strange chars
 						 		ext = entities.encodeNonUTF(ext);
