@@ -1050,7 +1050,7 @@ function runCommandPhotoWritten(runBlock, backupAtEnd, param1, param2, param3, c
 		
 	  } else {
   
-		  console.log("Stdout from command:" + stdout); 		
+		  console.log("Stdout from command:" + stdout + "\n\nStderr" + stderr); 		
   
 		  //Potentially get any files that are new and need to be backed-up
 		   //to the config-specified folders. This should be before echoed to stdout as 'backupFiles:' near the end of 
@@ -1315,8 +1315,12 @@ function addOns(eventType, cb, param1, param2, param3)
 										  }
 
 										  // the *entire* stdout and stderr (buffered)
-										  if(verbose == true) console.log(`stdout: ${stdout}`);
-										  if(verbose == true) console.log(`stderr: ${stderr}`);
+										  if(stdout) {
+										  	console.log(`stdout: ${stderr}`);
+										  }
+										  if(stderr) {
+										  	console.log(`stderr: ${stderr}`);
+										  }
 										  
 										
 											if(waitForIt) {
