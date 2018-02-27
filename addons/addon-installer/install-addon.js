@@ -294,10 +294,14 @@ function execCommands(commandArray, prepend, cb)
 						
 						var runningOutput = "";
 						
-						
+						var outputStdOut = "";
+						var outputStdError = "";
+							  
 						try {
 							  
-							  /*
+							  
+							  
+							  
 							  //Do it the better spawn way
 								cmds = cmdLine.split(" ");
 								var args = [];
@@ -333,19 +337,41 @@ function execCommands(commandArray, prepend, cb)
 
 								running.on('close', (code, signal) => {
 								  if(signal) {
-									  cb(code, outputStdOut, outputStdError);
+								  
+								  	  //Error. Code in 'code'
+									  // node couldn't execute the command
+										var msg = "Command: " + cmd + ". Error:" + err;
+										console.log(msg);
+										
+										//Send to the log anyway
+						 				console.log("Stdout:" + outputStdOut);
+						 				console.log("Stderr:" + outputStdError);
+										
+										
+										//Get rid of any strange chars before sending back to GUI
+										msg = entities.encodeNonUTF(msg);
+								
+										//Remove newlines
+										msg = msg.replace(/\&\#10\;/g, '').substr(0,500);
+										
+										console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The installation was not complete. There was a problem running the one of the installation commands.&EXTENDED=" + msg);
+										process.exit(0);
+										
+										callback(msg);
 								  } else {
-									  cb(null, outputStdOut, outputStdError);
+								  	   console.log("Stdout from command:" + outputStdOut);
+									   callback(null, outputStdOut);
+									 
 								  }
 								});		
-								*/
+								
 						
 						
 						
 						
 						
 						
-							var runningCommand = exec(commandArray[cnt], {
+							/*Old exec way:var runningCommand = exec(commandArray[cnt], {
 									maxBuffer: 2000 * 1024 //max buffer size
 								}, (err, stdout, stderr) => {
 									 if (err) {
@@ -380,15 +406,14 @@ function execCommands(commandArray, prepend, cb)
 							 runningCommand.stdout.on('data', function(data) {
 								console.log(data); 
 								runningOutput += data.toString();
-							 });
+							 });*/
 						 } catch(err) {
 						 		var msg = "There was a problem running the command " + cmd;
 						 		var ext = err;
 						 	
 						 		console.log("Error:" + err);
-						 		console.log("Output before being stopped:" + runningOutput);
-						 		console.log(`stdout: ${stdout}`);
-		  						console.log(`stderr: ${stderr}`);
+						 		console.log("Stdout:" + outputStdOut);
+						 		console.log("Stderr:" + outputStdError);
 						 	
 						 		//Get rid of any strange chars
 						 		ext = entities.encodeNonUTF(ext);
