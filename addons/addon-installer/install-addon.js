@@ -158,16 +158,16 @@ function unzipAndRemoveNew(filename, tmpFilePath, cb) {
 				var dirCnt = 0;
 				
 				fs.readdirSync(targetAddonsFolder + tempDir).forEach(file => {
-				  console.log(file);
+				  if(verbose == true) console.log(file);
 				  if(fs.lstatSync(targetAddonsFolder + tempDir + '/' + file).isDirectory()) {
-				  	console.log("Is a directory");
+				  	if(verbose == true) console.log("Is a directory");
 				  	dir = file;
 				  	dirCnt ++;
 				  } else {
 				  	if((file[0] == '.')||(file == filename)) {
-				  		console.log("Is a hidden file - not counted");
+				  		if(verbose == true) console.log("Is a hidden file - not counted");
 				  	} else {
-						console.log("Is a file");
+						if(verbose == true) console.log("Is a file");
 						fileCnt ++;
 					}
 				  }
@@ -183,16 +183,16 @@ function unzipAndRemoveNew(filename, tmpFilePath, cb) {
 					var dir = "";
 					
 					fs.readdirSync(targetAddonsFolder + tempDir + '/' + dirName).forEach(file => {
-					  console.log(file);
+					  if(verbose == true) console.log(file);
 					  if(fs.lstatSync(targetAddonsFolder + tempDir + '/' + dirName + '/' + file).isDirectory()) {
-						console.log("Is a directory");
+						if(verbose == true) console.log("Is a directory");
 						dir = file;
 						dirCnt ++;
 					  } else {
 						if(file[0] == '.') {
-							console.log("Is a hidden file - not counted");
+							if(verbose == true) console.log("Is a hidden file - not counted");
 						} else {
-							console.log("Is a file");
+							if(verbose == true) console.log("Is a file");
 							fileCnt ++;
 						}
 					  }
