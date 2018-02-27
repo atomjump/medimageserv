@@ -1316,7 +1316,7 @@ function addOns(eventType, cb, param1, param2, param3)
 
 										  // the *entire* stdout and stderr (buffered)
 										  if(stdout) {
-										  	console.log(`stdout: ${stderr}`);
+										  	console.log(`stdout: ${stdout}`);
 										  }
 										  if(stderr) {
 										  	console.log(`stderr: ${stderr}`);
