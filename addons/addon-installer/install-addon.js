@@ -341,7 +341,7 @@ function execCommands(commandArray, prepend, cb)
 								  
 								  	  //Error. Code in 'code'
 									  // node couldn't execute the command
-										var msg = "Command: " + cmd + ". Error:" + outputStdOut;
+										var msg = "Command: " + cmd + ". Error:" + outputStdError;
 										console.log(msg);
 										
 										//Send to the log anyway
@@ -355,7 +355,7 @@ function execCommands(commandArray, prepend, cb)
 										//Remove newlines
 										msg = msg.replace(/\&\#10\;/g, '').substr(0,500);
 										
-										var finalMsg = "returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The installation was not complete. There was a problem running the one of the installation commands.&EXTENDED=" + msg;
+										var finalMsg = "returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The installation was not complete. There was a problem running one of the installation commands.&EXTENDED=" + msg;
 										//process.exit(0);
 										
 										callback(finalMsg);
