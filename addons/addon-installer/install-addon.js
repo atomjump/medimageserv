@@ -303,7 +303,7 @@ function execCommands(commandArray, prepend, cb)
 							  
 							  
 							  //Do it the better spawn way
-								cmds = cmdLine.split(" ");
+								cmds = cmd.split(" ");
 								var args = [];
 								var command = "";
 								if(cmds[0]) {
