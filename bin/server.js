@@ -415,7 +415,7 @@ function fileWalk(startDir, cb)
            var walk = klaw(startDir);
 
 	        walk.on('data', function (item) {
-	                	if(verbose == true) console.log("Found:" + item.path);
+	                //if(verbose == true) console.log("Found:" + item.path);
 			        items.push(item.path);
 		          })
 		          .on('end', function () {
@@ -1050,7 +1050,9 @@ function runCommandPhotoWritten(runBlock, backupAtEnd, param1, param2, param3, c
 		
 	  } else {
   
-		  console.log("Stdout from command:" + stdout + "\n\nStderr" + stderr); 		
+  		  if((stdout)||(stderr)) {
+		  	console.log("Stdout from command:" + stdout + "\n\nStderr" + stderr); 
+		  }		
   
 		  //Potentially get any files that are new and need to be backed-up
 		   //to the config-specified folders. This should be before echoed to stdout as 'backupFiles:' near the end of 

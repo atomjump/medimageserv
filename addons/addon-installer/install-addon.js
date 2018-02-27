@@ -41,6 +41,26 @@ var descriptorFile = "medimage-installer.json";
 
 
 
+function normalizeInclWinNetworks(path)
+{
+	//Tests to see if the path is a Windows network path first, if so, handle this case slightly differently
+	//to a normal upath.normalization.
+	//Run this before 
+	if((path[0] == "\\")&&(path[1] == "\\")) {
+		
+		return "\/" + upath.normalize(path);		//Prepend the first slash
+	} else {
+		if((path[0] == "\/")&&(path[1] == "\/")) {
+			//In unix style syntax, but still a windows style network path
+			return "\/" + upath.normalize(path);		//Prepend the first slash
+		} else {
+			return upath.normalize(path);
+		}
+	}
+
+}
+
+
 function getMasterConfig(defaultConfig, callback) {
 	exec("npm get medimage:configFile", {
 			maxBuffer: 2000 * 1024 //quick fix
@@ -646,8 +666,9 @@ function renameFolder(filename, dirname, opts) {
 		dirOut = targetAddonsFolder + dirOut.replace(/-$/, '');
 	}
 
-	
-	console.log("Dir in=" + dirIn + "\nDir out" + dirOut);
+	dirIn = normalizeInclWinNetworks(dirIn);
+	dirOut = normalizeInclWinNetworks(dirOut);
+	console.log("Dir in=" + dirIn + "\nDir out=" + dirOut);
 	//fsExtra.move(dirIn, dirOut);
 	fsExtra.move(dirIn, dirOut, { overwrite: true }, function(err) {
 	  if (err) {
