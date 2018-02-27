@@ -281,7 +281,7 @@ function removeUnreadableChars(str)
 {
 	str = str.replace(/\&quot\;/g, '');
 	str = str.replace(/\&\#10\;/g, '');
-
+	return str;
 }
 
 
