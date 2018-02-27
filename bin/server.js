@@ -415,7 +415,7 @@ function fileWalk(startDir, cb)
            var walk = klaw(startDir);
 
 	        walk.on('data', function (item) {
-	                //if(verbose == true) console.log("Found:" + item.path);
+	                if(verbose == true) console.log("Found:" + item.path);
 			        items.push(item.path);
 		          })
 		          .on('end', function () {

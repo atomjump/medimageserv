@@ -38,7 +38,6 @@ function getMasterConfig(defaultConfig, callback) {
 			callback(err, "");
 	
 		  } else {
-			  console.log("Stdout from command:" + stdout);
 			  if((stdout != "")&&(!stdout.startsWith("undefined"))) {
 			  	 callback(null, stdout.trim());
 			  
@@ -69,7 +68,7 @@ function fileWalk(startDir, cb)   //This was originally copied from the MedImage
 		 var resp = [];
 		 for(var cnt = 0; cnt< items.length; cnt++) {
 			
-			console.log("Found:" + items[cnt]);	
+			if(verbose == true) console.log("Found:" + items[cnt]);	
 			
 			var banned = false;
 			//Now confirm it doesn't have any of the banned strings
