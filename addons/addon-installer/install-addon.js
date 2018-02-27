@@ -296,6 +296,55 @@ function execCommands(commandArray, prepend, cb)
 						
 						
 						try {
+							  
+							  /*
+							  //Do it the better spawn way
+								cmds = cmdLine.split(" ");
+								var args = [];
+								var command = "";
+								if(cmds[0]) {
+									args = cmds;
+								}
+			
+								//Now, based off platform, decide to run it slowly
+								var platform = getPlatform();
+								if((platform == "win32")||(platform == "win64")) {
+									command = "cmd.exe"
+									args.unshift('/low','/s','/c');
+			
+								} else {
+									//Unix/mac
+									command = "nice";	
+									args.unshift('-10');		//This is a priority of 10, which is pretty low.				
+								}
+			
+								var running = spawn(command, args);
+
+								running.stdout.on('data', (data) => {
+									if(verbose == true) console.log(data.toString());
+									outputStdOut += data.toString();
+			  
+								});
+
+								running.stderr.on('data', (data) => {
+									if(verbose == true) console.log(data.toString());
+									outputStdError += data.toString();
+								});
+
+								running.on('close', (code, signal) => {
+								  if(signal) {
+									  cb(code, outputStdOut, outputStdError);
+								  } else {
+									  cb(null, outputStdOut, outputStdError);
+								  }
+								});		
+								*/
+						
+						
+						
+						
+						
+						
 							var runningCommand = exec(commandArray[cnt], {
 									maxBuffer: 2000 * 1024 //max buffer size
 								}, (err, stdout, stderr) => {
@@ -338,6 +387,8 @@ function execCommands(commandArray, prepend, cb)
 						 	
 						 		console.log("Error:" + err);
 						 		console.log("Output before being stopped:" + runningOutput);
+						 		console.log(`stdout: ${stdout}`);
+		  						console.log(`stderr: ${stderr}`);
 						 	
 						 		//Get rid of any strange chars
 						 		ext = entities.encodeNonUTF(ext);

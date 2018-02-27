@@ -967,7 +967,12 @@ function myExec(cmdLine, priority, cb) {
 		break;
 		
 		case 'glacial':
-			//Get ready 
+			//Get ready
+			
+			var outputStdOut = "";
+			var outputStdError = "";
+
+			 
 			cmds = cmdLine.split(" ");
 			var args = [];
 			var command = "";
