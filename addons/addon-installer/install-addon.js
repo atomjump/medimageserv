@@ -670,7 +670,7 @@ function openAndRunDescriptor(directory, opts)
 						
 						//If there were any warning messages, these get added into a warning html box
 						if(commandMessage != "") {
-							mainMessage = mainMessage + "<div style='padding-top:20px;' class='panel panel-warning'><div class='panel-heading'>Warning</div><div class='panel-body'>" + commandMessage + "</div></div>";
+							mainMessage = mainMessage + "<div style='padding-top:20px;'><div  class='panel panel-warning'><div class='panel-heading'>Warning</div><div class='panel-body'>" + commandMessage + "</div></div></div>";
 						}
 					
 						//Now we can attempt to clean up.
