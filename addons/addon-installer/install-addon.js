@@ -382,7 +382,7 @@ function execCommands(commandArray, prepend, cb)
 									outputStdError += data.toString();
 								});
 								
-								running.on('SIGINT', (code, signal) => {
+								running.on('SIGHUP', (code, signal) => {
 									//This will usually be on a timeout
 									
 									var finalMsg = "returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The installation was not complete. There was a problem running the one of the installation commands.&EXTENDED=" + cmd + " Error:" + commandMessage;
@@ -437,6 +437,9 @@ function execCommands(commandArray, prepend, cb)
 								 	 	
 								 	 	}
 								 	 	running.kill('SIGINT');
+								 	 	
+								 	 	console.log(running.pid + " timed out");
+  										process.kill(running.pid, 'SIGHUP');
 								 	 	
 								 	 	
 								 	 }, timeOut);
