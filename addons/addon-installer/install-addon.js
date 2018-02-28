@@ -436,10 +436,15 @@ function execCommands(commandArray, prepend, cb)
 								 	 		commandStatus = "error";
 								 	 	
 								 	 	}
-								 	 	running.kill('SIGINT');
 								 	 	
-								 	 	console.log(running.pid + " timed out");
-  										process.kill(running.pid, 'SIGHUP');
+								 	 	if((platform == 'win32')||(platform == 'win64')) {
+								 	 		console.log(running.pid + " timed out");
+								 	 		running.kill();
+								 	 	} else {
+								 	 	
+								 	 		console.log(running.pid + " timed out");
+  											process.kill(running.pid, 'SIGHUP');
+  										}
 								 	 	
 								 	 	
 								 	 }, timeOut);
