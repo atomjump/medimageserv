@@ -633,8 +633,8 @@ function openAndRunDescriptor(directory, opts)
 					// result now equals 'done'
 					if(err) {
 						console.log("The installation was not complete.");
-						console.log(err);
-						//Should already be in this format:  console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The installation was not complete.&EXTENDED=" + err);
+						console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=" + err);
+
 						process.exit(0);
 					} else {
 					
