@@ -424,10 +424,7 @@ function execCommands(commandArray, prepend, cb)
 								 	 	
 								 	 	}
 								 	 	running.kill();
-								 	 	var finalMsg = "returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The installation was not complete. There was a problem running the one of the installation commands.&EXTENDED=" + cmd + " Error:" + commandMessage;
-						 		
-						 		
-						 				callback(finalMsg, commandStatus);
+								 	 	
 								 	 	
 								 	 }, timeOut);
 								 }
