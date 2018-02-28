@@ -688,7 +688,7 @@ function renameFolder(filename, dirname, opts) {
 			  }
 			});
 		}
-	}
+	});
 }
 
 function uninstall(addonName, opts)
