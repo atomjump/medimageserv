@@ -312,12 +312,31 @@ function execCommands(commandArray, prepend, cb)
 		//be doing something processor intensive without holding up the main server, but still allow
 		//each add-on to potentially process sequentially. 
 		
+		var commandStatus = "success";
+		var commandMessage = "";
 		
 		async.eachOfSeries(commandArray,
 					// 2nd param is the function that each item is passed to
 					function(runBlock, cnt, callback){
 				
-						var cmd = prepend + commandArray[cnt];
+						var timeOut = 40000;			//For a maximum worst case longest install time
+				
+						if(commandArray[cnt].attempt) {
+							//Will make an attempt
+							var cmd = prepend + commandArray[cnt].attempt;
+							
+							if(commandArray[cnt].timeoutAfterSeconds) {
+								timeOut = commandArray[cnt].timeoutAfterSeconds * 1000;
+									
+							}
+							
+							if(commandArray[cnt].warnOnTimeout) {
+								var warningMessage = commandArray[cnt].warnOnTimeout;							
+							}
+						} else {
+				
+							var cmd = prepend + commandArray[cnt];
+						}
 						console.log("Running command: " + cmd);
 						
 						var runningOutput = "";
@@ -383,14 +402,37 @@ function execCommands(commandArray, prepend, cb)
 										msg = removeUnreadableChars(msg).substr(0,500);
 										
 										var finalMsg = "returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The installation was not complete. There was a problem running one of the installation commands.&EXTENDED=" + msg;
-										//process.exit(0);
 										
-										callback(finalMsg);
+										commandStatus = "error";
+										callback(finalMsg, null);
 								 } else {
+								 	   //Success
 								 	   console.log("Stdout from command:" + outputStdOut);
-									   callback(null, outputStdOut);
+									   callback(null, commandStatus);
 									 
 								 }
+								 
+								 if(timeOut) {
+								 	 //Kill the process after too long
+								 	 setTimeout(function(){ 
+								 	 	if(commandArray[cnt].warnOnTimeout) {
+								 	 		commandMessage = commandMessage + commandArray[cnt].warnOnTimeout;
+								 	 		commandStatus = "warn";
+								 	 	} else {
+								 	 		commandMessage = commandMessage + " The installation command timed out and was not complete."
+								 	 		commandStatus = "error";
+								 	 	
+								 	 	}
+								 	 	running.kill();
+								 	 	var finalMsg = "returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The installation was not complete. There was a problem running the one of the installation commands.&EXTENDED=" + cmd + " Error:" + commandMessage;
+						 		
+						 		
+						 				callback(finalMsg, commandStatus);
+								 	 	
+								 	 }, timeOut);
+								 }
+								 
+								 
 								});		
 								
 						
@@ -410,8 +452,9 @@ function execCommands(commandArray, prepend, cb)
 						 		
 						 		ext = removeUnreadableChars(msg).substr(0,500);	
 						 		var finalMsg = "returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The installation was not complete. There was a problem running the one of the installation commands.&EXTENDED=" + cmd + " Error:" + ext;
-						 		callback(finalMsg);
-								//process.exit(0);
+						 		
+						 		commandStatus = "error";
+						 		callback(finalMsg, commandStatus);
 						 
 						 }
 					
@@ -420,10 +463,15 @@ function execCommands(commandArray, prepend, cb)
 						// All tasks are done now
 						console.log("All tasks finished");
 						if(err) {
-						   cb(err);
+						   cb(err, commandStatus);
 						 } else {
 						   console.log('Completed all commands successfully!');
-						   cb(null);
+						   if(commandStatus == "warn") {
+						   	 //Send back the warning in the 'error' field
+						   	 cb(commandMessage, commandStatus);
+						   } else {
+						   	 cb(null, commandStatus);
+						   }
 						 }
 					   }
 		); //End of async eachOf all items
@@ -435,6 +483,9 @@ function execCommands(commandArray, prepend, cb)
 
 function openAndRunDescriptor(directory, opts)
 {
+	var commandStatus = "success";		//Assume success unless we know otherwise. This can be "warn", "error" or "success" at the end.
+	var commandMessage = "";			//We hold a running list of any warnings in this string, the get appended to each other.
+
 
 	//Change into the directory of the add-on
 	try {
@@ -474,8 +525,13 @@ function openAndRunDescriptor(directory, opts)
 									prepend = "echo \"" + opts.password + "\" | sudo -S ";
 								}
 							}
-							execCommands(data.installCommands.all, prepend, function(err) {
-								callback(err);
+							execCommands(data.installCommands.all, prepend, function(err, type) {
+								if(type == "warn") {
+									commandMessage = commandMessage + " " + err;
+									callback(null);		//Don't pass along the error message
+								} else {
+									callback(err);		//err could either be nothing or a genuine error
+								}
 							});
 						} else {
 							callback(null);
@@ -485,8 +541,13 @@ function openAndRunDescriptor(directory, opts)
 						console.log("Checking Win32 commands");
 						if((data.installCommands.win32) && (platform == "win32")) {
 							//Run through these commands on Win32
-							execCommands(data.installCommands.win32, "", function(err) {
-								callback(err);
+							execCommands(data.installCommands.win32, "", function(err, type) {
+								if(type == "warn") {
+									commandMessage = commandMessage + " " + err;
+									callback(null);		//Don't pass along the error message
+								} else {
+									callback(err);		//err could either be nothing or a genuine error
+								}
 							});
 						} else {
 							callback(null);
@@ -496,8 +557,13 @@ function openAndRunDescriptor(directory, opts)
 						console.log("Checking Win64 commands");
 						if((data.installCommands.win64) && (platform == "win64")) {
 							//Run through these commands on Win64
-							execCommands(data.installCommands.win64, "", function(err) {
-								callback(err);
+							execCommands(data.installCommands.win64, "", function(err, type) {
+								if(type == "warn") {
+									commandMessage = commandMessage + " " + err;
+									callback(null);		//Don't pass along the error message
+								} else {
+									callback(err);		//err could either be nothing or a genuine error
+								}
 							});
 						} else {
 							callback(null);
@@ -512,8 +578,13 @@ function openAndRunDescriptor(directory, opts)
 							} else {
 								var prepend = "";
 							}
-							execCommands(data.installCommands.unix, prepend, function(err) {
-								callback(err);
+							execCommands(data.installCommands.unix, prepend, function(err, type) {
+								if(type == "warn") {
+									commandMessage = commandMessage + " " + err;
+									callback(null);		//Don't pass along the error message
+								} else {
+									callback(err);		//err could either be nothing or a genuine error
+								}
 							});
 						} else {
 							callback(null);
@@ -528,8 +599,13 @@ function openAndRunDescriptor(directory, opts)
 							} else {
 								var prepend = "";
 							}
-							execCommands(data.installCommands.mac, prepend, function(err) {
-								callback(err);
+							execCommands(data.installCommands.mac, prepend, function(err, type) {
+								if(type == "warn") {
+									commandMessage = commandMessage + " " + err;
+									callback(null, 'done');		//Don't pass along the error message
+								} else {
+									callback(err, 'done');		//err could either be nothing or a genuine error
+								}
 							});
 						} else {
 							callback(null, 'done');
@@ -544,17 +620,61 @@ function openAndRunDescriptor(directory, opts)
 						//Should already be in this format:  console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The installation was not complete.&EXTENDED=" + err);
 						process.exit(0);
 					} else {
+					
+						//Success, installing - now display a standard message, unless the installer json knows differently
+						var mainMessage = "The installation was completed successfully!";
+						var extendedMessage = "";
+						
+						if(data.successMessages) {
+							
+							
+							if(data.successMessages.all) {
+								//Any platform unspecific message? This will override the default.
+								if(data.successMessages.all.main) {
+									mainMessage = data.successMessages.all.main;
+								}
+								if(data.successMessages.all.extended) {
+									extendedMessage = data.successMessages.all.extended;
+								}
+						
+							}
+							
+							if(data.successMessages[platform]) {
+								//Any platform specific message? This will overwrite the one for all platforms.
+								if(data.successMessages[platform].main) {
+									mainMessage = data.successMessages[platform].main;
+								}
+								if(data.successMessages[platform].extended) {
+									extendedMessage = data.successMessages[platform].extended;
+								}
+							
+							}
+						}
+						
+						//If there were any warning messages, these get added into a warning html box
+						if(commandMessage != "") {
+							mainMessage = mainMessage + "<div class='panel panel-warning'><div class='panel-heading'>Warning</div><div class='panel-body'>" + commandMessage + "</div></div>";
+						}
+					
+						//Now we can attempt to clean up.
 						removeOldTemp(opts, function(err) {
+							
+						
+						
 							if(err) {
 								//Could leave a warning
 								console.log("The installation was completed successfully, but the cleanup was not. ");
 								console.log("reloadConfig:true");
-								console.log("returnParams:?FINISHED=true&TABSTART=install-addon-tab&MSG=The installation was completed successfully, but the cleanup was not.&EXTENDED=You should check your add-ons folder and remove the " + tempDir + " folder manually.");
+								console.log("returnParams:?FINISHED=true&TABSTART=install-addon-tab&MSG=" + mainMessage + " Warning: the cleanup was not finished.&EXTENDED=You should check your add-ons folder and remove the " + tempDir + " folder manually. " + extendedMessage);
 								process.exit(0);
 							} else {
-								console.log("The installation was completed successfully!");
+								
+								
+								
+							
+								console.log(mainMessage);
 								console.log("reloadConfig:true");
-								console.log("returnParams:?FINISHED=true&TABSTART=install-addon-tab&MSG=The installation was completed successfully!");
+								console.log("returnParams:?FINISHED=true&TABSTART=install-addon-tab&MSG=" + mainMessage + "&EXTENDED=" + extendedMessage);
 								process.exit(0);
 								
 							}
