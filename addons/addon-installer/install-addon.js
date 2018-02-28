@@ -384,14 +384,14 @@ function execCommands(commandArray, prepend, cb)
 									outputStdError += data.toString();
 								});
 								
-								running.on('SIGHUP', (code, signal) => {
+								/*running.on('SIGHUP', (code, signal) => {
 									//This will usually be on a timeout
 									
 									var finalMsg = "returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The installation was not complete. There was a problem running the one of the installation commands.&EXTENDED=" + cmd + " Error:" + commandMessage;
 						 		
 						 		
 						 			callback(finalMsg, commandStatus);
-								});
+								});*/
 								
 								
 								
