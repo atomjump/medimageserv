@@ -384,7 +384,7 @@ function execCommands(commandArray, prepend, cb)
 								
 								running.on('SIGINT', (code, signal) => {
 									//This will usually be on a timeout
-									commandStatus = "error";
+									
 									var finalMsg = "returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The installation was not complete. There was a problem running the one of the installation commands.&EXTENDED=" + cmd + " Error:" + commandMessage;
 						 		
 						 		
@@ -394,36 +394,38 @@ function execCommands(commandArray, prepend, cb)
 								
 								
 								running.on('close', (code, signal) => {
-								  if(code != 0) {
+									  if(code != 0) {
 								  
-								  	  //Error. Code in 'code'
-									  // node couldn't execute the command
-										var msg = "Command: " + cmd + ". Error:" + outputStdError;
-										console.log(msg);
+										  //Error. Code in 'code'
+										  // node couldn't execute the command
+											var msg = "Command: " + cmd + ". Error:" + outputStdError;
+											console.log(msg);
 										
-										//Send to the log anyway
-						 				console.log("Stdout:" + outputStdOut);
-						 				console.log("Stderr:" + outputStdError);
+											//Send to the log anyway
+											console.log("Stdout:" + outputStdOut);
+											console.log("Stderr:" + outputStdError);
 										
 										
-										//Get rid of any strange chars before sending back to GUI
-										msg = entities.encodeNonUTF(msg);
+											//Get rid of any strange chars before sending back to GUI
+											msg = entities.encodeNonUTF(msg);
 								
-										//Remove newlines
-										msg = removeUnreadableChars(msg).substr(0,500);
+											//Remove newlines
+											msg = removeUnreadableChars(msg).substr(0,500);
 										
-										var finalMsg = "returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The installation was not complete. There was a problem running one of the installation commands.&EXTENDED=" + msg;
+											var finalMsg = "returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The installation was not complete. There was a problem running one of the installation commands.&EXTENDED=" + msg;
 										
-										commandStatus = "error";
-										callback(finalMsg, null);
-								 } else {
-								 	   //Success
-								 	   console.log("Stdout from command:" + outputStdOut);
-									   callback(null, commandStatus);
+											commandStatus = "error";
+											callback(finalMsg, null);
+									 } else {
+										   //Success
+										   console.log("Stdout from command:" + outputStdOut);
+										   callback(null, commandStatus);
 									 
-								 }
-								 
-								 if(timeOut) {
+									 }
+								});	
+								
+								
+								if(timeOut) {
 								 	 //Kill the process after too long
 								 	 setTimeout(function(){ 
 								 	 	if(commandArray[cnt].warnOnTimeout) {
@@ -438,10 +440,7 @@ function execCommands(commandArray, prepend, cb)
 								 	 	
 								 	 	
 								 	 }, timeOut);
-								 }
-								 
-								 
-								});		
+								 }	
 								
 						
 						
