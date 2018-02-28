@@ -601,7 +601,7 @@ function renameFolder(filename, dirname, opts) {
 	}
 	
 	//Read in the json descriptor to get an output folder name of the addon
-	var desc = normalizeInclWinNetworks(dirIn + "/" + descriptorFile;
+	var desc = normalizeInclWinNetworks(dirIn + "/" + descriptorFile);
 	console.log("Checking for file:" + desc);
 	var dirOut = "";
 	if(fs.existsSync(desc) == true) {
