@@ -395,13 +395,6 @@ function execCommands(commandArray, prepend, cb)
 								
 						
 						
-				
-							 
-							 //Keep displaying something to stdout
-							 runningCommand.stdout.on('data', function(data) {
-								console.log(data); 
-								runningOutput += data.toString();
-							 });*/
 						 } catch(err) {
 						 		var msg = "There was a problem running the command " + cmd;
 						 		var ext = err;
