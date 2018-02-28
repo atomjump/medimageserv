@@ -381,7 +381,18 @@ function execCommands(commandArray, prepend, cb)
 									if(verbose == true) console.log(data.toString());
 									outputStdError += data.toString();
 								});
-
+								
+								running.on('SIGINT', (code, signal) => {
+									//This will usually be on a timeout
+									commandStatus = "error";
+									var finalMsg = "returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The installation was not complete. There was a problem running the one of the installation commands.&EXTENDED=" + cmd + " Error:" + commandMessage;
+						 		
+						 		
+						 			callback(finalMsg, commandStatus);
+								});
+								
+								
+								
 								running.on('close', (code, signal) => {
 								  if(code != 0) {
 								  
@@ -423,7 +434,7 @@ function execCommands(commandArray, prepend, cb)
 								 	 		commandStatus = "error";
 								 	 	
 								 	 	}
-								 	 	running.kill();
+								 	 	running.kill('SIGINT');
 								 	 	
 								 	 	
 								 	 }, timeOut);
