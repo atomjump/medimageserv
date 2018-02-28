@@ -320,6 +320,8 @@ function execCommands(commandArray, prepend, cb)
 					function(runBlock, cnt, callback){
 				
 						var timeOut = 40000;			//For a maximum worst case longest install time
+						var timedOut = false;			//If we timed out - affects whether we report an error or keep the current warning/error status
+				
 				
 						if(commandArray[cnt].attempt) {
 							//Will make an attempt
@@ -414,8 +416,12 @@ function execCommands(commandArray, prepend, cb)
 										
 											var finalMsg = "returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The installation was not complete. There was a problem running one of the installation commands.&EXTENDED=" + msg;
 										
-											commandStatus = "error";
-											callback(finalMsg, null);
+											if(timedOut == false) {
+												commandStatus = "error";
+											} else {
+												finalMsg = finalMsg + commandMessage;		//Append the timeout message
+											}
+											callback(finalMsg, commandStatus);
 									 } else {
 										   //Success
 										   console.log("Stdout from command:" + outputStdOut);
@@ -436,10 +442,12 @@ function execCommands(commandArray, prepend, cb)
 								 	 		commandStatus = "error";
 								 	 	
 								 	 	}
+								 	 	timedOut = true;
 								 	 	
 								 	 	if((platform == 'win32')||(platform == 'win64')) {
 								 	 		console.log(running.pid + " timed out");
 								 	 		//This won't work: running.kill();, See: https://stackoverflow.com/questions/32705857/cant-kill-child-process-on-windows
+								 	 		
 								 	 		exec('taskkill /pid ' + running.pid + ' /T /F');
 								 	 	} else {
 								 	 	
