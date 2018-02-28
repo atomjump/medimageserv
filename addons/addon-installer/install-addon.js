@@ -467,7 +467,7 @@ function execCommands(commandArray, prepend, cb)
 						 		//Remove newlines
 						 		
 						 		ext = removeUnreadableChars(msg).substr(0,500);	
-						 		commandMessage = "returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The installation was not complete. There was a problem running the one of the installation commands.&EXTENDED=" + cmd + " Error:" + ext;
+						 		commandMessage = "The installation was not complete. There was a problem running the one of the installation commands.&EXTENDED=" + cmd + " Error:" + ext;
 						 		
 						 		commandStatus = "error";
 						 		callback(commandMessage, commandStatus);
