@@ -136,6 +136,7 @@ function noTrailSlash(str)
 
 
 function getPlatform() {
+	
 	var platform = process.platform;
 	if(verbose == true) console.log(process.platform);
 	var isWin = /^win/.test(platform);
@@ -634,20 +635,20 @@ function renameFolder(filename, dirname, opts) {
 	
 	var nozipFilename = filename.replace(/.zip/i, "");
 	
-	var dirIn = targetAddonsFolder + tempDir;
+	var dirIn = normalizeInclWinNetworks(targetAddonsFolder + tempDir);
 	if(dirname) {
-		dirIn = targetAddonsFolder + tempDir + "/" + noTrailSlash(dirname);
+		dirIn = normalizeInclWinNetworks(targetAddonsFolder + tempDir + "/" + noTrailSlash(dirname));
 	}
 	
 	//Read in the json descriptor to get an output folder name of the addon
-	var desc = dirIn + "/" + descriptorFile;
+	var desc = normalizeInclWinNetworks(dirIn + "/" + descriptorFile;
 	console.log("Checking for file:" + desc);
 	var dirOut = "";
 	if(fs.existsSync(desc) == true) {
 		try {
 			var data = fsExtra.readJsonSync(desc);
 			if(data) {
-				dirOut = targetAddonsFolder + data.name;
+				dirOut = normalizeInclWinNetworks(targetAddonsFolder + data.name);
 			}
 		} catch(err) {
 			console.log("Error: there was a problem in the medimage-installer .json file.");
@@ -671,29 +672,21 @@ function renameFolder(filename, dirname, opts) {
 	console.log("Dir in=" + dirIn + "\nDir out=" + dirOut);
 	//fsExtra.move(dirIn, dirOut);
 	
-	//Start by deleting the target folder, if there was an instance of it before
-	fsExtra.remove(dirOut, function(err) {
-	
-		if(err) {
-			return console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=Could not remove the folder.&EXTENDED=" + err);
+		fsExtra.move(dirIn, dirOut, { overwrite: true }, function(err) { 	//overwrite: true
+		  if (err) {
+			return console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=Could not rename the folder.&EXTENDED=" + err);
+		  } else {
+			console.log('Success renaming!');
+			openAndRunDescriptor(dirOut, opts);
+			return;
+		  }
+		});
 		
-		} else {
-			fsExtra.move(dirIn, dirOut, {  }, function(err) { 	//overwrite: true
-			  if (err) {
-				return console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=Could not rename the folder.&EXTENDED=" + err);
-			  } else {
-				console.log('Success renaming!');
-				openAndRunDescriptor(dirOut, opts);
-				return;
-			  }
-			});
-		}
-	});
 }
 
 function uninstall(addonName, opts)
 {
-	var dirOut = targetAddonsFolder + addonName;	//Absolute path to folder to delete
+	var dirOut = normalizeInclWinNetworks(targetAddonsFolder + addonName);	//Absolute path to folder to delete
 	
 	//Change into the directory of the add-on
 	try {
@@ -825,12 +818,24 @@ function uninstall(addonName, opts)
 							});
 						} else {
 							
-							fsExtra.removeSync(dirOut);
+							fsExtra.remove(dirOut, function(err) {
+								if(err) {
+									console.log("The uninstallation was not complete.");
+									console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The uninstallation was not complete.&EXTENDED=" + err);
+								
+								} else {
+									console.log("The uninstallation was completed successfully!");
+									console.log("reloadConfig:true");
+									console.log("returnParams:?FINISHED=true&TABSTART=install-addon-tab&MSG=The uninstallation was completed successfully!");
+								
+								
+								}
+								process.exit(0);
+							
+							});
 					
-							console.log("The uninstallation was completed successfully!");
-							console.log("reloadConfig:true");
-							console.log("returnParams:?FINISHED=true&TABSTART=install-addon-tab&MSG=The uninstallation was completed successfully!");
-							process.exit(0);
+							
+							
 						}
 					}
 				});
@@ -875,8 +880,17 @@ function removeOldTemp(opts, cb)
 		});
 	} else {
 		
-		fsExtra.removeSync(dirOut);
-		cb(null);
+		fsExtra.remove(dirOut, function(err) {
+			if(err) {
+				console.log("The installation was not complete.");
+				console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The installation was not complete. The old temporary folder could not be removed.&EXTENDED=" + err);
+				process.exit(0);
+			
+			} else {
+				cb(null);
+			}
+		});
+		
 	}
 
 }
