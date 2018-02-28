@@ -670,15 +670,25 @@ function renameFolder(filename, dirname, opts) {
 	dirOut = normalizeInclWinNetworks(dirOut);
 	console.log("Dir in=" + dirIn + "\nDir out=" + dirOut);
 	//fsExtra.move(dirIn, dirOut);
-	fsExtra.move(dirIn, dirOut, { overwrite: true }, function(err) {
-	  if (err) {
-	  	return console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=Could not rename the folder.&EXTENDED=" + err);
-	  } else {
-	  	console.log('Success renaming!');
-	  	openAndRunDescriptor(dirOut, opts);
-	  	return;
-	  }
-	})
+	
+	//Start by deleting the target folder, if there was an instance of it before
+	fsExtra.remove(dirOut, function(err) {
+	
+		if(err) {
+			return console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=Could not remove the folder.&EXTENDED=" + err);
+		
+		} else {
+			fsExtra.move(dirIn, dirOut, {  }, function(err) { 	//overwrite: true
+			  if (err) {
+				return console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=Could not rename the folder.&EXTENDED=" + err);
+			  } else {
+				console.log('Success renaming!');
+				openAndRunDescriptor(dirOut, opts);
+				return;
+			  }
+			});
+		}
+	}
 }
 
 function uninstall(addonName, opts)
@@ -904,7 +914,7 @@ havePermission(configFile, function(err, ret) {
   
 						  downloadAndUnzip(filename, zipfileURL, opts, function(err, dirname) {
 							  console.log("Files unzipped");
-  
+  								
 							  renameFolder(filename, dirname, opts);
 
 						  });
