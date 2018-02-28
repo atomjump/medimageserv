@@ -395,40 +395,7 @@ function execCommands(commandArray, prepend, cb)
 								
 						
 						
-						
-						
-						
-						
-							/*Old exec way:var runningCommand = exec(commandArray[cnt], {
-									maxBuffer: 2000 * 1024 //max buffer size
-								}, (err, stdout, stderr) => {
-									 if (err) {
-										// node couldn't execute the command
-										var msg = "Command: " + cmd + ". Error:" + err;
-										console.log(msg);
-										
-										//Send to the log anyway
-						 				console.log("Stdout:" + stdout);
-						 				console.log("Stderr:" + stderr);
-										
-										
-										//Get rid of any strange chars before sending back to GUI
-										msg = entities.encodeNonUTF(msg);
-								
-										//Remove newlines
-										msg = msg.replace(/\&\#10\;/g, '').substr(0,500);
-										
-										console.log("returnParams:?FINISHED=false&TABSTART=install-addon-tab&MSG=The installation was not complete. There was a problem running the one of the installation commands.&EXTENDED=" + msg);
-										process.exit(0);
-										
-										callback(msg);
-							
-									 } else {
-					  
-										  console.log("Stdout from command:" + stdout);
-										  callback(null);
-									 }
-							 });	//End of exec
+				
 							 
 							 //Keep displaying something to stdout
 							 runningCommand.stdout.on('data', function(data) {
