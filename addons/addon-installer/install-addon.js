@@ -439,7 +439,8 @@ function execCommands(commandArray, prepend, cb)
 								 	 	
 								 	 	if((platform == 'win32')||(platform == 'win64')) {
 								 	 		console.log(running.pid + " timed out");
-								 	 		running.kill();
+								 	 		//This won't work: running.kill();, See: https://stackoverflow.com/questions/32705857/cant-kill-child-process-on-windows
+								 	 		exec('taskkill /pid ' + running.pid + ' /T /F');
 								 	 	} else {
 								 	 	
 								 	 		console.log(running.pid + " timed out");
