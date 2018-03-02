@@ -1738,7 +1738,7 @@ function handleServer(_req, _res) {
 									var thisPath = fullPath;
 
 									//Now backup to any directories specified in the config
-									backupFile(outhashdir, outhashdir, finalFileName, { });
+									backupFile(thisPath, outhashdir, finalFileName, { });
 								}
 							}, fullPath);
 								
