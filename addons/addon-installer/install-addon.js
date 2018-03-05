@@ -319,7 +319,7 @@ function execCommands(commandArray, prepend, cb)
 					// 2nd param is the function that each item is passed to
 					function(runBlock, cnt, callback){
 				
-						var timeOut = 40000;			//For a maximum worst case longest install time
+						var timeOut = 400000;			//For a maximum worst case longest install time (400 seconds ~ 6 minutes)
 						var timedOut = false;			//If we timed out - affects whether we report an error or keep the current warning/error status
 				
 				
