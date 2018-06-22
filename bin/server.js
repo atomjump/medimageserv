@@ -545,9 +545,13 @@ function download(uri, callback){
 											})
 										}
 
+										if(createFile.indexOf(".jpg") >= 0) {
+											var event = "photoWritten";
+										} else {
+											var event = "fileWritten";
+										}
 										
-										
-										addOns("photoWritten", function(err, normalBackup) {
+										addOns(event, function(err, normalBackup) {
 											if(err) {
 												console.log("Error writing file:" + err);
 											} else {
