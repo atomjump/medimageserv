@@ -96,7 +96,7 @@ These are located in the file config.json.
 * **webProxy** If your web browser usually requires a proxy server (i.e. for normal web requests), then use the option"webProxy", in this format: "http://yourUser:yourPassword@webProxyIPaddress:webProxyPort"
 * **lockDown** You can switch a server into 'lock down' mode, where the interface cannot change any settings, add-ons, or see any technical logs, by setting this to 'true'. Ver >= 1.3.6
 * **basicAuthent** Enter a human readable password for addons that need some light security. This is a global password visible only within the config file (anyone with file level access to the server can see this). Ver >= 1.3.8
-* **allowedTypes** Provide additional file types from .jpg photos. These will
+* **allowedTypes** Provide the ability to upload additional file types other than basic .jpg photos, e.g. PDF. You need to specify the extension and the MIME type in an array.
 
 
 
