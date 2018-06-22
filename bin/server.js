@@ -72,6 +72,12 @@ var flapState = false;
 var webProxy = null;				//For download requests from the internet, use a local proxy server at this URL
 									//See: http://stackoverflow.com/questions/23585371/proxy-authentication-in-node-js-with-module-request
 
+var allowedTypes = [ { "extension": ".jpg", "mime": "image/jpeg" },
+      			     { "extension": ".pdf", "mime": "application/pdf" },
+      				 { "extension": ".mp4", "mime": "video/mp4" },
+      				 { "extension": ".mp3", "mime": "audio/mpeg" } ];
+
+
 var addons = [];					//Addon included modules.
 global.globalConfig = null;			//This is a global current version of the config file, available to add-ons
 
@@ -262,6 +268,10 @@ function checkConfigCurrent(setProxy, cb) {
 			 if(content.listenPort) {
 			   listenPort = content.listenPort;
 			 }
+			 
+			 if(content.allowedTypes) {
+			 	allowedTypes = content.allowedTypes;
+			 }
 
 			 if(content.httpsKey) {
 			 	//httpsKey should point to the key .pem file
@@ -420,11 +430,17 @@ function fileWalk(startDir, cb)
 		          })
 		          .on('end', function () {
 			        for(var cnt = 0; cnt< items.length; cnt++) {
-				         if(items[cnt].indexOf(".jpg") >= 0) {
-					        cb(items[cnt]);
-				         	return;
-				         }
+				        
+				        //Go through allowed file types array 
+				        for(var type = 0; type < allowedTypes.length; type++) {
+				         
+							 if(items[cnt].indexOf(allowedTypes[type].extension) >= 0) {
+								cb(items[cnt], allowedTypes[type].mime);
+								return;
+							 }
+						}
 			        }
+			        
 			        cb(null);
 	          });
 	   } catch(err) {
@@ -1945,7 +1961,7 @@ function handleServer(_req, _res) {
 
 						
 						 //Get first file in the directory list
-						 fileWalk(outdir, function(outfile, cnt) {
+						 fileWalk(outdir, function(outfile, mime, cnt) {
 
 							 if(outfile) {
 								//Get outfile - compareWith
@@ -1954,12 +1970,12 @@ function handleServer(_req, _res) {
 								if(verbose == true) console.log("About to download (eventually delete): " + outfile);
 
 								if(req.method === "HEAD") {
-									//Get the header only
-									res.writeHead(200, {'content-type': "image/jpg", 'file-name': localFileName });
+									//Serve the header only
+									res.writeHead(200, {'content-type': mime, 'file-name': localFileName });
 									res.end();
 
 								} else {
-									//Now get the full file
+									//Now serve the full file
 									serveUpFile(outfile,localFileName, res, true);
 								}
 
@@ -2173,6 +2189,15 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
   if(ext === '.css') {
     contentType = 'text/css';
   }
+  
+  //Run through the user-defined file types
+  for(var type = 0; type < allowedTypes; type++) {
+  	if(ext === allowedTypes[type].extension) {
+  		contentType = allowedTypes[type].mime;
+  	}
+  
+  }
+  
 
   //Being preparation to send
 

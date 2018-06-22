@@ -8,5 +8,9 @@
       "webProxy": null,
       "keepMaster": false,
       "lockDown": false,
-      "basicAuthent": "changeme"
+      "basicAuthent": "changeme",
+      "allowedTypes" : [ { "extension": ".jpg", "mime": "image/jpeg" },
+      					 { "extension": ".pdf", "mime": "application/pdf" },
+      					 { "extension": ".mp4", "mime": "video/mp4" },
+      					 { "extension": ".mp3", "mime": "audio/mpeg" } ] 
 }
