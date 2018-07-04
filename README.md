@@ -1,3 +1,5 @@
+<img src="http://medimage.co.nz/wp-content/uploads/2018/04/icon-60.png">
+
 # MedImage Server
 
 The MedImage Server is a companion product to the MedImage apps on smart-phones. See http://medimage.co.nz
