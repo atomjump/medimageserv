@@ -75,7 +75,9 @@ var webProxy = null;				//For download requests from the internet, use a local p
 var allowedTypes = [ { "extension": ".jpg", "mime": "image/jpeg" },
       			     { "extension": ".pdf", "mime": "application/pdf" },
       				 { "extension": ".mp4", "mime": "video/mp4" },
-      				 { "extension": ".mp3", "mime": "audio/mpeg" } ];
+      				 { "extension": ".mp3", "mime": "audio/mpeg" },
+      				 { "extension": ".m4v", "mime": "video/mp4" },
+      				 { "extension": ".m4a", "mime": "audio/m4a" } ];
 
 
 var addons = [];					//Addon included modules.
