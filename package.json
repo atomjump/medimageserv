@@ -20,7 +20,7 @@
     "glob": "*",
     "http": "0.0.0",
     "https": "*",
-    "file-type": "^8.0.0",
+    "file-type": "^6.1.0",
     "klaw": "*",
     "mkdirp": "*",
     "multer": "*",
