@@ -1747,7 +1747,7 @@ function handleServer(_req, _res) {
 
 					var buffer = readChunk.sync(files.file1[0].path, 0, 12);
 					var imageObj = imageType(buffer);	//Display the file type
-					if(imageObj.mime != 'image/jpeg') {
+					if((!imageObj.mime) || (imageObj.mime != 'image/jpeg')) {
 						//Not a photo file - check if it is in our allowed types
 						var ext = null;
 						
