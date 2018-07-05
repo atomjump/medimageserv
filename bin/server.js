@@ -35,7 +35,7 @@ var separateReqPool = {maxSockets: 10};
 var request = require("request");
 var needle = require('needle');
 var readChunk = require('read-chunk'); // npm install read-chunk
-var imageType = require('image-type');
+var fileType = require('file-type');
 var shredfile = require('shredfile')();
 var queryStringLib = require('querystring');
 var async = require('async');
@@ -1746,18 +1746,20 @@ function handleServer(_req, _res) {
 
 
 					var buffer = readChunk.sync(files.file1[0].path, 0, 12);
-					var imageObj = imageType(buffer);	//Display the file type
-					if((!imageObj.mime) || (imageObj.mime != 'image/jpeg')) {
+					var fileObj = fileType(buffer);	//Display the file type
+					if((!fileObj)||(!fileObj.mime) || (fileObj.mime != 'image/jpeg')) {
 						//Not a photo file - check if it is in our allowed types
 						var ext = null;
 						
-						for(var type = 0; type < allowedTypes.length; type++) {
-							if(imageObj.mime === allowedTypes[type].mime) {
-								//This is an allowed type
-								var ext = allowedTypes[type].extension;
-								var ext2 = ext;			//The same for the 2nd one to replace
-							}
+						if(fileObj) {
+							for(var type = 0; type < allowedTypes.length; type++) {
+								if(fileObj.mime === allowedTypes[type].mime) {
+									//This is an allowed type
+									var ext = allowedTypes[type].extension;
+									var ext2 = ext;			//The same for the 2nd one to replace
+								}
 						
+							}
 						}
 						
 						if(!ext) {
