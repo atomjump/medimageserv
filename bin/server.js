@@ -1782,7 +1782,9 @@ function handleServer(_req, _res) {
 					var title = files.file1[0].originalFilename;
 
 					res.writeHead(200, {'content-type': 'text/plain'});
-				  	res.write('Received upload successfully! Check ' + normalizeInclWinNetworks(parentDir + outdirPhotos) + ' for your image.\n\n');
+					var returnStr = 'Received upload successfully!';
+					if(verbose == true) returnStr += 'Check ' + normalizeInclWinNetworks(parentDir + outdirPhotos) + ' for your image.';
+				  	res.write(returnStr + '\n\n');
 				  	res.end();
 
 
