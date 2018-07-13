@@ -2341,6 +2341,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
   }
   
   //Run through the user-defined file types
+  if(verbose == true) console.log(JSON.stringify(allowedTypes));
   for(var type = 0; type < allowedTypes; type++) {
   	if(verbose == true) console.log(allowedTypes[type].extension);
   	if(ext === allowedTypes[type].extension) {
