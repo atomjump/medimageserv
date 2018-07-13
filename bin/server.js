@@ -77,7 +77,10 @@ var allowedTypes = [ { "extension": ".jpg", "mime": "image/jpeg" },
       				 { "extension": ".mp4", "mime": "video/mp4" },
       				 { "extension": ".mp3", "mime": "audio/mpeg" },
       				 { "extension": ".m4v", "mime": "video/mp4" },
-      				 { "extension": ".m4a", "mime": "audio/m4a" } ];
+      				 { "extension": ".m4a", "mime": "audio/m4a" },
+      				 { "extension": ".csv", "mime": "text/csv" },
+      				 { "extension": ".json", "mime": "application/json" }
+          }  ];
 
 
 var addons = [];					//Addon included modules.
