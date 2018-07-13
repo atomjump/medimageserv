@@ -2342,8 +2342,10 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
   
   //Run through the user-defined file types
   for(var type = 0; type < allowedTypes; type++) {
+  	if(verbose == true) console.log(allowedTypes[type].extension);
   	if(ext === allowedTypes[type].extension) {
   		contentType = allowedTypes[type].mime;
+  		if(verbose == true) console.log(contentType);
   	}
   
   }
