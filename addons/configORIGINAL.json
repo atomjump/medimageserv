@@ -2,6 +2,8 @@
 	"events": {
 		"photoWritten": [		
 		],
+		"fileWritten": [
+		],
 		"urlRequest": [	
 		
 			   {

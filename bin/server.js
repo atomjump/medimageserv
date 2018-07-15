@@ -35,7 +35,7 @@ var separateReqPool = {maxSockets: 10};
 var request = require("request");
 var needle = require('needle');
 var readChunk = require('read-chunk'); // npm install read-chunk
-var imageType = require('image-type');
+var fileType = require('file-type');
 var shredfile = require('shredfile')();
 var queryStringLib = require('querystring');
 var async = require('async');
@@ -71,6 +71,16 @@ var flapSimulation = false;			//Simulate service flapping from e.g. a faulty loa
 var flapState = false;
 var webProxy = null;				//For download requests from the internet, use a local proxy server at this URL
 									//See: http://stackoverflow.com/questions/23585371/proxy-authentication-in-node-js-with-module-request
+
+var allowedTypes = [ { "extension": ".jpg", "mime": "image/jpeg" },
+      			     { "extension": ".pdf", "mime": "application/pdf" },
+      				 { "extension": ".mp4", "mime": "video/mp4" },
+      				 { "extension": ".mp3", "mime": "audio/mpeg" },
+      				 { "extension": ".m4v", "mime": "video/mp4" },
+      				 { "extension": ".m4a", "mime": "audio/m4a" },
+      				 { "extension": ".csv", "mime": "text/csv" },
+      				 { "extension": ".json", "mime": "application/json" }  ];
+
 
 var addons = [];					//Addon included modules.
 global.globalConfig = null;			//This is a global current version of the config file, available to add-ons
@@ -262,6 +272,10 @@ function checkConfigCurrent(setProxy, cb) {
 			 if(content.listenPort) {
 			   listenPort = content.listenPort;
 			 }
+			 
+			 if(content.allowedTypes) {
+			 	allowedTypes = content.allowedTypes;
+			 }
 
 			 if(content.httpsKey) {
 			 	//httpsKey should point to the key .pem file
@@ -420,11 +434,17 @@ function fileWalk(startDir, cb)
 		          })
 		          .on('end', function () {
 			        for(var cnt = 0; cnt< items.length; cnt++) {
-				         if(items[cnt].indexOf(".jpg") >= 0) {
-					        cb(items[cnt]);
-				         	return;
-				         }
+				        
+				        //Go through allowed file types array 
+				        for(var type = 0; type < allowedTypes.length; type++) {
+				         
+							 if(items[cnt].indexOf(allowedTypes[type].extension) >= 0) {
+								cb(items[cnt], allowedTypes[type].mime);
+								return;
+							 }
+						}
 			        }
+			        
 			        cb(null);
 	          });
 	   } catch(err) {
@@ -529,9 +549,13 @@ function download(uri, callback){
 											})
 										}
 
+										if(createFile.indexOf(".jpg") >= 0) {
+											var event = "photoWritten";
+										} else {
+											var event = "fileWritten";
+										}
 										
-										
-										addOns("photoWritten", function(err, normalBackup) {
+										addOns(event, function(err, normalBackup) {
 											if(err) {
 												console.log("Error writing file:" + err);
 											} else {
@@ -1276,6 +1300,120 @@ function addOns(eventType, cb, param1, param2, param3)
 		
 				break;
 				
+				
+				case "fileWritten":
+					//Only difference here is it is a generic file that has been written rather than a photo .jpg file
+					//param1 is the full path of the new file in the home directory (not the backed up copy)
+					if(content.events.fileWritten) {
+						
+						var normalBackup = true;
+						var evs = content.events.fileWritten;
+						var backupAtEnd = [];
+						
+						
+						console.log("PARAM1:" + param1);
+						
+						
+						//Asyncronously call each item, but in sequential order. This means the process could
+						//be doing something processor intensive without holding up the main server, but still allow
+						//each add-on to potentially process sequentially. This could be useful for chaining image resizing,
+						//image processing add-ons together in the correct order.
+						async.eachOfSeries(evs,
+							  // 2nd param is the function that each item is passed to
+							  function(runBlock, cnt, callback){
+						
+						
+						
+								//for(var cnt = 0; cnt< evs.length; cnt++) {
+								if(runBlock.active == true) {
+									//Run the command off the system 
+									
+									//First check if we need to backup the file into the target before running with
+									//the target version.
+									if((runBlock.useTargetFolderFile)&&(runBlock.useTargetFolderFile == true)) {
+										
+										
+										
+										var cmdLine = runBlock.runProcess;
+										cmdLine = cmdLine.replace(/parentdir/g, serverParentDir());
+	
+										cmdLine = cmdLine.replace(/param1/g, param1);
+										cmdLine = cmdLine.replace(/param2/g, param2);
+										cmdLine = cmdLine.replace(/param3/g, param3);
+										
+										var photoParentDir = normalizeInclWinNetworks(serverParentDir() + outdirPhotos);
+										if(verbose == true) console.log("Backing up requested files from script");
+										if(verbose == true) console.log("photoParentDir=" + photoParentDir);
+										var finalFileName = normalizeInclWinNetworks(param1);
+										finalFileName = finalFileName.replace(photoParentDir,"").trim();		//Remove the photo's directory from the filename
+										if(verbose == true) console.log("finalFileName=" + finalFileName);
+										var thisPath = normalizeInclWinNetworks(param1);
+										if(verbose == true) console.log("thisPath=" + thisPath);
+																			
+										
+										//Start with a backup of the file in param1, and replace that for the photoWritten command param1
+										backupFile(thisPath, "", finalFileName, { }, function(err, newPath) {
+										
+											if(err) {
+												callback(err, null);
+											} else {
+										
+												runCommandPhotoWritten(runBlock, backupAtEnd, newPath, param2, param3, function(err) {
+													if(err) {
+														callback(err);
+													} else {											
+														//Note: we must call back here once the system command has finished. This allows us
+														//to go on to the next command, sequentially, though each command is run async
+														callback(null);
+													}											
+												});
+											}
+										
+										});
+									} else {
+									
+										//Do a normal processing of the content from within the transition folder (e.g. C:\MedImage\photos on Windows)
+										runCommandPhotoWritten(runBlock, backupAtEnd, param1, param2, param3, function(err) {
+											if(err) {
+												callback(err);
+											} else {											
+												//Note: we must call back here once the system command has finished. This allows us
+												//to go on to the next command, sequentially, though each command is run async
+												callback(null);
+											}
+											
+										});
+									}
+								} else {	//End of is active check
+									//We must callback even if it is not active, to go to the next option
+									 callback(null);
+								}
+						
+						},	//End of async eachOf single item
+							  function(err){
+								// All tasks are done now
+								if(err) {
+								   console.log('ERR:' + err);
+								 } else {
+								   console.log('Completed all fileWritten events!');
+								   
+								   //Carry out the backups after all commands have finished
+								   for(var cnt = 0; cnt < backupAtEnd.length; cnt++) {	
+								   		backupFile(backupAtEnd[cnt].thisPath, "", backupAtEnd[cnt].finalFileName,  { });
+								   }
+								   
+								   
+								   
+								   cb(null, normalBackup);
+								 }
+							   }
+					  	); //End of async eachOf all items
+					
+					}
+		
+				break;
+				
+				
 				case "urlRequest":
 					if(verbose == true) console.log("URL request of " + param1);
 					
@@ -1610,13 +1748,33 @@ function handleServer(_req, _res) {
 
 
 					var buffer = readChunk.sync(files.file1[0].path, 0, 12);
-					var imageObj = imageType(buffer);	//Display the file type
-					if(imageObj.mime != 'image/jpeg') {
-						//No file exists
-						console.log("Error uploading file. Only jpg image files are allowed.");
-			        	res.statusCode = 400;			//Error during transmission - tell the app about it
-	  					res.end();
-						return;
+					var fileObj = fileType(buffer);	//Display the file type
+					if((!fileObj)||(!fileObj.mime) || (fileObj.mime != 'image/jpeg')) {
+						//Not a photo file - check if it is in our allowed types
+						var ext = null;
+						
+						if(fileObj) {
+							for(var type = 0; type < allowedTypes.length; type++) {
+								if(fileObj.mime === allowedTypes[type].mime) {
+									//This is an allowed type
+									var ext = allowedTypes[type].extension;
+									var ext2 = ext;			//The same for the 2nd one to replace
+								}
+						
+							}
+						}
+						
+						if(!ext) {
+							//No file exists
+							console.log("Error uploading file. Only certain files (e.g. jpg) are allowed.");
+			        		res.statusCode = 400;			//Error during transmission - tell the app about it
+	  						res.end();
+							return;
+						}
+					} else {
+						var ext = ".jpg";
+						var ext2 = ".jpeg";
+					
 					}
 
 
@@ -1626,14 +1784,16 @@ function handleServer(_req, _res) {
 					var title = files.file1[0].originalFilename;
 
 					res.writeHead(200, {'content-type': 'text/plain'});
-				  	res.write('Received upload successfully! Check ' + normalizeInclWinNetworks(parentDir + outdirPhotos) + ' for your image.\n\n');
+					var returnStr = 'Received upload successfully!';
+					if(verbose == true) returnStr += 'Check ' + normalizeInclWinNetworks(parentDir + outdirPhotos) + ' for your image.';
+				  	res.write(returnStr + '\n\n');
 				  	res.end();
 
 
 					//Copy file to eg. c:/snapvolt/photos
 					var outFile = title;
-					outFile = outFile.replace('.jpg','');			//Remove jpg from filename
-					outFile = outFile.replace('.jpeg','');			//Remove jpg from filename
+					outFile = outFile.replace(ext,'');			//Remove jpg from filename
+					outFile = outFile.replace(ext2,'');			//Remove jpeg from filename
 					outFile = replaceAll(outFile, "..", "");			//Remove nasty chars
 
 
@@ -1696,7 +1856,7 @@ function handleServer(_req, _res) {
 
 
 
-					finalFileName = finalFileName + '.jpg';
+					finalFileName = finalFileName + ext;
 
 					//Move the file into the standard location of this server
 					var fullPath = outdir + '/' + finalFileName;
@@ -1721,7 +1881,15 @@ function handleServer(_req, _res) {
 							
 								 
 							//Run the addons events on this new photo
-							addOns("photoWritten", function(err, normalBackup) {
+							if(ext === ".jpg") {
+								var event = "photoWritten";
+							} else {
+								var event = "fileWritten";
+							}
+							
+							
+							
+							addOns(event, function(err, normalBackup) {
 								if(err) {
 									console.log("Error writing file:" + err);
 								} else {
@@ -1945,7 +2113,7 @@ function handleServer(_req, _res) {
 
 						
 						 //Get first file in the directory list
-						 fileWalk(outdir, function(outfile, cnt) {
+						 fileWalk(outdir, function(outfile, mime, cnt) {
 
 							 if(outfile) {
 								//Get outfile - compareWith
@@ -1954,12 +2122,12 @@ function handleServer(_req, _res) {
 								if(verbose == true) console.log("About to download (eventually delete): " + outfile);
 
 								if(req.method === "HEAD") {
-									//Get the header only
-									res.writeHead(200, {'content-type': "image/jpg", 'file-name': localFileName });
+									//Serve the header only
+									res.writeHead(200, {'content-type': mime, 'file-name': localFileName });
 									res.end();
 
 								} else {
-									//Now get the full file
+									//Now serve the full file
 									serveUpFile(outfile,localFileName, res, true);
 								}
 
@@ -2173,6 +2341,16 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
   if(ext === '.css') {
     contentType = 'text/css';
   }
+  
+  //Run through the user-defined file types
+  for(var type = 0; type < allowedTypes.length; type++) {
+  	if(ext === allowedTypes[type].extension) {
+  		contentType = allowedTypes[type].mime;
+  		if(verbose == true) console.log(contentType);
+  	}
+  
+  }
+  
 
   //Being preparation to send
 
