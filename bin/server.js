@@ -538,15 +538,20 @@ function download(uri, callback){
 
 										//Update the data transferred successfully
 										if(uri.indexOf("atomjump.com") >= 0) {
-											var stats = fs.statSync(createFile);
-											var fileSizeInBytes = stats["size"];
+											try {
+											  	//File exists
+											  var stats = fs.statSync(createFile);
+											  var fileSizeInBytes = stats["size"];
+											  bytesTransferred += fileSizeInBytes;
 
-											bytesTransferred += fileSizeInBytes;
+											  //Save the bytes transferred to atomjump.com for progress
+											  checkConfigCurrent(null, function() {
 
-											//Save the bytes transferred to atomjump.com for progress
-											checkConfigCurrent(null, function() {
-
-											})
+											  })
+											}
+											catch(err) {
+												console.log('Warning: file ' + createFile + ' did not exist.');
+											}											
 										}
 
 										if(createFile.indexOf(".jpg") >= 0) {
