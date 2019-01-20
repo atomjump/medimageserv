@@ -364,47 +364,82 @@ function checkConfigCurrent(setProxy, cb) {
 							}
 						}
 						
-						//Set the global copy in RAM for add-ons to use
-						globalConfig = content;
+						try {
+							var newContent = JSON.stringify(content, null, 6);
+						}
+						catch(err) {
+							cb("Error: the config file cannot be written: " + err.message);
+							return;
+						}
+							
+						if(newContent) {
+							//Set the global copy in RAM for add-ons to use
+							globalConfig = content;
+							
+							 //Write the config file nicely formatted again, after we've added the new backup drives
+							fs.writeFile(configFile, newContent, function(err) {
+								
+
+								if(verbose == true) console.log("The config file was saved!");
+
+								//Now start any ping to read from a remote server
+								if((content.readProxy) && (content.readProxy != "")) {
+									startReadRemoteServer(content.readProxy);
+								}
+								
+								if(err) {
+									if(verbose == true) console.log("Warning: The config file was not saved! Error: " + err);
+									cb(err);
+								} else {
+									cb(null);
+								}
+							});
+						} else {
+							//This is a blank config file. Leave as is.
+							cb("Error: was about to save a blank config.");
+						}
 						
-						 //Write the config file nicely formatted again, after we've added the new backup drives
-						fs.writeFile(configFile, JSON.stringify(content, null, 6), function(err) {
-							if(err) {
-								cb(err);
-							}
-
-							if(verbose == true) console.log("The config file was saved!");
-
-							//Now start any ping to read from a remote server
-							if((content.readProxy) && (content.readProxy != "")) {
-								startReadRemoteServer(content.readProxy);
-
-							}
-							cb(null);
-						});
 						
 					}			
 
 				 });
 			 } else {
-				//Set the global copy in RAM for add-ons to use 
-				globalConfig = content;
-				 
-			 	 //Write the config file nicely formatted again
-				fs.writeFile(configFile, JSON.stringify(content, null, 6), function(err) {
-					if(err) {
-						cb(err);
-					}
+				
+				try {
+					var newContent = JSON.stringify(content, null, 6);
+				} 
+				catch(err) {
+					cb("Error: the config file cannot be written: " + err.message);
+					return;
+				}
+						
+				if(newContent) {
+					//Set the global copy in RAM for add-ons to use 
+					globalConfig = content;
+					 
+				 	 //Write the config file nicely formatted again
+					fs.writeFile(configFile, newContent, function(err) {
 
-					if(verbose == true) console.log("The config file was saved!");
+						if(verbose == true) console.log("The config file was saved!");
 
-					//Now start any ping to read from a remote server
-					if((content.readProxy) && (content.readProxy != "")) {
-						startReadRemoteServer(content.readProxy);
-
-					}
-					cb(null);
-				});
+						//Now start any ping to read from a remote server
+						if((content.readProxy) && (content.readProxy != "")) {
+							startReadRemoteServer(content.readProxy);
+						}
+						
+						if(err) {
+							if(verbose == true) console.log("Warning: The config file was not saved! Error: " + err);
+							cb(err);
+						} else {
+							cb(null);
+						}
+					});
+				} else {
+					//This is a blank config file. Leave as is.
+					cb("Error: was about to save a blank config.");
+				
+				}
+				
 			 			 
 			 
 			 }
