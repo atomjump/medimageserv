@@ -80,6 +80,8 @@ var allowedTypes = [ { "extension": ".jpg", "mime": "image/jpeg" },
       				 { "extension": ".m4a", "mime": "audio/m4a" },
       				 { "extension": ".csv", "mime": "text/csv" },
       				 { "extension": ".json", "mime": "application/json" }  ];
+      				 
+var allowedChars = "a-zA-z0-9#._";			//Allowed characters in filename - default
 
 
 var addons = [];					//Addon included modules.
@@ -314,6 +316,11 @@ function checkConfigCurrent(setProxy, cb) {
 			 //set to true, but internet based servers should have this to false, so that it cannot eg. read itself.
 			 if(content.allowGettingRemotePhotos) {
 			   allowGettingRemotePhotos = content.allowGettingRemotePhotos;
+			 }
+			 
+			 //An option to only allow certain characters
+			 if(content.allowedChars) {
+			 	allowedChars = content.allowedChars;
 			 }
 
 
@@ -1698,7 +1705,9 @@ function getFileFromUserStr(inFile)
 		outFile = outFile.replace('.jpg','');			//Remove jpg from filename
 		outFile = outFile.replace('.jpeg','');			//Remove jpg from filename
 		outFile = replaceAll(outFile, "..", "");			//Remove nasty chars
-
+		
+		var re = new RegExp("/[" + allowedChars + "]/", "g");
+		outFile = outFile.replace(re, "");					//Only keep usable chars
 
 		outFile = trimChar(outFile, '/');		//Allowed directory slashes within the filename, but otherwise nothing around sides
 		outFile = trimChar(outFile,'\\');
@@ -1835,6 +1844,9 @@ function handleServer(_req, _res) {
 					outFile = outFile.replace(ext,'');			//Remove jpg from filename
 					outFile = outFile.replace(ext2,'');			//Remove jpeg from filename
 					outFile = replaceAll(outFile, "..", "");			//Remove nasty chars
+							
+					var re = new RegExp("/[" + allowedChars + "]/", "g");
+					outFile = outFile.replace(re, "");					//Only keep usable chars
 
 
 					outFile = trimChar(outFile, '/');		//Allowed directory slashes within the filename, but otherwise nothing around sides
