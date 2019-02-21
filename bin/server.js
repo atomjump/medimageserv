@@ -81,7 +81,7 @@ var allowedTypes = [ { "extension": ".jpg", "mime": "image/jpeg" },
       				 { "extension": ".csv", "mime": "text/csv" },
       				 { "extension": ".json", "mime": "application/json" }  ];
       				 
-var allowedChars = "a-zA-z0-9#._";			//Allowed characters in filename - default
+var allowedChars = "a-zA-z0-9#._-";			//Allowed characters in filename - default
 
 
 var addons = [];					//Addon included modules.
@@ -1706,7 +1706,7 @@ function getFileFromUserStr(inFile)
 		outFile = outFile.replace('.jpeg','');			//Remove jpg from filename
 		outFile = replaceAll(outFile, "..", "");			//Remove nasty chars
 		
-		var re = new RegExp("/[" + allowedChars + "]/", "g");
+		var re = new RegExp("[^" + allowedChars + "]", "g");
 		outFile = outFile.replace(re, "");					//Only keep usable chars
 
 		outFile = trimChar(outFile, '/');		//Allowed directory slashes within the filename, but otherwise nothing around sides
@@ -1845,7 +1845,7 @@ function handleServer(_req, _res) {
 					outFile = outFile.replace(ext2,'');			//Remove jpeg from filename
 					outFile = replaceAll(outFile, "..", "");			//Remove nasty chars
 							
-					var re = new RegExp("/[" + allowedChars + "]/", "g");
+					var re = new RegExp("[^" + allowedChars + "]", "g");
 					outFile = outFile.replace(re, "");					//Only keep usable chars
 
 
