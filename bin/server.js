@@ -2148,7 +2148,7 @@ function handleServer(_req, _res) {
 						  		//No connection available
 						  		console.log("Pairing error:" + error + " Status: " + response.statusCode);
 						  		var replace = {
-							   	 "CUSTOMCODE": "[Pairing error: " + error + " Status: " + response.statusCode) + "]",
+							   	 "CUSTOMCODE": "[Pairing error: " + error + " Status: " + response.statusCode + "]",
 							   	 "CUSTOMCOUNTRY": "[Unknown]",
 							   	 "STANDARDHEADER": htmlHeaderCode
 							   };
