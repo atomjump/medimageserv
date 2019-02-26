@@ -2091,7 +2091,26 @@ function handleServer(_req, _res) {
 					   
 
 					   needle.post(fullPairingUrl, data, options, function(error, response) {
-						  if (!error && response.statusCode == 200) {
+						  if(error) {
+						  		console.log("Pairing error:" + error);
+						  		var replace = {
+							   	 "CUSTOMCODE": "[Pairing error: " + error + "]",
+							   	 "CUSTOMCOUNTRY": "[Unknown]",
+							   	 "STANDARDHEADER": htmlHeaderCode
+							   };
+
+							   //Write full proxy to config file
+							   checkConfigCurrent(readProx, function() {
+
+
+								   //Display passcode to user
+								   var outdir = __dirname + "/../public/pages/passcode.html";
+								   serveUpFile(outdir, null, res, false, replace);
+								   return;
+							   });
+						  } else {
+						  
+						  	if (response.statusCode == 200) {
 							  console.log(response.body);
 
 							   var codes = response.body.split(" ");
@@ -2125,6 +2144,26 @@ function handleServer(_req, _res) {
 							   });
 
 
+						  	} else {
+						  		//No connection available
+						  		console.log("Pairing error:" + error + " Status: " + response.statusCode);
+						  		var replace = {
+							   	 "CUSTOMCODE": "[Pairing error: " + error + " Status: " + response.statusCode) + "]",
+							   	 "CUSTOMCOUNTRY": "[Unknown]",
+							   	 "STANDARDHEADER": htmlHeaderCode
+							   };
+
+							   //Write full proxy to config file
+							   checkConfigCurrent(readProx, function() {
+
+
+								   //Display passcode to user
+								   var outdir = __dirname + "/../public/pages/passcode.html";
+								   serveUpFile(outdir, null, res, false, replace);
+								   return;
+							   });
+						  		
+						  	} 
 						  }
 					   });
 				   });
