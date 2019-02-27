@@ -2088,7 +2088,6 @@ function handleServer(_req, _res) {
 					   	 options.proxy = webProxy;
 					   } 
 					   options.follow = 1;		//Allow redirection once to the secure page.
-					   options.rejectUnauthorized = false;		//We don't want an error/change at the cert level at atomjump.com to throw our connection.
 					   
 
 					   needle.post(fullPairingUrl, data, options, function(error, response) {
