@@ -27,7 +27,11 @@ eval "$(curl -fsSL -H 'Cache-Control: no-cache' https://raw.githubusercontent.co
 eval "$(curl -fsSL -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/atomjump/medimageserv-linstaller/master/install-root)"     
 ```
 
-And run the command the last command displays, to get autostart at boot-up.
+Alternatively, if these do not match your server's permissions, you can find the list of individual commands at 
+https://raw.githubusercontent.com/atomjump/medimageserv-linstaller/master/install
+https://raw.githubusercontent.com/atomjump/medimageserv-linstaller/master/install-root
+
+Run the command the last part of the script displays, to get autostart at boot-up.
 
 You may have to open the firewall to port 5566 for reading and writing eg.:
 ```
