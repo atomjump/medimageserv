@@ -2132,6 +2132,8 @@ function handleServer(_req, _res) {
 							  console.log(response.body);
 
 							   var codes = response.body.split(" ");
+							  
+							   codes[1] = "sdfs/este/erewt.sjs";   //TESTING REMOVE ME
 							   var passcode = codes[0];
 							   newGlobalId = validateGlobalId(codes[1]);
 							   if(newGlobalId !== false) {
