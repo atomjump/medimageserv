@@ -263,7 +263,7 @@ function checkConfigCurrent(setProxy, cb) {
 			   content.readProxy = setProxy;
 			 }
 
-			 if(globalId) {
+			 if((globalId)&&(validateGlobalId(globalId) !== false)) {
 			   content.globalId = globalId;
 			 }
 
