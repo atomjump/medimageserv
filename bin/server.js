@@ -1099,6 +1099,24 @@ function myExec(cmdLine, priority, cb) {
 }
 
 
+function validateGlobalId(globalId) {
+	//Returns the global id if the input globalId sting is valid, or 'false' if not
+	//Format is 18 characters, ASCII. If any unusual punctuation characters then it is not correct.
+	//We will give some leeway over the number of characters in case the pairing server has any changes, but it must 
+	//have more than 16 characters.
+	
+	if(globalId.length > 16) {
+		var format = /^[a-zA-Z0-9]+$/;
+		if(format.test(globalId) === true) {
+			return globalId;
+		} else {
+			return false;
+		}
+		
+	}
+	return false;
+
+}
 
 
 function runCommandPhotoWritten(runBlock, backupAtEnd, param1, param2, param3, cb) {
@@ -2115,15 +2133,22 @@ function handleServer(_req, _res) {
 
 							   var codes = response.body.split(" ");
 							   var passcode = codes[0];
-							   globalId = codes[1];
-							   var guid = globalId;
-							   var proxyServer = codes[2].replace("\n", "");
-							   if(codes[3]) {
-							   	var country = decodeURIComponent(codes[3].replace("\n", ""));
+							   newGlobalId = validateGlobalId(codes[1]);
+							   if(newGlobalId !== false) {
+							   	   globalId = codes[1];
+   						   		   var guid = globalId;
+								   var proxyServer = codes[2].replace("\n", "");
+								   if(codes[3]) {
+									var country = decodeURIComponent(codes[3].replace("\n", ""));
+								   } else {
+									//Defaults to an unknown country.
+									var country = "[Unknown]";
+								   }
 							   } else {
-							   	//Defaults to an unknown country.
-							   	var country = "[Unknown]";
+							   	   passcode = "----";
+							       var country = "[Sorry there was a problem contacting the pairing server. Please try again, or check 'Service Status'.]";
 							   }
+							  
 							   var readProx = proxyServer + "/read/" + guid;
 							   console.log("Proxy set to:" + readProx);
 
