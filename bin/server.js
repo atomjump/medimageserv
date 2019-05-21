@@ -2132,8 +2132,6 @@ function handleServer(_req, _res) {
 							  console.log(response.body);
 
 							   var codes = response.body.split(" ");
-							  
-							   codes[1] = "sdfs/este/erewt.sjs";   //TESTING REMOVE ME
 							   var passcode = codes[0];
 							   newGlobalId = validateGlobalId(codes[1]);
 							   if(newGlobalId !== false) {
@@ -2146,13 +2144,15 @@ function handleServer(_req, _res) {
 									//Defaults to an unknown country.
 									var country = "[Unknown]";
 								   }
+								   
+								   var readProx = proxyServer + "/read/" + guid;
+							   	   console.log("Proxy set to:" + readProx);
 							   } else {
 							   	   passcode = "----";
 							       var country = "[Sorry there was a problem contacting the pairing server. Please try again, or check 'Service Status'.]";
 							   }
 							  
-							   var readProx = proxyServer + "/read/" + guid;
-							   console.log("Proxy set to:" + readProx);
+							   
 
 							   var replace = {
 							   	 "CUSTOMCODE": passcode,
