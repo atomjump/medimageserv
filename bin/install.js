@@ -66,7 +66,16 @@ function updateConfig(newdir, cb) {
 
 if(process.argv[2]) {
   
-  var photoDir = upath.normalize(process.argv[2]);
+  //Potentially there can be spaces in this path, which would be input as a different argument.
+  //Append them all into one single directory variable.
+  var fullDir = process.argv[2];
+  for(var argc = 3; argc < process.argv.length; argc++) {
+  	if(process.argv[argc]) {
+  		fullDir += " " + process.argv[argc];
+  	}  
+  }
+  
+  var photoDir = upath.normalize(fullDir);
   //path.posix.normalize(p)
   updateConfig(photoDir, function(err) {
       if(err) {
