@@ -697,13 +697,13 @@ function readRemoteServer(url)
 			
 			//Now do a double check there has been no problem during the download. Have a timeout after 5 minutes to restart the ping process.
 			setTimeout(function() {
-				if(verbose == true) console.log("Ping status after 5 minutes time: " + thisComplete);
+				if(verbose == true) console.log("Ping status after 1 minutes time: " + thisComplete);
 				if(thisComplete == false) {
 					//OK restart the ping still.
 					thisComplete = true;
 					readRemoteServer(_url);				
 				}
-			}, 8000);   //Should be 30000 = 5 minutes
+			}, 60000);   //Should be 60000 = 1 minute
 
 		}, 5000);
 
