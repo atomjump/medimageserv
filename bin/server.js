@@ -688,8 +688,11 @@ function readRemoteServer(url)
 			var thisComplete = false;		//This is a flag for this request only.
 			download(url, function(){
 				  if(verbose == true) console.log("Ping status: " + thisComplete);
-				  thisComplete = true;
-				  readRemoteServer(_url);
+				  if(thisComplete == false) {
+				  		//It is possible we have been run by the timeout below, so don't repeat (or we would get faster and faster)
+				  	 	thisComplete = true;
+				  		readRemoteServer(_url);
+				  }
 			});
 			
 			//Now do a double check there has been no problem during the download. Have a timeout after 5 minutes to restart the ping process.
@@ -697,6 +700,7 @@ function readRemoteServer(url)
 				if(verbose == true) console.log("Ping status after 5 minute time: " + thisComplete);
 				if(thisComplete == false) {
 					//OK restart the ping still.
+					thisComplete = true;
 					readRemoteServer(_url);				
 				}
 			}, 8000);   //Should be 30000 = 5 minutes
