@@ -688,8 +688,8 @@ function readRemoteServer(url)
 			var thisComplete = false;		//This is a flag for this request only.
 			download(url, function(){
 				  if(verbose == true) console.log("Ping status: " + thisComplete);
-				  thisComplete = true;
-				  readRemoteServer(_url);
+				  //TESTING OUTthisComplete = true;
+				  //TESTING OUTreadRemoteServer(_url);
 			});
 			
 			//Now do a double check there has been no problem during the download. Have a timeout after 5 minutes to restart the ping process.
