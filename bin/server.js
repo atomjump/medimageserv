@@ -680,11 +680,26 @@ function readRemoteServer(url)
 		}
 
 		var _url = url;
+		
+
+		
 		setTimeout(function() {
-			process.stdout.write("'");     //Display movement to show upload pinging
+			process.stdout.write("'");     //Display movement to show download pinging
+			var thisComplete = false;		//This is a flag for this request only.
 			download(url, function(){
+				  if(verbose == true) console.log("Ping status: " + thisComplete);
+				  thisComplete = true;
 				  readRemoteServer(_url);
 			});
+			
+			//Now do a double check there has been no problem during the download. Have a timeout after 5 minutes to restart the ping process.
+			setTimeout(function() {
+				if(verbose == true) console.log("Ping status after 5 minute time: " + thisComplete);
+				if(thisComplete == false) {
+					//OK restart the ping still.
+					readRemoteServer(_url);				
+				}
+			}, 8000);   //Should be 30000 = 5 minutes
 
 		}, 5000);
 
