@@ -250,7 +250,16 @@ function checkConfigCurrent(setProxy, cb) {
 
 
 		} else {
-			var content = JSON.parse(data);
+			if(data) {
+				var content = JSON.parse(data);
+			} else {
+				if(global.globalConfig) {
+					content = global.globalConfig;
+				} else {
+					cb("Sorry, the config file is blank.");
+					return;
+				}
+			}
 
 			if(!content.globalId) {
 				//Only need to create the server's ID once. And make sure it is not the same as the developer's ID
