@@ -784,7 +784,12 @@ function backupFile(thisPath, outhashdir, finalFileName, opts, cb)
 			console.log("Warning: Error reading config file for backup options: " + err);
 			cb(err, null);
 		} else {
-			var content = JSON.parse(data);
+			if(data) {
+				var content = JSON.parse(JSON.stringify(data));
+			} else {
+				//There was an error reading the data. Use the existing global var.
+				var content = global.globalConfig;
+			}
 
 
 			if(content.backupTo) {
@@ -1265,7 +1270,12 @@ function addOns(eventType, cb, param1, param2, param3)
 		if (err) {
 			console.log("Warning: Error reading addons config file: " + err);
 		} else {
-			var content = JSON.parse(data);
+			if(data) {
+				var content = JSON.parse(JSON.stringify(data));
+			} else {
+				//There was an error reading the data. Use the existing global var.
+				var content = global.globalConfig;
+			}
 
 			if(verbose == true) {
 				console.log("Got content of addons config");			
@@ -2514,14 +2524,10 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
 
 	     for (var key in customStringList) {
 	     	 strData = strData.replace(new RegExp(key, 'g'), customStringList[key]);
-  		  	 //if(verbose == true) console.log("key " + key + " has value " + customStringList[key]);
-
+  
 	     }
 
-
-	     //if(verbose == true) console.log(strData);
-
-	     data = JSON.parse( JSON.stringify( strData ) ); //JSON.parse(strData);
+	     data = JSON.parse( JSON.stringify( strData ) ); 
 	  }
 
 	  res.on('error', function(err){
