@@ -785,7 +785,7 @@ function backupFile(thisPath, outhashdir, finalFileName, opts, cb)
 			cb(err, null);
 		} else {
 			if(data) {
-				var content = JSON.parse(JSON.stringify(data));
+				var content = JSON.parse(data);
 			} else {
 				//There was an error reading the data. Use the existing global var.
 				var content = global.globalConfig;
@@ -1271,7 +1271,7 @@ function addOns(eventType, cb, param1, param2, param3)
 			console.log("Warning: Error reading addons config file: " + err);
 		} else {
 			if(data) {
-				var content = JSON.parse(JSON.stringify(data));
+				var content = JSON.parse(data);
 			} else {
 				//There was an error reading the data. Use the existing global var.
 				var content = global.globalConfig;
@@ -1511,7 +1511,7 @@ function addOns(eventType, cb, param1, param2, param3)
 				case "urlRequest":
 					if(verbose == true) console.log("URL request of " + param1);
 					
-					if(content.events.urlRequest) {
+					if(content.events && content.events.urlRequest) {
 							
 							var evs = content.events.urlRequest;
 							for(var cnt = 0; cnt< evs.length; cnt++) {
