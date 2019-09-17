@@ -161,6 +161,34 @@ function ensurePhotoReadableWindows(fullPath, cb) {
 	}
 }
 
+
+function shredWrapper(fullPath, theFile) {
+	var platform = process.platform;
+	if(verbose == true) console.log(process.platform);
+	var isWin = /^win/.test(platform);
+	if(verbose == true) console.log("IsWin=" + isWin);
+	if(isWin) {
+	
+		var tempFile = fs.openSync(fullPath, 'r');
+		fs.closeSync(tempFile);
+	
+		fs.unlinkSync(fullPath);
+		console.log("Sent on and deleted " + theFile);
+
+	} else {
+		//Do a true linux shred
+		shredfile.shred(normpath, function(err, file) {
+					if(err) {
+						console.log(err);
+						return;
+					}
+					console.log("Sent on and shredded " + theFile);
+		});
+	}
+
+}
+
+
 function ensureDirectoryWritableWindows(fullPath, cb) {
 	//Optional cb(err) passed back
 	//Check platform is windows
@@ -2273,6 +2301,7 @@ function handleServer(_req, _res) {
 
 							 if(outfile) {
 								//Get outfile - compareWith
+								outfile = normalizeInclWinNetworks(outfile);
 								var localFileName = outfile.replace(compareWith, "");
 								if(verbose == true) console.log("Local file to download via proxy as:" + localFileName);
 								if(verbose == true) console.log("About to download (eventually delete): " + outfile);
@@ -2565,13 +2594,8 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
 				//Note: we may need to check the client has got the full file before deleting it?
 				//e.g. timeout/ or a whole new request.
 				if(verbose == true) console.log("About to shred:" + normpath);
-				shredfile.shred(normpath, function(err, file) {
-					if(err) {
-						console.log(err);
-						return;
-					}
-					console.log("Sent on and shredded " + theFile);
-				});
+				shredWrapper(normpath, theFile);
+				
 
 			}
 
@@ -2606,13 +2630,8 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
 				//Note: we may need to check the client has got the full file before deleting it?
 				//e.g. timeout/ or a whole new request.
 				if(verbose == true) console.log("About to shred:" + normpath);
-				shredfile.shred(normpath, function(err, file) {
-					if(err) {
-						console.log(err);
-						return;
-					}
-					console.log("Sent on and shredded " + theFile);
-				});
+				shredWrapper(normpath, theFile);
+
 
 			}
 		  });
