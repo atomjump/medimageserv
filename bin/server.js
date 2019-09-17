@@ -177,7 +177,7 @@ function shredWrapper(fullPath, theFile) {
 
 	} else {
 		//Do a true linux shred
-		shredfile.shred(normpath, function(err, file) {
+		shredfile.shred(fullPath, function(err, file) {
 					if(err) {
 						console.log(err);
 						return;
