@@ -1843,6 +1843,7 @@ function handleServer(_req, _res) {
 	var res = _res;
 	var body = [];
 
+	res.setEncoding('utf8');			//TESTING THIS
 
 
 	if (req.url === '/api/photo' && req.method === 'POST') {
