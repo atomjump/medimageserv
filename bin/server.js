@@ -1843,8 +1843,7 @@ function handleServer(_req, _res) {
 	var res = _res;
 	var body = [];
 
-	res.setEncoding('utf8');			//TESTING THIS
-
+	req.setEncoding('utf8');			//Use for POST requests multi chunks
 
 	if (req.url === '/api/photo' && req.method === 'POST') {
 		// parse a file upload
@@ -2085,7 +2084,7 @@ function handleServer(_req, _res) {
 		  res.statusCode = 400;			//Error during transmission - tell the app about it
 		  res.end();
 		});
-
+		
 		req.on('data', function(chunk) {
 			body.push(chunk);
 			
