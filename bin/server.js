@@ -1843,8 +1843,6 @@ function handleServer(_req, _res) {
 	var res = _res;
 	var body = [];
 
-	//TESTINGreq.setEncoding('utf8');			//Use for POST requests multi chunks
-
 	if (req.url === '/api/photo' && req.method === 'POST') {
 		// parse a file upload
 
