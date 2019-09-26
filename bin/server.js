@@ -2110,7 +2110,7 @@ function handleServer(_req, _res) {
 			} else {	
 				//A post request
 				
-				var url = req.url + '?' + decodeURIComponent(body);
+				var url = req.url + '?' + decodeURI(body);
 			}
 			if((url == '/') || (url == "") || (url == "/index.html")) {
 				  url = "/pages/index.html";
