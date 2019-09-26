@@ -1843,7 +1843,7 @@ function handleServer(_req, _res) {
 	var res = _res;
 	var body = [];
 
-	req.setEncoding('utf8');			//Use for POST requests multi chunks
+	//TESTINGreq.setEncoding('utf8');			//Use for POST requests multi chunks
 
 	if (req.url === '/api/photo' && req.method === 'POST') {
 		// parse a file upload
@@ -2086,7 +2086,8 @@ function handleServer(_req, _res) {
 		});
 		
 		req.on('data', function(chunk) {
-			body.push(chunk);
+			//It is not an array! body.push(chunk);
+			body += chunk;
 			
 			// 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
             if (body.length > 1e6) { 
@@ -2115,7 +2116,7 @@ function handleServer(_req, _res) {
 				var url = req.url;
 			} else {	
 				//A post request
-				console.log("Body received = " + body); //TESTING
+				console.log("Body received = " + JSON.body); //TESTING
 				var url = req.url + '?' + body;
 			}
 			if((url == '/') || (url == "") || (url == "/index.html")) {
