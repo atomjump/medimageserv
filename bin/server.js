@@ -2087,6 +2087,12 @@ function handleServer(_req, _res) {
 
 		req.on('data', function(chunk) {
 			body.push(chunk);
+			
+			// 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
+            if (body.length > 1e6) { 
+                // FLOOD ATTACK OR FAULTY CLIENT, NUKE REQUEST
+                req.connection.destroy();
+            }
 		});
 
 		req.on('end', function() {
@@ -2110,7 +2116,7 @@ function handleServer(_req, _res) {
 			} else {	
 				//A post request
 				
-				var url = req.url + '?' + body;
+				var url = req.url + '?' + queryStringLib.parse(body);
 			}
 			if((url == '/') || (url == "") || (url == "/index.html")) {
 				  url = "/pages/index.html";
