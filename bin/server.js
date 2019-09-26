@@ -2105,7 +2105,12 @@ function handleServer(_req, _res) {
 
 			//A get request to pull from the server
 			// show a file upload form
-			var url = req.url;
+			if(req.method === "GET") {
+				var url = req.url;
+			} else {	
+				//A post request
+				var url = body;
+			}
 			if((url == '/') || (url == "") || (url == "/index.html")) {
 				  url = "/pages/index.html";
 
