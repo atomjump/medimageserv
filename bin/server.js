@@ -2115,8 +2115,8 @@ function handleServer(_req, _res) {
 				var url = req.url;
 			} else {	
 				//A post request
-				
-				var url = req.url + '?' + queryStringLib.parse(body);
+				console.log("Body received = " + body); //TESTING
+				var url = req.url + '?' + body;
 			}
 			if((url == '/') || (url == "") || (url == "/index.html")) {
 				  url = "/pages/index.html";
