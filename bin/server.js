@@ -829,7 +829,7 @@ function backupFile(thisPath, outhashdir, finalFileName, opts, cb)
 			}
 
 
-			if(content.backupTo) {
+			if(content.backupTo && content.backupTo[0] && content.backupTo[0] != "") {
 			
 				
 			
