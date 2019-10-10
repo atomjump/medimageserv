@@ -859,8 +859,18 @@ function backupFile(thisPath, outhashdir, finalFileName, opts, cb)
 							var targetDir = normalizeInclWinNetworks(trailSlash(content.backupTo[cnt]));
 							
 						}
-						var target = targetDir + finalFileName;
+						
+						if((finalFileName[1]) && (finalFileName[1] == ':')) {
+							//Very likely a Windows absolute path case
+							var target = finalFileName;
+						} else {
+							//A normal case
+							var target = targetDir + finalFileName;
+						}
 						target = normalizeInclWinNetworks(target.trim());
+						
+						
+						
 						lastNewPath = target;		//Record for the return journey
 						thisPath = normalizeInclWinNetworks(thisPath.trim());		//OLD: Remove double slashes. Normalize will handle that
 						
