@@ -766,15 +766,22 @@ function normalizeInclWinNetworks(path)
 	//Run this before 
 	if((path[0] == "\\")&&(path[1] == "\\")) {
 		
-		return "\/" + upath.normalize(path);		//Prepend the first slash
+		var retval = "\/" + upath.normalize(path);		//Prepend the first slash
 	} else {
 		if((path[0] == "\/")&&(path[1] == "\/")) {
 			//In unix style syntax, but still a windows style network path
-			return "\/" + upath.normalize(path);		//Prepend the first slash
+			var retval = "\/" + upath.normalize(path);		//Prepend the first slash
 		} else {
-			return upath.normalize(path);
+			var retval = upath.normalize(path);
 		}
 	}
+	
+	if((retval[1]) && (retval[1] == ':')) {
+		//Very Likely a Windows path. Capitalise first letter
+		retval = retval.charAt(0).toUpperCase() + retval.slice(1);
+	}
+	
+	return retval;
 
 }
 
@@ -854,15 +861,29 @@ function backupFile(thisPath, outhashdir, finalFileName, opts, cb)
 						
 						
 						if(outhashdir) {
+							var replaceCoreFolder = normalizeInclWinNetworks(trailSlash(content.backupTo[cnt]));		//Used in Windows shared drive absolute path case
 							var targetDir = normalizeInclWinNetworks(trailSlash(content.backupTo[cnt]) + trailSlash(outhashdir));
 						} else {
 							var targetDir = normalizeInclWinNetworks(trailSlash(content.backupTo[cnt]));
 							
 						}
 						
+						lastNewPath = targetDir + finalFileName;	//Last path recorded for return journey
+						lastNewPath = normalizeInclWinNetworks(lastNewPath.trim());
+						
+						
+						if(verbose == true) console.log("finalFileName = " + finalFileName);
 						if((finalFileName[1]) && (finalFileName[1] == ':')) {
 							//Very likely a Windows absolute path case
+							
 							var target = finalFileName;
+							
+							targetDir = path.dirname(target);
+							
+							if(outhashdir) {
+								//Need to the hash dir added here
+								targetDir = str.replace(replaceCoreFolder, targetDir);
+							}
 						} else {
 							//A normal case
 							var target = targetDir + finalFileName;
@@ -870,8 +891,10 @@ function backupFile(thisPath, outhashdir, finalFileName, opts, cb)
 						target = normalizeInclWinNetworks(target.trim());
 						
 						
+						if(verbose == true) console.log("targetDir = " + targetDir);
+						if(verbose == true) console.log("target = " + target);
 						
-						lastNewPath = target;		//Record for the return journey
+						//lastNewPath = target;		//Record for the return journey
 						thisPath = normalizeInclWinNetworks(thisPath.trim());		//OLD: Remove double slashes. Normalize will handle that
 						
 						
@@ -888,6 +911,7 @@ function backupFile(thisPath, outhashdir, finalFileName, opts, cb)
 										console.log("Copying " + thisPath + " to " + target);
 										fsExtra.copy(thisPath, target, function(err) {
 										  if (err) {
+										  	 console.error('Warning: there was a problem copying '+ thisPath + ' to ' + target + ' Error:' + JSON.stringify(err));
 											 callback(err, null);
 										  } else {
 										 
@@ -1670,7 +1694,7 @@ function addOns(eventType, cb, param1, param2, param3)
 														//					this is included in the finalFileName below.
 														// finalFileName:  the photo or other file name itself e.g. photo-01-09-17-12-54-56.jpgvar thisPath = path.dirname(backupArray[cnt]);
 														var photoParentDir = normalizeInclWinNetworks(serverParentDir() + outdirPhotos);
-														if(verbose == true) console.log("Backing up requested files from script");
+														if(verbose == true) console.log("Backing up requested files from script. Photo parent directory");
 														if(verbose == true) console.log("photoParentDir=" + photoParentDir);
 														var finalFileName = normalizeInclWinNetworks(backupArray[cnt]);
 														finalFileName = finalFileName.replace(photoParentDir,"");		//Remove the photo's directory from the filename
