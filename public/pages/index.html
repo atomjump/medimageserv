@@ -23,6 +23,15 @@ STANDARDHEADER
 							}
 						}
 						
+						if((defaultProxy != '')&&(defaultProxy != document.getElementById('server').value)) {
+							if(confirm("Warning: You are changing the private connection address. This could interrupt any apps that have already synced, and would require them to resync. Are you sure you want to do this?")) {
+								//Nothing here
+							} else {
+								goAhead = false;
+							}
+						
+						}
+						
 							
 						if(goAhead == true) {
 							var address= '/pair?proxyServer=' + encodeURIComponent(document.getElementById('server').value) + '&style=private';
