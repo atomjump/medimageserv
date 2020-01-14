@@ -47,7 +47,7 @@ STANDARDHEADER
             <div class="row">
                 <div class="col-lg-3 col-md-6">
                     <div class="panel panel-primary disabled" id="wifi-big-button">
-                    	<a href="#" class="panel-primary" onclick="$('#wifi-details').slideToggle();">
+                    	<a href="#" class="panel-primary" id="wifi-details-button" onclick="$('#wifi-details').slideToggle();">
 							<div class="panel-heading">
 								<div class="row">
 									<div class="col-xs-3">
@@ -76,7 +76,7 @@ STANDARDHEADER
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="panel panel-primary" id="aj-big-button">
-                        <a href="#" onclick="return pair();" class="panel-primary">
+                        <a href="#" onclick="return pair();" class="panel-primary" id="aj-details-button">
 							<div class="panel-heading">
 								<div class="row">
 									<div class="col-xs-3">
@@ -354,7 +354,7 @@ STANDARDHEADER
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="panel panel-primary" id="private-big-button">
-                        <a href="#" onclick="return checkCall();" class="panel-primary">
+                        <a href="#" onclick="return checkCall();" class="panel-primary" id="private-details-button">
 							<div class="panel-heading">
 								<div class="row">
 									<div class="col-xs-3">
@@ -418,6 +418,12 @@ STANDARDHEADER
 				 		$("#private-big-button").removeClass("panel-primary");
 				 		$("#wifi-big-button").addClass("panel-default");
 				 		$("#private-big-button").addClass("panel-default");
+				 		
+				 		
+				 		$("#wifi-details-button").removeClass("panel-primary");
+				 		$("#private-details-button").removeClass("panel-primary");
+				 		$("#wifi-details-button").addClass("panel-default");
+				 		$("#private-details-button").addClass("panel-default");
 				 	break;
 				 	
 				 	case "private":
@@ -426,6 +432,11 @@ STANDARDHEADER
 				 		$("#aj-big-button").removeClass("panel-primary");
 				 		$("#wifi-big-button").addClass("panel-default");
 				 		$("#aj-big-button").addClass("panel-default");
+				 		
+				 		$("#wifi-details-button").removeClass("panel-primary");
+				 		$("#aj-details-button").removeClass("panel-primary");
+				 		$("#wifi-details-button").addClass("panel-default");
+				 		$("#aj-details-button").addClass("panel-default");
 				 	break;
 				 	
 				 	case "wifi":
