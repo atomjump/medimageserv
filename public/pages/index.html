@@ -10,8 +10,20 @@ STANDARDHEADER
 				if(syncing == true) {
 					var serv = document.getElementById('server').value;
 					if((serv != "")&&(serv != "https://")) {
-						var address= '/pair?proxyServer=' + encodeURIComponent(document.getElementById('server').value) + '&style=private';
-						window.location.href = address;
+						
+						var goAhead = true;
+						if((defaultStyle != "")&&(defaultStyle != "private") {
+							if(confirm("Warning: You are changing the connection to a private connection. This could interrupt any apps that have already synced, and would require them to resync. Are you sure you want to do this?")) {
+								goAhead = true;
+							} else {
+								goAhead = false;
+							}
+						}
+							
+						if(goAhead == true) {
+							var address= '/pair?proxyServer=' + encodeURIComponent(document.getElementById('server').value) + '&style=private';
+							window.location.href = address;
+						}
 					} else {
 						alert("Please enter your MedImage server address first.");
 						$('#private-details').slideDown();
@@ -27,7 +39,27 @@ STANDARDHEADER
 			function pair()
 			{
 				if(syncing == true) {
-					window.location = "/pair?country=" + document.getElementById('country').value + '&style=aj';
+					var goAhead = true;
+					if((defaultStyle != "")&&(defaultStyle != "aj") {
+						if(confirm("Warning: You are changing the connection to an AtomJump / MedImage connection. This could interrupt any apps that have already synced, and would require them to resync. Are you sure you want to do this?")) {
+							} else {
+								goAhead = false;
+							}
+						}
+					}
+					
+					if(defaultCountry != "")&&(defaultCountry != document.getElementById('country').value)) {
+						if(confirm("Warning: You are changing the country to " + document.getElementById('country').value + ". This could interrupt any apps that have already synced, and would require them to resync. Are you sure you want to do this?")) {
+								
+							} else {
+								goAhead = false;
+							}
+						}
+					}
+					
+					if(goAhead == true) {
+						window.location = "/pair?country=" + document.getElementById('country').value + '&style=aj';
+					}
 				} else {
 					alert("Sorry, this server is not configured to pair. Check your config.json file.");
 				}
