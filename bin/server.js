@@ -2164,7 +2164,7 @@ function handleServer(_req, _res) {
 				var url = req.url;
 			} else {	
 				//A post request
-				console.log("Body received = " + JSON.body); //TESTING
+				console.log("Body received = " + JSON.body); //This could be removed, I think
 				var url = req.url + '?' + body;
 			}
 			if((url == '/') || (url == "") || (url == "/index.html")) {
@@ -2181,6 +2181,25 @@ function handleServer(_req, _res) {
 				  } else {
 				  		customString.SYNCING =  "true";
 				  }
+				  
+				  //Get from the current global config.
+				  if(global.globalConfig.countryCode) {
+				  		customString.COUNTRYCODE = global.globalConfig.countryCode;
+				  } else {
+				  		customString.COUNTRYCODE = "";
+				  }
+				  if(global.globalConfig.style) {
+				  		customString.STYLE = global.globalConfig.style;
+				  } else {
+				  		customString.STYLE = "none";
+				  }
+				  if(global.globalConfig.proxy) {
+				  		customString.PROXY = global.globalConfig.proxy;
+				  } else {
+				  		customString.PROXY = "";
+				  }
+				  
+				  
 
 
 			} else {

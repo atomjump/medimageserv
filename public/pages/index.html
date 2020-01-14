@@ -2,6 +2,8 @@ STANDARDHEADER
         
         <script>
 			var syncing = SYNCING;
+			
+			
 
 			function checkCall()
 			{
@@ -44,7 +46,7 @@ STANDARDHEADER
             <!-- /.row -->
             <div class="row">
                 <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-primary disabled"style="backgroundcolor: red;">
+                    <div class="panel panel-primary disabled" id="wifi-big-button">
                     	<a href="#" class="panel-primary" onclick="$('#wifi-details').slideToggle();">
 							<div class="panel-heading">
 								<div class="row">
@@ -73,7 +75,7 @@ STANDARDHEADER
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-primary">
+                    <div class="panel panel-primary" id="aj-big-button">
                         <a href="#" onclick="return pair();" class="panel-primary">
 							<div class="panel-heading">
 								<div class="row">
@@ -351,7 +353,7 @@ STANDARDHEADER
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-primary">
+                    <div class="panel panel-primary" id="private-big-button">
                         <a href="#" onclick="return checkCall();" class="panel-primary">
 							<div class="panel-heading">
 								<div class="row">
@@ -371,7 +373,7 @@ STANDARDHEADER
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
                                 <div class="clearfix"></div>
                                 <div id="private-details" style="display:none;">
-                                	<small class="pull-left">Your private MedImage server:</small><br/>
+                                	<small class="pull-left">Your private MedImage Proxy server:</small><br/>
                                 	<input id="server" type="text" value="https://">
                                 </div>
                             </div>
@@ -390,6 +392,43 @@ STANDARDHEADER
 			$("#country").click(function(e) {
 			   //do something
 			   e.stopPropagation();
+			});
+			
+			var defaultCountryCode = 'COUNTRYCODE';
+			var defaultStyle = 'STYLE';
+			var defaultProxy = 'PROXY';
+			
+			$(document).ready(function() {
+				if(defaultProxy != "") {
+					$("#server").val(defaultProxy);
+				}
+				
+				if(defaultCountryCode != '') {
+					$("#country").val(defaultCountryCode);
+				}
+				
+				switch(defaultStyle) {
+				 	case "none":
+				 		//Keep all options open
+				 	break;
+				 	
+				 	case "aj":
+				 		//Dim the other two large buttons
+				 		$("#wifi-big-button").removeClass("panel-primary");
+				 		$("#private-big-button").removeClass("panel-primary");
+				 	break;
+				 	
+				 	case "private":
+				 		//Dim the other two large buttons
+				 		$("#wifi-big-button").removeClass("panel-primary");
+				 		$("#aj-big-button").removeClass("panel-primary");
+				 	break;
+				 	
+				 	case "wifi":
+				 		//May consider doing this in future. But for now, keep all options open
+				 	break;
+				
+				}
 			});
 
    			</script>
