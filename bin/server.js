@@ -2246,6 +2246,7 @@ function handleServer(_req, _res) {
 					   	  store.setReadProxy = null;
 					   
 					   
+					   	  console.log("Data:" + JSON.stringify(data));		//TESTING IN
 					   	  if(data.country) {
 					   		store.setCountryCode = data.country;
 					   	  }
