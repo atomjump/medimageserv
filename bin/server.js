@@ -2268,8 +2268,6 @@ function handleServer(_req, _res) {
 					   	  var store = {};			//What to store to our local config file
 					   	  store.setReadProxy = null;
 					   
-					   
-					   	  console.log("Data:" + JSON.stringify(data));		//TESTING IN
 					   	  if(data.country) {
 					   		store.setCountryCode = data.country;
 					   	  } else {
@@ -2282,19 +2280,6 @@ function handleServer(_req, _res) {
 						  	 store.setStyle = data.style;
 						  }
 						  
-						/*  TESTING REMOVEME
-						  if(setVals.setReadProxy) {
-				    	content.readProxy = setVals.setReadProxy;
-						}
-						if(setVals.setStyle) {
-							content.style = setVals.setStyle;				 	
-						}
-						if(setVals.setCountryCode) {
-							content.countryCode = setVals.setCountryCode;				 	
-						}
-						if(setVals.setProxy) {
-							content.proxy = setVals.setProxy;
-						}*/
 					   
 						  if(error) {
 						  		console.log("Pairing error:" + error);
