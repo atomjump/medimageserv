@@ -2253,6 +2253,8 @@ function handleServer(_req, _res) {
 					   	  console.log("Data:" + JSON.stringify(data));		//TESTING IN
 					   	  if(data.country) {
 					   		store.setCountryCode = data.country;
+					   	  } else {
+					   	    store.setCountryCode = null;
 					   	  }
 						  if(data.proxyServer) {
 							 store.setProxy = data.proxyServer;
