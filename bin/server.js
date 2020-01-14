@@ -2207,13 +2207,22 @@ function handleServer(_req, _res) {
 				   checkConfigCurrent(null, function() {
 					   
 					   //Split the url into separate vars for a post below
-					   var data = {};
+					   var data = {};			//Incoming data from url
+					   var store = {};			//What to store to our local config file
+					   store.setReadProxy = null;
+					   
+					   
 					   var vars = queryString.split('&');
 					   for (var i = 0; i < vars.length; i++) {
 							var pair = vars[i].split('=');
 							data[pair[0]] = decodeURIComponent(pair[1]);
 							
 					   }
+					   
+					   if(data.country) {
+					   		store.setCountryCode = data.country;
+					   }
+					
 					   
 					   
 					   if(globalId != "") {
@@ -2239,8 +2248,7 @@ function handleServer(_req, _res) {
 
 					   needle.post(fullPairingUrl, data, options, function(error, response) {
 					   
-					   	  var store = {};			//What to store to our local config file
-					   	  store.setReadProxy = null;
+					   	  
 						  if(data.proxyServer) {
 							 store.setProxy = data.proxyServer;
 						  }	
@@ -2295,7 +2303,7 @@ function handleServer(_req, _res) {
 								   var proxyServer = codes[2].replace("\n", "");
 								   if(codes[3]) {
 									var country = decodeURIComponent(codes[3].replace("\n", ""));
-									store.setCountryCode = country;
+									
 								   } else {
 									//Defaults to an unknown country.
 									var country = "[Unknown]";
