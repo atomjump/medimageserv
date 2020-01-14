@@ -2248,19 +2248,19 @@ function handleServer(_req, _res) {
 						  	 store.setStyle = data.style;
 						  }
 						  
-						/*  
+						/*  TESTING REMOVEME
 						  if(setVals.setReadProxy) {
 				    	content.readProxy = setVals.setReadProxy;
-				 	}
-				 	if(setVals.setStyle) {
-				 		content.style = setVals.setStyle;				 	
-				 	}
-				 	if(setVals.setCountryCode) {
-				 		content.countryCode = setVals.setCountryCode;				 	
-				 	}
-				 	if(setVals.setProxy) {
-				 		content.proxy = setVals.setProxy;
-				 	}*/
+						}
+						if(setVals.setStyle) {
+							content.style = setVals.setStyle;				 	
+						}
+						if(setVals.setCountryCode) {
+							content.countryCode = setVals.setCountryCode;				 	
+						}
+						if(setVals.setProxy) {
+							content.proxy = setVals.setProxy;
+						}*/
 					   
 						  if(error) {
 						  		console.log("Pairing error:" + error);
@@ -2302,7 +2302,7 @@ function handleServer(_req, _res) {
 								   }
 								   
 								   store.setReadProxy = proxyServer + "/read/" + guid;
-							   	   console.log("Proxy set to:" + readProx);
+							   	   console.log("Proxy set to:" + store.setReadProxy);
 							   } else {
 							   	   passcode = "----";
 							       var country = "[Sorry there was a problem contacting the pairing server. Please try again, or check 'Service Status'.]";
