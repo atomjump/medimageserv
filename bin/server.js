@@ -2208,10 +2208,6 @@ function handleServer(_req, _res) {
 					   
 					   //Split the url into separate vars for a post below
 					   var data = {};			//Incoming data from url
-					   var store = {};			//What to store to our local config file
-					   store.setReadProxy = null;
-					   
-					   
 					   var vars = queryString.split('&');
 					   for (var i = 0; i < vars.length; i++) {
 							var pair = vars[i].split('=');
@@ -2219,9 +2215,7 @@ function handleServer(_req, _res) {
 							
 					   }
 					   
-					   if(data.country) {
-					   		store.setCountryCode = data.country;
-					   }
+					   
 					
 					   
 					   
@@ -2248,7 +2242,13 @@ function handleServer(_req, _res) {
 
 					   needle.post(fullPairingUrl, data, options, function(error, response) {
 					   
-					   	  
+					   	  var store = {};			//What to store to our local config file
+					   	  store.setReadProxy = null;
+					   
+					   
+					   	  if(data.country) {
+					   		store.setCountryCode = data.country;
+					   	  }
 						  if(data.proxyServer) {
 							 store.setProxy = data.proxyServer;
 						  }	
