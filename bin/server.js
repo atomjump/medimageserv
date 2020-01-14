@@ -236,7 +236,7 @@ function readHTMLHeader(cb) {
 }
 
 
-function checkConfigCurrent(setProxy, cb) {
+function checkConfigCurrent(setVals, cb) {
 	//Reads and updates config to get any new hard-drives added to the system, or a GUID added
 	//setProxy is optional, otherwise set it to null
 	//Returns cb(err) where err = null, or a string with the error
@@ -266,7 +266,7 @@ function checkConfigCurrent(setProxy, cb) {
 
 
 
-					  	checkConfigCurrent(setProxy, cb);
+					  	checkConfigCurrent(setVals, cb);
 					  	return;
 					  }
 					}) // copies file
@@ -296,8 +296,24 @@ function checkConfigCurrent(setProxy, cb) {
 		 	}
 
 
-			 if(setProxy) {
-			   content.readProxy = setProxy;
+			 if(setVals) {
+			 	if(typeof(setVals) !== 'object') {
+			 		//It is a single readProxy value
+			 		content.readProxy = setVals;
+			 	} else {
+				 	if(setVals.setReadProxy) {
+				    	content.readProxy = setVals.setReadProxy;
+				 	}
+				 	if(setVals.setStyle) {
+				 		content.style = setVals.setStyle;				 	
+				 	}
+				 	if(setVals.setCountryCode) {
+				 		content.countryCode = setVals.setCountryCode;				 	
+				 	}
+				 	if(setVals.setProxy) {
+				 		content.proxy = setVals.setProxy;
+				 	}
+				}
 			 }
 
 			 if((globalId)&&(validateGlobalId(globalId) !== false)) {
@@ -2218,8 +2234,34 @@ function handleServer(_req, _res) {
 					   } 
 					   options.follow = 1;		//Allow redirection once to the secure page.
 					   
+					   
+					  
 
 					   needle.post(fullPairingUrl, data, options, function(error, response) {
+					   
+					   	  var store = {};			//What to store to our local config file
+					   	  store.setReadProxy = null;
+						  if(data.proxyServer) {
+							 store.setProxy = data.proxyServer;
+						  }	
+						  if(data.style) {
+						  	 store.setStyle = data.style;
+						  }
+						  
+						/*  
+						  if(setVals.setReadProxy) {
+				    	content.readProxy = setVals.setReadProxy;
+				 	}
+				 	if(setVals.setStyle) {
+				 		content.style = setVals.setStyle;				 	
+				 	}
+				 	if(setVals.setCountryCode) {
+				 		content.countryCode = setVals.setCountryCode;				 	
+				 	}
+				 	if(setVals.setProxy) {
+				 		content.proxy = setVals.setProxy;
+				 	}*/
+					   
 						  if(error) {
 						  		console.log("Pairing error:" + error);
 						  		var replace = {
@@ -2229,7 +2271,7 @@ function handleServer(_req, _res) {
 							   };
 
 							   //Write full proxy to config file
-							   checkConfigCurrent(readProx, function() {
+							   checkConfigCurrent(store, function() {
 
 
 								   //Display passcode to user
@@ -2241,7 +2283,9 @@ function handleServer(_req, _res) {
 						  
 						  	if (response.statusCode == 200) {
 							  console.log(response.body);
-
+							
+							   
+							
 							   var codes = response.body.split(" ");
 							   var passcode = codes[0];
 							   newGlobalId = validateGlobalId(codes[1]);
@@ -2251,12 +2295,13 @@ function handleServer(_req, _res) {
 								   var proxyServer = codes[2].replace("\n", "");
 								   if(codes[3]) {
 									var country = decodeURIComponent(codes[3].replace("\n", ""));
+									store.setCountryCode = country;
 								   } else {
 									//Defaults to an unknown country.
 									var country = "[Unknown]";
 								   }
 								   
-								   var readProx = proxyServer + "/read/" + guid;
+								   store.setReadProxy = proxyServer + "/read/" + guid;
 							   	   console.log("Proxy set to:" + readProx);
 							   } else {
 							   	   passcode = "----";
@@ -2272,7 +2317,7 @@ function handleServer(_req, _res) {
 							   };
 
 							   //Write full proxy to config file
-							   checkConfigCurrent(readProx, function() {
+							   checkConfigCurrent(store, function() {
 
 
 								   //Display passcode to user
@@ -2292,7 +2337,7 @@ function handleServer(_req, _res) {
 							   };
 
 							   //Write full proxy to config file
-							   checkConfigCurrent(readProx, function() {
+							   checkConfigCurrent(store, function() {
 
 
 								   //Display passcode to user
