@@ -6,6 +6,7 @@ STANDARDHEADER
 			var defaultCountryCode = 'COUNTRYCODE';
 			var defaultStyle = 'STYLE';
 			var defaultProxy = 'PROXY';
+			var lockDown = 'LOCKDOWN';
 			
 
 			function checkCall()
@@ -16,18 +17,31 @@ STANDARDHEADER
 						
 						var goAhead = true;
 						if((defaultStyle != "none")&&(defaultStyle != "private")) {
-							if(confirm("Warning: You are changing the connection to a private connection. This could interrupt any apps that have already synced, and would require them to resync. Are you sure you want to do this?")) {
-								//Nothing here
-							} else {
+							if(lockDown == true) {
+								alert("Warning: You are trying to change the connection to a private connection. However, your server is not configured to allow this change.");
 								goAhead = false;
+							} else {
+						
+								if(confirm("Warning: You are changing the connection to a private connection. This could interrupt any apps that have already synced, and would require them to resync. Are you sure you want to do this?")) {
+									//Nothing here
+								} else {
+									goAhead = false;
+								}
 							}
 						}
 						
 						if((defaultProxy != '')&&(defaultProxy != document.getElementById('server').value)) {
-							if(confirm("Warning: You are changing the private connection address. This could interrupt any apps that have already synced, and would require them to resync. Are you sure you want to do this?")) {
-								//Nothing here
-							} else {
+							if(lockDown == true) {
+								alert("Warning: You are trying to change the private connection address. However, your server is not configured to allow this change.");
 								goAhead = false;
+							} else {
+						
+						
+								if(confirm("Warning: You are changing the private connection address. This could interrupt any apps that have already synced, and would require them to resync. Are you sure you want to do this?")) {
+									//Nothing here
+								} else {
+									goAhead = false;
+								}
 							}
 						
 						}
@@ -54,18 +68,29 @@ STANDARDHEADER
 				if(syncing == true) {
 					var goAhead = true;
 					if((defaultStyle != "none")&&(defaultStyle != "aj")) {
-						if(confirm("Warning: You are changing the connection to an AtomJump / MedImage connection. This could interrupt any apps that have already synced, and would require them to resync. Are you sure you want to do this?")) {
-							//Nothing here
+						if(lockDown == true) {
+								alert("Warning: You are trying to change the connection to an AtomJump / MedImage connection. However, your server is not configured to allow this change.");
+								goAhead = false;
 						} else {
-							goAhead = false;
+						
+							if(confirm("Warning: You are changing the connection to an AtomJump / MedImage connection. This could interrupt any apps that have already synced, and would require them to resync. Are you sure you want to do this?")) {
+								//Nothing here
+							} else {
+								goAhead = false;
+							}
 						}
 					}
 					
 					if((defaultCountryCode != "")&&(defaultCountryCode != document.getElementById('country').value)) {
-						if(confirm("Warning: You are changing the country of the AtomJump / MedImage server to sync against. This could interrupt any apps that have already synced, and would require them to resync. Are you sure you want to do this?")) {
-							//Nothing here		
+						if(lockDown == true) {
+								alert("Warning: You are trying to change the country of the AtomJump / MedImage connection. However, your server is not configured to allow this change.");
+								goAhead = false;
 						} else {
-							goAhead = false;
+							if(confirm("Warning: You are changing the country of the AtomJump / MedImage server to sync against. This could interrupt any apps that have already synced, and would require them to resync. Are you sure you want to do this?")) {
+								//Nothing here		
+							} else {
+								goAhead = false;
+							}
 						}
 					}
 					

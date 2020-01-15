@@ -2198,6 +2198,15 @@ function handleServer(_req, _res) {
 				  } else {
 				  		customString.PROXY = "";
 				  }
+				   if(global.globalConfig.lockDown) {
+				   		if(global.globalConfig.lockDown == true) {
+				  			customString.LOCKDOWN = "true";
+				  		} else {
+				  			customString.LOCKDOWN = "false";
+				  		}
+				  } else {
+				  		customString.LOCKDOWN = "false";
+				  }
 				  
 				  
 
