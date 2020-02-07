@@ -2148,7 +2148,6 @@ function handleServer(_req, _res) {
 				var url = req.url;
 			} else {	
 				//A post request
-				console.log("Body received = " + JSON.body); //TESTING
 				var url = req.url + '?' + body;
 			}
 			if((url == '/') || (url == "") || (url == "/index.html")) {
