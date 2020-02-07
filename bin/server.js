@@ -2164,7 +2164,11 @@ function handleServer(_req, _res) {
 				var url = req.url;
 			} else {	
 				//A post request
-				var url = req.url + '?' + body;
+				if(body) {
+					var url = req.url + '?' + body;
+				} else {
+					var url = req.url;
+				}
 			}
 			if((url == '/') || (url == "") || (url == "/index.html")) {
 				  url = "/pages/index.html";
@@ -2395,6 +2399,9 @@ function handleServer(_req, _res) {
 
 					 //Get uploaded photos from coded subdir
 					 var codeDir = url.substr(read.length);
+					 if(codeDir.charAt(codeDir.length-1) == "?") {	//remove trailing question marks
+					 	codeDir = codeDir.slice(0, -1);
+					 }
 					 var parentDir = serverParentDir();
 					 if(verbose == true) console.log("This drive:" + parentDir);
 					 if(verbose == true) console.log("Coded directory:" + codeDir);
