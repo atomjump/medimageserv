@@ -2,14 +2,55 @@ STANDARDHEADER
         
         <script>
 			var syncing = SYNCING;
+			
+			var defaultCountryCode = 'COUNTRYCODE';
+			var defaultStyle = 'STYLE';
+			var defaultProxy = 'PROXY';
+			var lockDown = LOCKDOWN;
+			
 
 			function checkCall()
 			{
 				if(syncing == true) {
 					var serv = document.getElementById('server').value;
 					if((serv != "")&&(serv != "https://")) {
-						var address= '/pair?proxyServer=' + encodeURIComponent(document.getElementById('server').value);
-						window.location.href = address;
+						
+						var goAhead = true;
+						if((defaultStyle != "none")&&(defaultStyle != "private")) {
+							if(lockDown == true) {
+								alert("Warning: You are trying to change the connection to a private connection. However, your server is not configured to allow this change.");
+								goAhead = false;
+							} else {
+						
+								if(confirm("Warning: You are changing the connection to a private connection. This could interrupt any apps that have already synced, and would require them to resync. Are you sure you want to do this?")) {
+									//Nothing here
+								} else {
+									goAhead = false;
+								}
+							}
+						}
+						
+						if((defaultProxy != '')&&(defaultProxy != document.getElementById('server').value)) {
+							if(lockDown == true) {
+								alert("Warning: You are trying to change the private connection address. However, your server is not configured to allow this change.");
+								goAhead = false;
+							} else {
+						
+						
+								if(confirm("Warning: You are changing the private connection address. This could interrupt any apps that have already synced, and would require them to resync. Are you sure you want to do this?")) {
+									//Nothing here
+								} else {
+									goAhead = false;
+								}
+							}
+						
+						}
+						
+							
+						if(goAhead == true) {
+							var address= '/pair?proxyServer=' + encodeURIComponent(document.getElementById('server').value) + '&style=private';
+							window.location.href = address;
+						}
 					} else {
 						alert("Please enter your MedImage server address first.");
 						$('#private-details').slideDown();
@@ -25,7 +66,37 @@ STANDARDHEADER
 			function pair()
 			{
 				if(syncing == true) {
-					window.location = "/pair?country=" + document.getElementById('country').value;
+					var goAhead = true;
+					if((defaultStyle != "none")&&(defaultStyle != "aj")) {
+						if(lockDown == true) {
+								alert("Warning: You are trying to change the connection to an AtomJump / MedImage connection. However, your server is not configured to allow this change.");
+								goAhead = false;
+						} else {
+						
+							if(confirm("Warning: You are changing the connection to an AtomJump / MedImage connection. This could interrupt any apps that have already synced, and would require them to resync. Are you sure you want to do this?")) {
+								//Nothing here
+							} else {
+								goAhead = false;
+							}
+						}
+					}
+					
+					if((defaultCountryCode != "")&&(defaultCountryCode != document.getElementById('country').value)) {
+						if(lockDown == true) {
+								alert("Warning: You are trying to change the country of the AtomJump / MedImage connection. However, your server is not configured to allow this change.");
+								goAhead = false;
+						} else {
+							if(confirm("Warning: You are changing the country of the AtomJump / MedImage server to sync against. This could interrupt any apps that have already synced, and would require them to resync. Are you sure you want to do this?")) {
+								//Nothing here		
+							} else {
+								goAhead = false;
+							}
+						}
+					}
+					
+					if(goAhead == true) {
+						window.location = "/pair?country=" + document.getElementById('country').value + '&style=aj';
+					}
 				} else {
 					alert("Sorry, this server is not configured to pair. Check your config.json file.");
 				}
@@ -44,14 +115,14 @@ STANDARDHEADER
             <!-- /.row -->
             <div class="row">
                 <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-primary disabled"style="backgroundcolor: red;">
-                    	<a href="#" class="panel-primary" onclick="$('#wifi-details').slideToggle();">
+                    <div class="panel panel-primary disabled" id="wifi-big-button">
+                    	<a href="#" class="panel-primary" id="wifi-details-button" onclick="$('#wifi-details').slideToggle();">
 							<div class="panel-heading">
-								<div class="row">
+								<div class="row" >
 									<div class="col-xs-3">
-										<i class="fa fa-rss fa-5x"></i>
+										<i class="fa fa-rss fa-5x" id="wifi-button-icon"></i>
 									</div>
-									<div class="col-xs-9 text-right">
+									<div class="col-xs-9 text-right" id="wifi-button-text">
 										<div class="huge">Wifi</div>
 										<div>Wifi Pairing</div>
 									</div>
@@ -73,14 +144,14 @@ STANDARDHEADER
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-primary">
-                        <a href="#" onclick="return pair();" class="panel-primary">
+                    <div class="panel panel-primary" id="aj-big-button">
+                        <a href="#" onclick="return pair();" class="panel-primary" id="aj-details-button">
 							<div class="panel-heading">
 								<div class="row">
 									<div class="col-xs-3">
-										<i class="fa fa-tasks fa-5x"></i>
+										<i class="fa fa-tasks fa-5x" id="aj-button-icon"></i>
 									</div>
-									<div class="col-xs-9 text-right">
+									<div class="col-xs-9 text-right" id="aj-button-text">
 										<div class="huge">AJ</div>
 										<div>Server Pairing</div>
 									</div>
@@ -351,14 +422,14 @@ STANDARDHEADER
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-primary">
-                        <a href="#" onclick="return checkCall();" class="panel-primary">
+                    <div class="panel panel-primary" id="private-big-button">
+                        <a href="#" onclick="return checkCall();" class="panel-primary" id="private-details-button">
 							<div class="panel-heading">
 								<div class="row">
 									<div class="col-xs-3">
-										<i class="fa fa-umbrella fa-5x"></i>
+										<i class="fa fa-umbrella fa-5x" id="private-button-icon"></i>
 									</div>
-									<div class="col-xs-9 text-right">
+									<div class="col-xs-9 text-right" id="private-button-text">
 										<div class="huge">Your</div>
 										<div>Server Pairing</div>
 									</div>
@@ -371,7 +442,7 @@ STANDARDHEADER
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
                                 <div class="clearfix"></div>
                                 <div id="private-details" style="display:none;">
-                                	<small class="pull-left">Your private MedImage server:</small><br/>
+                                	<small class="pull-left">Your private MedImage Proxy server:</small><br/>
                                 	<input id="server" type="text" value="https://">
                                 </div>
                             </div>
@@ -381,6 +452,10 @@ STANDARDHEADER
                 
             </div>
             <!-- /.row -->
+            
+            
+            
+            
             <script>
 			$("#server").click(function(e) {
 			   //do something
@@ -390,6 +465,66 @@ STANDARDHEADER
 			$("#country").click(function(e) {
 			   //do something
 			   e.stopPropagation();
+			});
+			
+			
+			$(document).ready(function() {
+				if(defaultProxy != "") {
+					$("#server").val(defaultProxy);
+				}
+				
+				if(defaultCountryCode != '') {
+					$("#country").val(defaultCountryCode);
+				}
+				
+				switch(defaultStyle) {
+				 	case "none":
+				 		//Keep all options open
+				 	break;
+				 	
+				 	case "aj":
+				 		//Dim the other two large buttons
+				 		$("#wifi-big-button").removeClass("panel-primary");
+				 		$("#private-big-button").removeClass("panel-primary");
+				 		$("#wifi-big-button").addClass("panel-default");
+				 		$("#private-big-button").addClass("panel-default");
+				 	
+				 		$("#wifi-button-icon").addClass("text-muted");
+				 		$("#wifi-button-text").addClass("text-muted");
+				 		$("#private-button-icon").addClass("text-muted");
+				 		$("#private-button-text").addClass("text-muted");
+				 		
+				 		
+				 		$("#wifi-details-button").removeClass("panel-primary");
+				 		$("#private-details-button").removeClass("panel-primary");
+				 		$("#wifi-details-button").addClass("panel-default");
+				 		$("#private-details-button").addClass("panel-default");
+				 		
+				 	break;
+				 	
+				 	case "private":
+				 		//Dim the other two large buttons
+				 		$("#wifi-big-button").removeClass("panel-primary");
+				 		$("#aj-big-button").removeClass("panel-primary");
+				 		$("#wifi-big-button").addClass("panel-default");
+				 		$("#aj-big-button").addClass("panel-default");
+				 		
+				 		$("#wifi-details-button").removeClass("panel-primary");
+				 		$("#aj-details-button").removeClass("panel-primary");
+				 		$("#wifi-details-button").addClass("panel-default");
+				 		$("#aj-details-button").addClass("panel-default");
+				 		
+				 		$("#wifi-button-icon").addClass("text-muted");
+				 		$("#wifi-button-text").addClass("text-muted");
+				 		$("#aj-button-icon").addClass("text-muted");
+				 		$("#aj-button-text").addClass("text-muted");
+				 	break;
+				 	
+				 	case "wifi":
+				 		//May consider doing this in future. But for now, keep all options open
+				 	break;
+				
+				}
 			});
 
    			</script>

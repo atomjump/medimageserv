@@ -236,7 +236,7 @@ function readHTMLHeader(cb) {
 }
 
 
-function checkConfigCurrent(setProxy, cb) {
+function checkConfigCurrent(setVals, cb) {
 	//Reads and updates config to get any new hard-drives added to the system, or a GUID added
 	//setProxy is optional, otherwise set it to null
 	//Returns cb(err) where err = null, or a string with the error
@@ -266,7 +266,7 @@ function checkConfigCurrent(setProxy, cb) {
 
 
 
-					  	checkConfigCurrent(setProxy, cb);
+					  	checkConfigCurrent(setVals, cb);
 					  	return;
 					  }
 					}) // copies file
@@ -296,8 +296,24 @@ function checkConfigCurrent(setProxy, cb) {
 		 	}
 
 
-			 if(setProxy) {
-			   content.readProxy = setProxy;
+			 if(setVals) {
+			 	if(typeof(setVals) !== 'object') {
+			 		//It is a single readProxy value
+			 		content.readProxy = setVals;
+			 	} else {
+				 	if(setVals.setReadProxy) {
+				    	content.readProxy = setVals.setReadProxy;
+				 	}
+				 	if(setVals.setStyle) {
+				 		content.style = setVals.setStyle;				 	
+				 	}
+				 	if(setVals.setCountryCode) {
+				 		content.countryCode = setVals.setCountryCode;				 	
+				 	}
+				 	if(setVals.setProxy) {
+				 		content.proxy = setVals.setProxy;
+				 	}
+				}
 			 }
 
 			 if((globalId)&&(validateGlobalId(globalId) !== false)) {
@@ -2164,6 +2180,34 @@ function handleServer(_req, _res) {
 				  } else {
 				  		customString.SYNCING =  "true";
 				  }
+				  
+				  //Get from the current global config.
+				  if(global.globalConfig.countryCode) {
+				  		customString.COUNTRYCODE = global.globalConfig.countryCode;
+				  } else {
+				  		customString.COUNTRYCODE = "";
+				  }
+				  if(global.globalConfig.style) {
+				  		customString.STYLE = global.globalConfig.style;
+				  } else {
+				  		customString.STYLE = "none";
+				  }
+				  if(global.globalConfig.proxy) {
+				  		customString.PROXY = global.globalConfig.proxy;
+				  } else {
+				  		customString.PROXY = "";
+				  }
+				   if(global.globalConfig.lockDown) {
+				   		if(global.globalConfig.lockDown == true) {
+				  			customString.LOCKDOWN = "true";
+				  		} else {
+				  			customString.LOCKDOWN = "false";
+				  		}
+				  } else {
+				  		customString.LOCKDOWN = "false";
+				  }
+				  
+				  
 
 
 			} else {
@@ -2190,13 +2234,20 @@ function handleServer(_req, _res) {
 				   checkConfigCurrent(null, function() {
 					   
 					   //Split the url into separate vars for a post below
-					   var data = {};
+					   var data = {};			//Incoming data from url
 					   var vars = queryString.split('&');
 					   for (var i = 0; i < vars.length; i++) {
 							var pair = vars[i].split('=');
+							if(pair[0][0] == "?") {
+								//Remove first char
+								pair[0] = pair[0].substr(1);
+							}
 							data[pair[0]] = decodeURIComponent(pair[1]);
 							
 					   }
+					   
+					   
+					
 					   
 					   
 					   if(globalId != "") {
@@ -2217,8 +2268,27 @@ function handleServer(_req, _res) {
 					   } 
 					   options.follow = 1;		//Allow redirection once to the secure page.
 					   
+					   
+					  
 
 					   needle.post(fullPairingUrl, data, options, function(error, response) {
+					   
+					   	  var store = {};			//What to store to our local config file
+					   	  store.setReadProxy = null;
+					   
+					   	  if(data.country) {
+					   		store.setCountryCode = data.country;
+					   	  } else {
+					   	    store.setCountryCode = null;
+					   	  }
+						  if(data.proxyServer) {
+							 store.setProxy = data.proxyServer;
+						  }	
+						  if(data.style) {
+						  	 store.setStyle = data.style;
+						  }
+						  
+					   
 						  if(error) {
 						  		console.log("Pairing error:" + error);
 						  		var replace = {
@@ -2228,7 +2298,7 @@ function handleServer(_req, _res) {
 							   };
 
 							   //Write full proxy to config file
-							   checkConfigCurrent(readProx, function() {
+							   checkConfigCurrent(store, function() {
 
 
 								   //Display passcode to user
@@ -2240,7 +2310,9 @@ function handleServer(_req, _res) {
 						  
 						  	if (response.statusCode == 200) {
 							  console.log(response.body);
-
+							
+							   
+							
 							   var codes = response.body.split(" ");
 							   var passcode = codes[0];
 							   newGlobalId = validateGlobalId(codes[1]);
@@ -2250,13 +2322,14 @@ function handleServer(_req, _res) {
 								   var proxyServer = codes[2].replace("\n", "");
 								   if(codes[3]) {
 									var country = decodeURIComponent(codes[3].replace("\n", ""));
+									
 								   } else {
 									//Defaults to an unknown country.
 									var country = "[Unknown]";
 								   }
 								   
-								   var readProx = proxyServer + "/read/" + guid;
-							   	   console.log("Proxy set to:" + readProx);
+								   store.setReadProxy = proxyServer + "/read/" + guid;
+							   	   console.log("Proxy set to:" + store.setReadProxy);
 							   } else {
 							   	   passcode = "----";
 							       var country = "[Sorry there was a problem contacting the pairing server. Please try again, or check 'Service Status'.]";
@@ -2271,7 +2344,7 @@ function handleServer(_req, _res) {
 							   };
 
 							   //Write full proxy to config file
-							   checkConfigCurrent(readProx, function() {
+							   checkConfigCurrent(store, function() {
 
 
 								   //Display passcode to user
@@ -2291,7 +2364,7 @@ function handleServer(_req, _res) {
 							   };
 
 							   //Write full proxy to config file
-							   checkConfigCurrent(readProx, function() {
+							   checkConfigCurrent(store, function() {
 
 
 								   //Display passcode to user

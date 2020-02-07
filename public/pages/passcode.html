@@ -1,7 +1,13 @@
 STANDARDHEADER
         
         <script>
-			var syncing = SYNCING;
+			
+			//This is included for a menu shortcut in the mobile version
+			var textSyncing = 'SYNCING';
+			var syncing = false;
+			if(textSyncing == 'true') {
+				syncing = true;
+			}
 
 			function checkCall()
 			{
@@ -31,6 +37,7 @@ STANDARDHEADER
 				}
 				return false;
 			}
+			
    		</script>
 
         <div id="page-wrapper">
