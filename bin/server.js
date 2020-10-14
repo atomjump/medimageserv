@@ -2073,33 +2073,13 @@ function handleServer(_req, _res) {
 							var msg = "Error moving file. We have removed any files, and will let the app try again.";
 							console.log(msg);
 							
-							thisRes.writeHead(201, {'content-type': 'application/json'});		//, {'content-type': 'text/plain'}
-							
-							var err = {
-								"errno":2,
-								"code":2,
-								"responseCode": 2,
-								"error": {
-									"errno":2,
-									"code":2,
-									"responseCode": 2
-								},
-								"err": {
-									"errno":2,
-									"code":2,
-									"responseCode": 2
-								}
-							};
-								
-							//thisRes.end("Invalid request: " + err.message);
+							thisRes.writeHead(201, {'content-type': 'application/json'});	//201 registers as a success within a browser, but the app tries to upload it again. Error code HTTP 400, will return error code 1 in the app.							
         					try {
         						thisRes.end(null);		//JSON.stringify(err)
 			        		} catch(err) {
 			        			console.log("Err:" + err);
 			        		
 			        		}
-			        		//thisRes.statusCode = 400;			//Error during transmission - tell the app about it
-	  						//thisRes.end();
 	  						return;
 
 						  } else {
