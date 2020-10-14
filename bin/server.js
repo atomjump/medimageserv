@@ -1909,7 +1909,7 @@ function handleServer(_req, _res) {
 			      	console.log("Error uploading file " + JSON.stringify(err))
 
 					var newerr = err;
-					thisRes.writeHead(206, {'content-type': 'application/json'});	//206 returns a non-1 value, so will try again. Error code HTTP 400, will return error code 1 in the app.							
+					res.writeHead(206, {'content-type': 'application/json'});	//206 returns a non-1 value, so will try again. Error code HTTP 400, will return error code 1 in the app.							
 					try {
 						res.end(JSON.stringify(newerr));		//JSON.stringify(err)
 					} catch(err) {
