@@ -2083,7 +2083,7 @@ function handleServer(_req, _res) {
 								
 							//thisRes.end("Invalid request: " + err.message);
         					try {
-        						thisRes.end(err);		//JSON.stringify(err)
+        						thisRes.end(null);		//JSON.stringify(err)
 			        		} catch(err) {
 			        			console.log("Err:" + err);
 			        		
