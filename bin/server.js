@@ -2078,7 +2078,12 @@ function handleServer(_req, _res) {
 							var err = {
 								"errno":2,
 								"code":2,
-								"responseCode": 2
+								"responseCode": 2,
+								"error": {
+									"errno":2,
+									"code":2,
+									"responseCode": 2
+								}
 							};
 								
 							//thisRes.end("Invalid request: " + err.message);
