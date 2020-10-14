@@ -1964,11 +1964,8 @@ function handleServer(_req, _res) {
 
 					var title = files.file1[0].originalFilename;
 
-					res.writeHead(200, {'content-type': 'text/plain'});
-					var returnStr = 'Received upload successfully!';
-					if(verbose == true) returnStr += 'Check ' + normalizeInclWinNetworks(parentDir + outdirPhotos) + ' for your image.';
-				  	res.write(returnStr + '\n\n');
-				  	res.end();
+					//Note: we used to have the successful response here
+					
 
 
 					//Copy file to eg. c:/snapvolt/photos
@@ -2050,9 +2047,25 @@ function handleServer(_req, _res) {
 						  // piping the source file to the dest file and then unlinking
 						  // the source file.
 						  if(err) {
+						  	//There was an error moving the file. We need to delete the original file now,
+						  	//allowing for the app to try sending it again.
 							console.log(err);
+							fs.unlinkSync(files.file1[0].path);
+							fs.unlinkSync(fullPath);
+							
+							console.log("Error moving file. We have removed any files, and will let the app try again.");
+			        		res.statusCode = 400;			//Error during transmission - tell the app about it
+	  						res.end();
 
 						  } else {
+						  	res.writeHead(200, {'content-type': 'text/plain'});
+							var returnStr = 'Received upload successfully!';
+							if(verbose == true) returnStr += 'Check ' + normalizeInclWinNetworks(parentDir + outdirPhotos) + ' for your image.';
+				  			res.write(returnStr + '\n\n');
+				  			res.end();
+						  
+						  
+						  
 							console.log('\n' + finalFileName + ' file uploaded');
 
 							//Ensure no admin restictions on Windows
