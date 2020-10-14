@@ -1909,7 +1909,7 @@ function handleServer(_req, _res) {
 					var newerr = err;
 					res.writeHead(206, {'content-type': 'application/json'});	//206 returns a non-1 value, so will try again. Error code HTTP 400, will return error code 1 in the app.							
 					try {
-						res.end(JSON.stringify(newerr));		//JSON.stringify(err)
+						res.end(JSON.stringify(newerr));
 					} catch(err) {
 						console.log("Err:" + err);
 					}
