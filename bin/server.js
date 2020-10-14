@@ -2042,6 +2042,8 @@ function handleServer(_req, _res) {
 					//Move the file into the standard location of this server
 					var fullPath = outdir + '/' + finalFileName;
 					if(verbose == true) console.log("Moving " + files.file1[0].path + " to " + fullPath);
+					
+					var thisRes = res;
 					mv(files.file1[0].path, fullPath, {mkdirp: true},  function(err) { //path.normalize(
 						  // done. it tried fs.rename first, and then falls back to
 						  // piping the source file to the dest file and then unlinking
@@ -2062,16 +2064,16 @@ function handleServer(_req, _res) {
 							}
 							
 							console.log("Error moving file. We have removed any files, and will let the app try again.");
-			        		res.statusCode = 400;			//Error during transmission - tell the app about it
-	  						res.end();
+			        		thisRes.statusCode = 400;			//Error during transmission - tell the app about it
+	  						thisRes.end();
 	  						return;
 
 						  } else {
-						  	res.writeHead(200, {'content-type': 'text/plain'});
+						  	thisRes.writeHead(200, {'content-type': 'text/plain'});
 							var returnStr = 'Received upload successfully!';
 							if(verbose == true) returnStr += 'Check ' + normalizeInclWinNetworks(parentDir + outdirPhotos) + ' for your image.';
-				  			res.write(returnStr + '\n\n');
-				  			res.end();
+				  			thisRes.write(returnStr + '\n\n');
+				  			thisRes.end();
 						  
 						  
 						  
