@@ -2053,8 +2053,13 @@ function handleServer(_req, _res) {
 						  	//There was an error moving the file. We need to delete the original file now,
 						  	//allowing for the app to try sending it again.
 							console.log(err);
-							fs.unlinkSync(files.file1[0].path);
-							fs.unlinkSync(fullPath);
+							try {
+								fs.unlinkSync(files.file1[0].path);
+								fs.unlinkSync(fullPath);
+							} catch(err) {
+								console.log("Error removing file:" + err);
+							
+							}
 							
 							console.log("Error moving file. We have removed any files, and will let the app try again.");
 			        		res.statusCode = 400;			//Error during transmission - tell the app about it
