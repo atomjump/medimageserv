@@ -2064,6 +2064,7 @@ function handleServer(_req, _res) {
 							console.log("Error moving file. We have removed any files, and will let the app try again.");
 			        		res.statusCode = 400;			//Error during transmission - tell the app about it
 	  						res.end();
+	  						return;
 
 						  } else {
 						  	res.writeHead(200, {'content-type': 'text/plain'});
