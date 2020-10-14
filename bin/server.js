@@ -2082,7 +2082,7 @@ function handleServer(_req, _res) {
 							};
 								
 							//thisRes.end("Invalid request: " + err.message);
-        					thisRes.end("2");		//JSON.stringify(err)
+        					thisRes.end(err);		//JSON.stringify(err)
 			        		//thisRes.statusCode = 400;			//Error during transmission - tell the app about it
 	  						//thisRes.end();
 	  						return;
