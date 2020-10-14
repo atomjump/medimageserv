@@ -2080,7 +2080,7 @@ function handleServer(_req, _res) {
 								}
 							}
 							console.log(JSON.stringify(err));
-        					thisRes.end(JSON.stringify(err));
+        					thisRes.end("");
 			        		//thisRes.statusCode = 400;			//Error during transmission - tell the app about it
 	  						//thisRes.end();
 	  						return;
