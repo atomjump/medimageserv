@@ -2073,9 +2073,12 @@ function handleServer(_req, _res) {
 							var msg = "Error moving file. We have removed any files, and will let the app try again.";
 							console.log(msg);
 							
-							thisRes.writeHead(206, {'content-type': 'application/json'});	//201 registers as a success within a browser, but the app tries to upload it again. Error code HTTP 400, will return error code 1 in the app.							
+							var err = {
+								msg: "Error: Copying problem on the server." 
+							}
+							thisRes.writeHead(206, {'content-type': 'application/json'});	//206 registers as a success within a browser, but the app tries to upload it again. Error code HTTP 400, will return error code 1 in the app.							
         					try {
-        						thisRes.end(null);		//JSON.stringify(err)
+        						thisRes.end(JSON.stringify(err));		//JSON.stringify(err)
 			        		} catch(err) {
 			        			console.log("Err:" + err);
 			        		
