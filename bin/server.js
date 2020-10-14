@@ -2076,8 +2076,13 @@ function handleServer(_req, _res) {
 							console.log(JSON.stringify(err));
 							thisRes.writeHead(500, {'content-type': 'text/plain'});
 							
+							var err = {
+								"errno":"2",
+								"code":"2"
+							};
+								
 							//thisRes.end("Invalid request: " + err.message);
-        					thisRes.end();
+        					thisRes.end(JSON.stringify(err));
 			        		//thisRes.statusCode = 400;			//Error during transmission - tell the app about it
 	  						//thisRes.end();
 	  						return;
