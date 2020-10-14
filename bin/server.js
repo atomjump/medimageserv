@@ -2074,7 +2074,7 @@ function handleServer(_req, _res) {
 							console.log(msg);
 							
 							console.log(JSON.stringify(err));
-							thisRes.writeHead(401, {'content-type': 'text/plain'});
+							thisRes.writeHead(550, {'content-type': 'text/plain'});
 							
 							//thisRes.end("Invalid request: " + err.message);
         					thisRes.end();
