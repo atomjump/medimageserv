@@ -2074,11 +2074,13 @@ function handleServer(_req, _res) {
 							console.log(msg);
 							thisRes.writeHead(401, {'content-type': 'text/plain'});
 							var err = {
-								"code":0,
-								"msg": "Error on the server. Trying again."
+								"error" : {
+									"code":0,
+									"msg": "Error on the server. Trying again."
+								}
 							}
-							console.log("{ \"error\": \"" + JSON.stringify(err) + "\" }");
-        					thisRes.end("{ \"error\": \"" + JSON.stringify(err) + "\" }");
+							console.log(JSON.stringify(err));
+        					thisRes.end(JSON.stringify(err));
 			        		//thisRes.statusCode = 400;			//Error during transmission - tell the app about it
 	  						//thisRes.end();
 	  						return;
