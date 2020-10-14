@@ -1903,8 +1903,6 @@ function handleServer(_req, _res) {
 		   //Process filename of uploaded file, then move into the server's directory, and finally
 		   //copy the files into any backup directories
 
-			err = "TESTING UPLOAD PROBLEM";	//Remove me
-
 			if(err) {
 			      	console.log("Error uploading file " + JSON.stringify(err))
 
