@@ -2073,7 +2073,7 @@ function handleServer(_req, _res) {
 							var msg = "Error moving file. We have removed any files, and will let the app try again.";
 							console.log(msg);
 							
-							thisRes.writeHead(500);		//, {'content-type': 'text/plain'}
+							thisRes.writeHead(500, {'content-type': 'application/json'});		//, {'content-type': 'text/plain'}
 							
 							var err = {
 								"errno":2,
