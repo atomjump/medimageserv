@@ -2072,15 +2072,12 @@ function handleServer(_req, _res) {
 							
 							var msg = "Error moving file. We have removed any files, and will let the app try again.";
 							console.log(msg);
-							thisRes.writeHead(401, {'content-type': 'text/plain'});
-							var err = {
-								"error" : {
-									"code":0,
-									"msg": "Error on the server. Trying again."
-								}
-							}
+							
 							console.log(JSON.stringify(err));
-        					thisRes.end("");
+							thisRes.writeHead(401, {'content-type': 'text/plain'});
+							
+							//thisRes.end("Invalid request: " + err.message);
+        					thisRes.end();
 			        		//thisRes.statusCode = 400;			//Error during transmission - tell the app about it
 	  						//thisRes.end();
 	  						return;
