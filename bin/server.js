@@ -2077,8 +2077,8 @@ function handleServer(_req, _res) {
 							thisRes.writeHead(500, {'content-type': 'text/plain'});
 							
 							var err = {
-								"errno":"2",
-								"code":"2"
+								"errno":2,
+								"code":2
 							};
 								
 							//thisRes.end("Invalid request: " + err.message);
