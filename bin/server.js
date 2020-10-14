@@ -2077,6 +2077,7 @@ function handleServer(_req, _res) {
 								"code":0,
 								"msg": "Error on the server. Trying again."
 							}
+							console.log(JSON.stringify(err));
         					thisRes.end(JSON.stringify(err));
 			        		//thisRes.statusCode = 400;			//Error during transmission - tell the app about it
 	  						//thisRes.end();
