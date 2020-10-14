@@ -1906,7 +1906,7 @@ function handleServer(_req, _res) {
 			if(err) {
 			      	console.log("Error uploading file " + JSON.stringify(err))
 
-        			res.writeHead(400, {'content-type': 'text/plain'});
+        			res.writeHead(201, {'content-type': 'text/plain'}); //201 registers as a success within a browser, but the app tries to upload it again. Error code HTTP 400, will return error code 1 in the app.	
         			res.end("Invalid request: " + err.message);
         			return;
 
@@ -2047,10 +2047,7 @@ function handleServer(_req, _res) {
 					mv(files.file1[0].path, fullPath, {mkdirp: true},  function(err) { //path.normalize(
 						  // done. it tried fs.rename first, and then falls back to
 						  // piping the source file to the dest file and then unlinking
-						  // the source file.
-						  
-						  err = "TESTING REMOVE ME";		//REMOVE
-						  
+						  // the source file.						  
 						  if(err) {
 						  	//There was an error moving the file. We need to delete the original file now,
 						  	//allowing for the app to try sending it again.
@@ -2073,7 +2070,7 @@ function handleServer(_req, _res) {
 							var msg = "Error moving file. We have removed any files, and will let the app try again.";
 							console.log(msg);
 							
-							thisRes.writeHead(201, {'content-type': 'application/json'});	//201 registers as a success within a browser, but the app tries to upload it again. Error code HTTP 400, will return error code 1 in the app.							
+							thisRes.writeHead(206, {'content-type': 'application/json'});	//201 registers as a success within a browser, but the app tries to upload it again. Error code HTTP 400, will return error code 1 in the app.							
         					try {
         						thisRes.end(null);		//JSON.stringify(err)
 			        		} catch(err) {
