@@ -2083,6 +2083,11 @@ function handleServer(_req, _res) {
 									"errno":2,
 									"code":2,
 									"responseCode": 2
+								},
+								"err": {
+									"errno":2,
+									"code":2,
+									"responseCode": 2
 								}
 							};
 								
