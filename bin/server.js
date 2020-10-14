@@ -2046,6 +2046,9 @@ function handleServer(_req, _res) {
 						  // done. it tried fs.rename first, and then falls back to
 						  // piping the source file to the dest file and then unlinking
 						  // the source file.
+						  
+						  err = "TESTING REMOVE ME";		//REMOVE
+						  
 						  if(err) {
 						  	//There was an error moving the file. We need to delete the original file now,
 						  	//allowing for the app to try sending it again.
