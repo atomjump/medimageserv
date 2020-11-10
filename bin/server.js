@@ -2029,7 +2029,7 @@ function handleServer(_req, _res) {
 					if((global.globalConfig) && (global.globalConfig.allowPhotosLeaving) && (global.globalConfig.allowPhotosLeaving == true)) {
 						if(outhashdir == "") {
 							//Error case, the client hasn't sent through a hashdir. Get out of here now.
-							var err = "Error uploading file - Please reconnect your app. No subfolder provided.";
+							var err = "Error uploading file - Please reconnect your app. No subfolder provided on:" + outFile;
 							console.log(err);
 
 							var newerr = err;
