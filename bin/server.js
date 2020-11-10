@@ -2026,6 +2026,8 @@ function handleServer(_req, _res) {
 					
 					//If we allow photos to be downloaded by another MedImage Server, check the photo includes
 					//a hashfolder at the start of it. Otherwise, tell the client to retry sending.
+					//Note for the app ver 2.0.8 there is a bug if you switch from "ID writes a folder" being off
+					//into "ID writes a folder" being on, it won't correctly have the hashtag.
 					if((global.globalConfig) && (global.globalConfig.allowPhotosLeaving) && (global.globalConfig.allowPhotosLeaving == true)) {
 						if(outhashdir == "") {
 							//Error case, the client hasn't sent through a hashdir. Get out of here now.
@@ -2033,7 +2035,7 @@ function handleServer(_req, _res) {
 							console.log(err);
 
 							var newerr = err;
-							res.writeHead(206, {'content-type': 'application/json'});	//206 returns a non-1 value, so will try again. Error code HTTP 400, will return error code 1 in the app.							
+							res.writeHead(400, {'content-type': 'application/json'});	//206 returns a non-1 value, so will try again. Error code HTTP 400, will return error code 1 in the app.							
 							try {
 								res.end(JSON.stringify(err));
 							} catch(err) {
