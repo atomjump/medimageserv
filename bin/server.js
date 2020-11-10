@@ -1994,6 +1994,7 @@ function handleServer(_req, _res) {
 
 					var finalFileName = "";
 					var outhashdir = "";
+					var firsthashdir = "";
 					//Array of distinct words
 					for(var cnt = 0; cnt< words.length; cnt++) {
 						if(words[cnt].charAt(0) == '#') {
@@ -2007,8 +2008,14 @@ function handleServer(_req, _res) {
 							   if(verbose == true) console.log('Comparing ' + getDir + ' with ' + globalId);
 							   if(getDir != globalId) {
 							       outhashdir = outhashdir + '/' + getDir;
-	            						if(verbose == true) console.log('OutHashDir:' + outhashdir);
-	        					}
+	            				   if(verbose == true) console.log('OutHashDir:' + outhashdir);
+	            				   if(firsthashdir == "") {
+	            				   	   //Keep a track of the 1st one
+	            				   	  firsthashdir = getDir;
+	            				   }
+	        				   }
+	        				   	
+	        					
 						} else {
 							//Do some odd char trimming of this
 							var thisWord = words[cnt];
@@ -2046,12 +2053,12 @@ function handleServer(_req, _res) {
 						}
 						
 						//Check format of 1st hashdir is e.g. "eAxpYRtSSSYknADb9"
-						if((outhashdir.length >= 16)&&(outhashdir.length <= 20)) {
+						if((firsthashdir.length >= 16)&&(firsthashdir.length <= 20)) {
 							//Correct format. Continue.
 						
 						} else {
 							//Error case, the client hasn't sent through a hashdir. Get out of here now.
-							var err = "Error uploading file - Please reconnect your app. Subfolder in the wrong format: " + outhashdir;
+							var err = "Error uploading file - Please reconnect your app. Subfolder in the wrong format: " + firsthashdir;
 							console.log(err);
 
 							var newerr = err;
