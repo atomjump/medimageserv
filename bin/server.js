@@ -2027,7 +2027,7 @@ function handleServer(_req, _res) {
 					//If we allow photos to be downloaded by another MedImage Server, check the photo includes
 					//a hashfolder at the start of it. Otherwise, tell the client to retry sending.
 					if((global.globalConfig) && (global.globalConfig.allowPhotosLeaving) && (global.globalConfig.allowPhotosLeaving == true)) {
-						if(outhashdir == "")) {
+						if(outhashdir == "") {
 							//Error case, the client hasn't sent through a hashdir. Get out of here now.
 							var err = "Error uploading file - Please reconnect your app. No subfolder provided.";
 							console.log(err);
