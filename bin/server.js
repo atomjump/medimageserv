@@ -2049,7 +2049,7 @@ function handleServer(_req, _res) {
 						
 						} else {
 							//Error case, the client hasn't sent through a hashdir. Get out of here now.
-							var err = "Error uploading file - Please reconnect your app. Subfolder in the wrong format.";
+							var err = "Error uploading file - Please reconnect your app. Subfolder in the wrong format: " + outhashdir;
 							console.log(err);
 
 							var newerr = err;
