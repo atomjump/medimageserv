@@ -2022,6 +2022,48 @@ function handleServer(_req, _res) {
 							finalFileName = finalFileName + thisWord;
 						}
 					}  //end of loop
+					
+					
+					//If we allow photos to be downloaded by another MedImage Server, check the photo includes
+					//a hashfolder at the start of it. Otherwise, tell the client to retry sending.
+					if((global.globalConfig) && (global.globalConfig.allowPhotosLeaving) && (global.globalConfig.allowPhotosLeaving == true)) {
+						if(outhashdir == "")) {
+							//Error case, the client hasn't sent through a hashdir. Get out of here now.
+							var err = "Error uploading file - Please reconnect your app. No subfolder provided.";
+							console.log(err);
+
+							var newerr = err;
+							res.writeHead(206, {'content-type': 'application/json'});	//206 returns a non-1 value, so will try again. Error code HTTP 400, will return error code 1 in the app.							
+							try {
+								res.end(JSON.stringify(err));
+							} catch(err) {
+								console.log("Err:" + err);
+							}
+					
+							return;
+						}
+						
+						//Check format of 1st hashdir is e.g. "eAxpYRtSSSYknADb9"
+						if((outhashdir.length >= 16)&&(outhashdir.length <= 20)) {
+							//Correct format. Continue.
+						
+						} else {
+							//Error case, the client hasn't sent through a hashdir. Get out of here now.
+							var err = "Error uploading file - Please reconnect your app. Subfolder in the wrong format.";
+							console.log(err);
+
+							var newerr = err;
+							res.writeHead(206, {'content-type': 'application/json'});	//206 returns a non-1 value, so will try again. Error code HTTP 400, will return error code 1 in the app.							
+							try {
+								res.end(JSON.stringify(err));
+							} catch(err) {
+								console.log("Err:" + err);
+							}
+					
+							return;
+						}
+					
+					}
 
 					//Check the directory exists, and create
 
