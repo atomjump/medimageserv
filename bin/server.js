@@ -2333,10 +2333,10 @@ function handleServer(_req, _res) {
 			}
 
 			if(url.substr(0,pair.length) == pair) {
-				   //Do a get request from the known aj server (that is the default, at least)
+				   //Do a get request from the known aj server
 				   //for a new pairing guid
 				   var fullPairingUrl = pairingURL;
-					
+
 				   var queryString = url.substr(pair.length);		
 
 
@@ -2364,16 +2364,10 @@ function handleServer(_req, _res) {
 					   	data.guid = globalId;
 					   	
 					   }
-					   
-					   if(data.customPairing) {
-					   	   //Allow a custom pairing server (not atomjump's own)
-					   	   fullPairingUrl = data.customPairing + queryString;					   
-					   } else {
-							//Use AtomJump's own pairing server
-						   if(queryString) {
-							   fullPairingUrl = fullPairingUrl + queryString;
 
-						   }
+					   if(queryString) {
+						   fullPairingUrl = fullPairingUrl + queryString;
+
 					   }
 					   console.log("Request for pairing:" + fullPairingUrl);
 					   
