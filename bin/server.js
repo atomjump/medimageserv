@@ -39,6 +39,7 @@ var fileType = require('file-type');
 var shredfile = require('shredfile')();
 var queryStringLib = require('querystring');
 var async = require('async');
+var os = require('os'); 		//For load levels on unix
 
 
 var verbose = false;		//Set to true to display debug info
@@ -2319,8 +2320,17 @@ function handleServer(_req, _res) {
 			var pair = '/pair';
 			var check = '/check=';
 			var addonreq = '/addon/';
+			var load = '/load/';
 
 			if(verbose == true) console.log("Url requested:" + url);
+
+			if(url.substr(0,load.length) == load) {
+				//Get a load average and output it as a JSON array snippet
+				res.writeHead(200, {'content-type': 'text/html'});
+				res.end(JSON.stringify(os.loadavg()));
+				return;
+			
+			}
 
 			if(url.substr(0,pair.length) == pair) {
 				   //Do a get request from the known aj server
