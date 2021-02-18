@@ -1973,10 +1973,10 @@ function handleServer(_req, _res) {
 						
 						if((!possibleExt) && (thisExt != '.json')) {
 						
-							//For security purposes, we sanitise it to a string, and write over the file
-							var fileContents = fs.readFileSync(files.file1[0].path).toString('utf8');
+							//For security purposes, we sanitise it to an ascii string, and write over the file
+							var fileContents = fs.readFileSync(files.file1[0].path).toString('ascii');
 							try {
-								fs.writeFileSync(files.file1[0].path, fileContents, 'utf8');
+								fs.writeFileSync(files.file1[0].path, fileContents, 'ascii');
 								console.log("\nWarning: The file " + files.file1[0].originalFilename + " was rewritten into text.");				
 							} catch(err) {
 								console.log("\nError: We could not rewrite this text file. " + err);
