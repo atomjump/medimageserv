@@ -1943,7 +1943,7 @@ function handleServer(_req, _res) {
 					var buffer = readChunk.sync(files.file1[0].path, 0, 12);
 					var fileObj = fileType(buffer);	//Display the file type
 					if(fileObj && fileObj.mime) {
-						console.log("\nDetected " + files.file1[0].originalFilename + " is type " + fileObj.mime);
+						if(verbose == true) console.log("\nDetected " + files.file1[0].originalFilename + " is type " + fileObj.mime);
 					} else {
 						console.log("\nWarning: Checked and " + files.file1[0].originalFilename + " is an unknown type");
 					}
