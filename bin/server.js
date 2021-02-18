@@ -1941,8 +1941,10 @@ function handleServer(_req, _res) {
 						//Not a photo file - check if it is in our allowed types
 						var ext = null;
 						
+						console.log("TESTING allowed types: " + JSON.stringify(allowedTypes) + "  fileObj:" + JSON.stringify(fileObj));
+						
 						if(fileObj) {
-							console.log("TESTING allowed types: " + JSON.stringify(allowedTypes));
+							
 							for(var type = 0; type < allowedTypes.length; type++) {
 								if(fileObj.mime === allowedTypes[type].mime) {
 									//This is an allowed type
