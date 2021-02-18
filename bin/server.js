@@ -1942,19 +1942,15 @@ function handleServer(_req, _res) {
 
 					var buffer = readChunk.sync(files.file1[0].path, 0, 12);
 					var fileObj = fileType(buffer);	//Display the file type
-					if((!fileObj)||(!fileObj.mime) || (fileObj.mime != 'image/jpeg')) {
+					if((!fileObj)||(!fileObj.mime)) {
 						//Not a photo file - check if it is in our allowed types
 						var ext = null;
 						
-						console.log("TESTING allowed types: " + JSON.stringify(allowedTypes) + "  fileObj:" + JSON.stringify(fileObj) + " File path:" + files.file1[0].path + " Buffer:" + buffer);
-						
-						
+											
 						//Not a known binary file. Assume text file.
 							
 						//use the file extension itself, if available
-						var checkExt = path.extname(files.file1[0].path);
-						console.log("TESTING ext:" + checkExt);
-						
+						var checkExt = path.extname(files.file1[0].path);						
 						if(!checkExt) {
 							//Can check for some basic text format types
 							var buffStart = ltrim(buffer.toString());
@@ -1987,17 +1983,24 @@ function handleServer(_req, _res) {
 							return;
 						}
 					} else {
+						 //A quick check against .jpg images
+						 if(fileObj.mime != 'image/jpeg') {
 					
-						for(var type = 0; type < allowedTypes.length; type++) {
-								if(fileObj.mime === allowedTypes[type].mime) {
-									//This is an allowed type
-									ext = allowedTypes[type].extension;
-									var ext2 = ext;			//The same for the 2nd one to replace
-								}
+							//A binary file, with mime type in fileObj.mime
+							for(var type = 0; type < allowedTypes.length; type++) {
+									if(fileObj.mime === allowedTypes[type].mime) {
+										//This is an allowed type
+										ext = allowedTypes[type].extension;
+										var ext2 = ext;			//The same for the 2nd one to replace
+									}
 					
+							}
+						} else {
+					
+							//Special case for jpg files
+							ext = ".jpg";
+							ext2 = ".jpeg";
 						}
-					
-						if(ext === ".jpg") ext2 = ".jpeg";
 					
 					}
 
