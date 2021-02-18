@@ -1942,10 +1942,11 @@ function handleServer(_req, _res) {
 						var ext = null;
 						
 						if(fileObj) {
+							console.log("TESTING allowed types: " + JSON.stringify(allowedTypes));
 							for(var type = 0; type < allowedTypes.length; type++) {
 								if(fileObj.mime === allowedTypes[type].mime) {
 									//This is an allowed type
-									var ext = allowedTypes[type].extension;
+									ext = allowedTypes[type].extension;
 									var ext2 = ext;			//The same for the 2nd one to replace
 								}
 						
