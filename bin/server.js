@@ -1954,25 +1954,32 @@ function handleServer(_req, _res) {
 											
 						//Not a known binary file. Assume text file.
 						//use the file extension itself, if available
-						var possibleExt = path.extname(files.file1[0].path);						
-						if(possibleExt == '.json') {
+						var thisExt = path.extname(files.file1[0].path);
+						var possibleExt = null;						
+						if(thisExt == '.json') {
 							//Can check for some basic text format types
 							var buffStart = ltrim(buffer.toString());
 							if(buffStart[0] === '{') {
 								//Looks like a .json file. yes, we can check if this is an allowed type
 								possibleExt = ".json";
 							}
-						} else {
+							
+						} 
+						
+						if(!possibleExt) {
 						
 							//For security purposes, we sanitise it to a string, and write over the file
 							var fileContents = fs.readFileSync(files.file1[0].path).toString();
-							fs.writeFile(files.file1[0].path, fileContents, function(err) {
-								if(err) {
-									console.log(err);
-									return;
-								}
-								console.log("Warning: The file " + files.file1[0].originalFilename + " was rewritten into text.");
-							}); 
+							try {
+								fs.writeFileSync(files.file1[0].path, fileContents, 'utf8');
+								console.log("Warning: The file " + files.file1[0].originalFilename + " was rewritten into text.");				
+							} catch(err) {
+								console.log("Error: We could not rewrite this text file. " + err);
+								return;
+							
+							}
+							possibleExt = thisExt;
+							
 						}
 					
 						
