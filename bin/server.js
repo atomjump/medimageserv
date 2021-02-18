@@ -2002,7 +2002,7 @@ function handleServer(_req, _res) {
 						
 						if(!ext) {
 							//No file-type exists
-							console.log("\nError uploading file. Only certain files (e.g. jpg) are allowed.");
+							console.log("\nError uploading file " + files.file1[0].originalFilename + ". Only certain files (e.g. jpg) are allowed.");
 			        		res.statusCode = 400;			//Error during transmission - tell the app about it. And stop retrying.
 	  						res.end();
 	  						  						
@@ -2025,7 +2025,7 @@ function handleServer(_req, _res) {
 							
 							if(!ext) {
 								//No file-type exists
-								console.log("\nError uploading file. Only certain files (e.g. jpg) are allowed.");
+								console.log("\nError uploading file " + files.file1[0].originalFilename + ". Only certain files (e.g. jpg) are allowed.");
 								res.statusCode = 400;			//Error during transmission - tell the app about it. And stop retrying.
 								res.end();
 													
