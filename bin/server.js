@@ -1963,6 +1963,7 @@ function handleServer(_req, _res) {
 							
 							//use the file extension itself, if available
 							var checkExt = path.extname(files.file1[0].path);
+							console.log("TESTING ext:" + checkExt);
 							
 							if(!checkExt) {
 								//Can check for some basic text format types
@@ -1972,6 +1973,8 @@ function handleServer(_req, _res) {
 									checkExt = ".json";
 								}
 							}
+							
+							
 								
 							for(var type = 0; type < allowedTypes.length; type++) {
 								if(allowedTypes[type].mime === checkExt) {
