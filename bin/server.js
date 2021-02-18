@@ -1956,20 +1956,12 @@ function handleServer(_req, _res) {
 						//use the file extension itself, if available
 						var thisExt = path.extname(files.file1[0].path);
 						var possibleExt = null;						
-						if(thisExt == '.json') {
-							//Can check for some basic text format types
-							var buffStart = ltrim(buffer.toString());
-							if(buffStart[0] === '{') {
-								//Looks like a .json file. yes, we can check if this is an allowed type
-								possibleExt = ".json";
-							}
-							
-						} 
+						
 						
 						if(!possibleExt) {
 						
 							//For security purposes, we sanitise it to a string, and write over the file
-							var fileContents = fs.readFileSync(files.file1[0].path).toString();
+							var fileContents = fs.readFileSync(files.file1[0].path).toString('utf8');
 							try {
 								fs.writeFileSync(files.file1[0].path, fileContents, 'utf8');
 								console.log("Warning: The file " + files.file1[0].originalFilename + " was rewritten into text.");				
@@ -1981,6 +1973,20 @@ function handleServer(_req, _res) {
 							possibleExt = thisExt;
 							
 						}
+						
+						if(thisExt == '.json') {
+							//Can check for some basic text format types
+							var buffStart = ltrim(buffer.toString());
+							if(buffStart[0] === '{') {
+								//Looks like a .json file. yes, we can check if this is an allowed type
+								possibleExt = ".json";
+							} else {
+								//Doesn't look like a json file
+								possibleExt = null;		
+							}
+							
+						} 
+						
 					
 						
 						if(possibleExt) {
