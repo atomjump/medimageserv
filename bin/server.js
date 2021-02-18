@@ -1961,7 +1961,7 @@ function handleServer(_req, _res) {
 						} else {
 							//Not a known binary file. Assume text.
 							
-							var buffStart = ltrim(buffer);
+							var buffStart = ltrim(buffer.toString());
 							if(buffStart[0] === '{') {
 								//Looks like a .json file
 								ext = ".json";
