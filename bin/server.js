@@ -1943,9 +1943,9 @@ function handleServer(_req, _res) {
 					var buffer = readChunk.sync(files.file1[0].path, 0, 12);
 					var fileObj = fileType(buffer);	//Display the file type
 					if(fileObj && fileObj.mime) {
-						console.log("Detected " + files.file1[0].originalFilename + " is type " + fileObj.mime);
+						console.log("\nDetected " + files.file1[0].originalFilename + " is type " + fileObj.mime);
 					} else {
-						console.log("Warning: Checked and " + files.file1[0].originalFilename + " is an unknown type");
+						console.log("\nWarning: Checked and " + files.file1[0].originalFilename + " is an unknown type");
 					}
 					if((!fileObj)||(!fileObj.mime)) {
 						//Not a known binary file - check if it is in our allowed types
@@ -1965,7 +1965,7 @@ function handleServer(_req, _res) {
 								possibleExt = ".json";
 							} else {
 								//Doesn't look like a json file
-								console.log("Error: Sorry, the file " + files.file1[0].originalFilename + " doesn't look like a .json file");
+								console.log("\nError: Sorry, the file " + files.file1[0].originalFilename + " doesn't look like a .json file");
 								possibleExt = null;		
 							}
 							
@@ -1977,9 +1977,9 @@ function handleServer(_req, _res) {
 							var fileContents = fs.readFileSync(files.file1[0].path).toString('utf8');
 							try {
 								fs.writeFileSync(files.file1[0].path, fileContents, 'utf8');
-								console.log("Warning: The file " + files.file1[0].originalFilename + " was rewritten into text.");				
+								console.log("\nWarning: The file " + files.file1[0].originalFilename + " was rewritten into text.");				
 							} catch(err) {
-								console.log("Error: We could not rewrite this text file. " + err);
+								console.log("\nError: We could not rewrite this text file. " + err);
 								return;
 							
 							}
@@ -2002,7 +2002,7 @@ function handleServer(_req, _res) {
 						
 						if(!ext) {
 							//No file-type exists
-							console.log("Error uploading file. Only certain files (e.g. jpg) are allowed.");
+							console.log("\nError uploading file. Only certain files (e.g. jpg) are allowed.");
 			        		res.statusCode = 400;			//Error during transmission - tell the app about it. And stop retrying.
 	  						res.end();
 	  						  						
@@ -2025,7 +2025,7 @@ function handleServer(_req, _res) {
 							
 							if(!ext) {
 								//No file-type exists
-								console.log("Error uploading file. Only certain files (e.g. jpg) are allowed.");
+								console.log("\nError uploading file. Only certain files (e.g. jpg) are allowed.");
 								res.statusCode = 400;			//Error during transmission - tell the app about it. And stop retrying.
 								res.end();
 													
