@@ -1942,14 +1942,13 @@ function handleServer(_req, _res) {
 
 					var buffer = readChunk.sync(files.file1[0].path, 0, 12);
 					var fileObj = fileType(buffer);	//Display the file type
+					console.log("Detected " + files.file1[0].path + " is type " + fileObj.mime);
 					if((!fileObj)||(!fileObj.mime)) {
 						//Not a known binary file - check if it is in our allowed types
 						var ext = null;
 						
 											
-						//Not a known binary file. Assume text file, but don't let through if not starting as such.
-						checkExt = null;
-						
+						//Not a known binary file. Assume text file.
 						//use the file extension itself, if available
 						var possibleExt = path.extname(files.file1[0].path);						
 						if(possibleExt == '.json') {
