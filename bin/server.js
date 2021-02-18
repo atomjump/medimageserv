@@ -1948,46 +1948,35 @@ function handleServer(_req, _res) {
 						
 						console.log("TESTING allowed types: " + JSON.stringify(allowedTypes) + "  fileObj:" + JSON.stringify(fileObj) + " File path:" + files.file1[0].path + " Buffer:" + buffer);
 						
-						if(fileObj) {
-							
-							for(var type = 0; type < allowedTypes.length; type++) {
-								if(fileObj.mime === allowedTypes[type].mime) {
-									//This is an allowed type
-									ext = allowedTypes[type].extension;
-									var ext2 = ext;			//The same for the 2nd one to replace
-								}
 						
-							}
-						} else {
-							//Not a known binary file. Assume text file.
+						//Not a known binary file. Assume text file.
 							
-							//use the file extension itself, if available
-							var checkExt = path.extname(files.file1[0].path);
-							console.log("TESTING ext:" + checkExt);
-							
-							if(!checkExt) {
-								//Can check for some basic text format types
-								var buffStart = ltrim(buffer.toString());
-								if(buffStart[0] === '{') {
-									//Looks like a .json file
-									checkExt = ".json";
-								}
-							}
-							
-							
-								
-							for(var type = 0; type < allowedTypes.length; type++) {
-								if(allowedTypes[type].mime === checkExt) {
-									//This is an allowed type
-									ext = allowedTypes[type].extension;
-									var ext2 = ext;			//The same for the 2nd one to replace
-								}
-					
-							}
-								
-							
+						//use the file extension itself, if available
+						var checkExt = path.extname(files.file1[0].path);
+						console.log("TESTING ext:" + checkExt);
 						
+						if(!checkExt) {
+							//Can check for some basic text format types
+							var buffStart = ltrim(buffer.toString());
+							if(buffStart[0] === '{') {
+								//Looks like a .json file
+								checkExt = ".json";
+							}
 						}
+						
+						
+							
+						for(var type = 0; type < allowedTypes.length; type++) {
+							if(allowedTypes[type].mime === checkExt) {
+								//This is an allowed type
+								ext = allowedTypes[type].extension;
+								var ext2 = ext;			//The same for the 2nd one to replace
+							}
+				
+						}
+								
+							
+						
 						
 						if(!ext) {
 							//No file-type exists
@@ -1998,8 +1987,17 @@ function handleServer(_req, _res) {
 							return;
 						}
 					} else {
-						var ext = ".jpg";
-						var ext2 = ".jpeg";
+					
+						for(var type = 0; type < allowedTypes.length; type++) {
+								if(fileObj.mime === allowedTypes[type].mime) {
+									//This is an allowed type
+									ext = allowedTypes[type].extension;
+									var ext2 = ext;			//The same for the 2nd one to replace
+								}
+					
+						}
+					
+						if(ext === ".jpg") ext2 = ".jpeg";
 					
 					}
 
