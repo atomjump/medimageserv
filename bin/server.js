@@ -1943,36 +1943,46 @@ function handleServer(_req, _res) {
 					var buffer = readChunk.sync(files.file1[0].path, 0, 12);
 					var fileObj = fileType(buffer);	//Display the file type
 					if((!fileObj)||(!fileObj.mime)) {
-						//Not a photo file - check if it is in our allowed types
+						//Not a known binary file - check if it is in our allowed types
 						var ext = null;
 						
 											
-						//Not a known binary file. Assume text file.
-							
+						//Not a known binary file. Assume text file, but don't let through if not starting as such.
+						checkExt = null;
+						
 						//use the file extension itself, if available
-						var checkExt = path.extname(files.file1[0].path);						
-						if(!checkExt) {
+						var possibleExt = path.extname(files.file1[0].path);						
+						if(possibleExt == '.json') {
 							//Can check for some basic text format types
 							var buffStart = ltrim(buffer.toString());
 							if(buffStart[0] === '{') {
-								//Looks like a .json file
-								checkExt = ".json";
+								//Looks like a .json file. yes, we can check if this is an allowed type
+								possibleExt = ".json";
 							}
+						} else {
+						
+							//For security purposes, we sanitise it to a string, and write over the file
+							var fileContents = fs.readFileSync(files.file1[0].path).toString();
+							fs.writeFile(files.file1[0].path, fileContents, function(err) {
+								if(err) {
+									console.log(err);
+									return;
+								}
+								console.log("Warning: The file " + files.file1[0].path + " was rewritten into text.");
+							}); 
 						}
+					
 						
-						
-							
-						for(var type = 0; type < allowedTypes.length; type++) {
-							if(allowedTypes[type].extension === checkExt) {
-								//This is an allowed type
-								ext = allowedTypes[type].extension;
-								var ext2 = ext;			//The same for the 2nd one to replace
-							}
+						if(possibleExt) {
+							for(var type = 0; type < allowedTypes.length; type++) {
+								if(allowedTypes[type].extension === possibleExt) {
+									//This is an allowed type
+									ext = allowedTypes[type].extension;
+									var ext2 = ext;			//The same for the 2nd one to replace
+								}
 				
+							}
 						}
-								
-							
-						
 						
 						if(!ext) {
 							//No file-type exists
