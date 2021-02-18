@@ -1967,7 +1967,7 @@ function handleServer(_req, _res) {
 						
 							
 						for(var type = 0; type < allowedTypes.length; type++) {
-							if(allowedTypes[type].mime === checkExt) {
+							if(allowedTypes[type].extension === checkExt) {
 								//This is an allowed type
 								ext = allowedTypes[type].extension;
 								var ext2 = ext;			//The same for the 2nd one to replace
