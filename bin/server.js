@@ -1888,6 +1888,11 @@ function getFileFromUserStr(inFile)
 }
 
 
+function ltrim(str) {
+  if(!str) return str;
+  return str.replace(/^\s+/g, '');
+}
+
 function handleServer(_req, _res) {
 
 	var req = _req;
@@ -1953,10 +1958,21 @@ function handleServer(_req, _res) {
 								}
 						
 							}
+						} else {
+							//Not a known binary file. Assume text.
+							
+							var buffStart = ltrim(buffer);
+							if(buffStart[0] === '{') {
+								//Looks like a .json file
+								ext = ".json";
+								ext2 = ".json";
+								
+							}
+						
 						}
 						
 						if(!ext) {
-							//No file exists
+							//No file-type exists
 							console.log("Error uploading file. Only certain files (e.g. jpg) are allowed.");
 			        		res.statusCode = 400;			//Error during transmission - tell the app about it. And stop retrying.
 	  						res.end();
