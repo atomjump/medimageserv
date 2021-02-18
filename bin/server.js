@@ -1959,15 +1959,30 @@ function handleServer(_req, _res) {
 						
 							}
 						} else {
-							//Not a known binary file. Assume text.
+							//Not a known binary file. Assume text file.
 							
-							var buffStart = ltrim(buffer.toString());
-							if(buffStart[0] === '{') {
-								//Looks like a .json file
-								ext = ".json";
-								ext2 = ".json";
-								
+							//use the file extension itself, if available
+							var checkExt = path.extname(files.file1[0].path);
+							
+							if(!checkExt) {
+								//Can check for some basic text format types
+								var buffStart = ltrim(buffer.toString());
+								if(buffStart[0] === '{') {
+									//Looks like a .json file
+									checkExt = ".json";
+								}
 							}
+								
+							for(var type = 0; type < allowedTypes.length; type++) {
+								if(allowedTypes[type].mime === checkExt) {
+									//This is an allowed type
+									ext = allowedTypes[type].extension;
+									var ext2 = ext;			//The same for the 2nd one to replace
+								}
+					
+							}
+								
+							
 						
 						}
 						
