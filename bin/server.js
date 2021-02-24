@@ -2583,8 +2583,8 @@ function handleServer(_req, _res) {
 				   	  }
 				   	  
 				   	  //Allow reading from any url - CORS, see https://stackfame.com/nodejs-with-cors
-				   	  res.header("Access-Control-Allow-Origin", "*");
-					  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+				   	  res.setHeader("Access-Control-Allow-Origin", "*");
+					  res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
 
 					 //Get uploaded photos from coded subdir
