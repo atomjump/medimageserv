@@ -2581,6 +2581,10 @@ function handleServer(_req, _res) {
 							res.end("Sorry, you cannot read from this server. Please check the server's config.json.");
 				   			return;
 				   	  }
+				   	  
+				   	  //Allow reading from any url - CORS, see https://stackfame.com/nodejs-with-cors
+				   	  res.header("Access-Control-Allow-Origin", "*");
+					  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
 
 					 //Get uploaded photos from coded subdir
