@@ -100,7 +100,8 @@ process.on('SIGINT', function() {
 
 
 
-process.on('uncaughtException', function() {
+process.on('uncaughtException', function(err) {
+   console.log(err);
    console.log("Shutting down gracefully..");
    setTimeout(function() {
     // 2000ms later the process kill it self to allow a restart. E.g. if there is already another
