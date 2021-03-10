@@ -99,6 +99,21 @@ process.on('SIGINT', function() {
 });
 
 
+
+process.on('uncaughtException', function() {
+   console.log("Shutting down gracefully..");
+   setTimeout(function() {
+    // 2000ms later the process kill it self to allow a restart. E.g. if there is already another
+    //server on the same port, and we are being run on pm2, it will wait a couple of seconds
+    //before restarting - preventing it killing our CPU.
+    console.log("Clean exit.");
+    process.exit(0);
+  }, 2000);
+});
+
+
+
+
 //Check any command-line options
 if((process.argv[2]) && (process.argv[2] == '-verbose')){
 	verbose = true;
