@@ -2,7 +2,7 @@
   "author": "AtomJump.com",
   "name": "medimage",
   "description": "An image server for the Android/iPhone app, MedImage.",
-  "version": "1.8.2",
+  "version": "1.8.3",
   "bin": {
     "medimage": "bin/server.js"
   },
@@ -42,7 +42,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/atomjump/medimageserv"
+    "url": "https://src.atomjump.com/atomjump/medimageserv"
   },
   "main": "bin/server.js",
   "optionalDependencies": {},

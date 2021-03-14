@@ -18,18 +18,18 @@ See https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-a
 Then:
 
 ```
-eval "$(curl -fsSL -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/atomjump/medimageserv-linstaller/master/install)"     
+eval "$(curl -fsSL -H 'Cache-Control: no-cache' https://git.atomjump.com/medimageserv-linstaller.git/install)"     
 ```
 
 (Or for a super user installation, which is sometimes required) 
 
 ```
-eval "$(curl -fsSL -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/atomjump/medimageserv-linstaller/master/install-root)"     
+eval "$(curl -fsSL -H 'Cache-Control: no-cache' https://git.atomjump.com/medimageserv-linstaller.git/install-root)"     
 ```
 
 Alternatively, if these do not match your server's permissions, you can find the list of individual commands at 
-https://raw.githubusercontent.com/atomjump/medimageserv-linstaller/master/install
-https://raw.githubusercontent.com/atomjump/medimageserv-linstaller/master/install-root
+https://git.atomjump.com/medimageserv-linstaller.git/install
+https://git.atomjump.com/medimageserv-linstaller.git/install-root
 
 Run the command the last part of the script displays, to get autostart at boot-up.
 
@@ -142,7 +142,7 @@ sudo npm install -g medimage -production
 The way to upgrade Medimage Server:
 
 ```
-eval "$(curl -fsSL -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/atomjump/medimageserv-linstaller/master/upgrade)" 
+eval "$(curl -fsSL -H 'Cache-Control: no-cache' https://git.atomjump.com/medimageserv-linstaller.git/upgrade)" 
 ```
 
 But, please note, that any files in the lib/node_modules/medimage/ directory may be removed, during the 'npm install' command. If you store any other files such as keys, ensure you copy them out before running this command.
@@ -150,7 +150,7 @@ But, please note, that any files in the lib/node_modules/medimage/ directory may
 (Or for a super user installation, which is sometimes required) 
 
 ```
-eval "$(curl -fsSL -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/atomjump/medimageserv-linstaller/master/upgrade-root)" 
+eval "$(curl -fsSL -H 'Cache-Control: no-cache' https://git.atomjump.com/medimageserv-linstaller.git/upgrade-root)" 
 ```
 
 You also may wish to save your config file somewhere else first, and then run:
@@ -169,7 +169,7 @@ without having to copy them out.
 To remove any instances of MedImage Server:
 
 ```
-eval "$(curl -fsSL -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/atomjump/medimageserv-linstaller/master/uninstall)" 
+eval "$(curl -fsSL -H 'Cache-Control: no-cache' https://git.atomjump.com/medimageserv-linstaller.git/uninstall)" 
 ```
 
 
