@@ -2666,7 +2666,7 @@ function handleServer(_req, _res) {
 
 								} else {
 									//Now serve the full file
-									serveUpFile(outfile,localFileName, res, true);
+									serveUpFile(outfile,localFileName, res, true, jsonpResponse);
 								}
 
 							 } else {
@@ -2680,7 +2680,7 @@ function handleServer(_req, _res) {
 								res.writeHead(200, {'content-type': 'text/html'});
 								
 								if(jsonpResponse) {
-									var response = jsonpResponse.replace("JSONRESPONSE", JSON.stringify("none"));
+									var response = jsonpResponse.replace("JSONRESPONSE", JSON.stringify(noFurtherFiles));
 									console.log(response);
 									res.end(response);
 								} else {
@@ -2842,7 +2842,7 @@ function handleServer(_req, _res) {
 }
 
 
-function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList) {
+function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList, jsonpResponse) {
 
   //CustomStringList should be in format:
   //  {
@@ -2941,27 +2941,56 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList)
 	  	res.writeHead(200, {'Content-Type': contentType, 'file-name': theFile});		//Trying with cap Content-Type, was content-type
 	  }
 
-	  res.end(data, function(err) {
-		  //Wait until finished sending, then delete locally
-		  if(err) {
-	  	  	 console.log(err);
-	  	  } else {
-			//success, do nothing
+		if(jsonpResponse) {
+			//A JSONP request - e.g. for a message file from an iPhone
+			var response = jsonpResponse.replace("JSONRESPONSE", JSON.stringify(data));
+			console.log(response);
+			res.end(response, function(err) {
+			  //Wait until finished sending, then delete locally
+			  if(err) {
+				 console.log(err);
+			  } else {
+				//success, do nothing
 			
-			if(deleteAfterwards == true) {
-				//Delete the file 'normpath' from the server. This server is like a proxy cache and
-				//doesn't hold permanently
+				if(deleteAfterwards == true) {
+					//Delete the file 'normpath' from the server. This server is like a proxy cache and
+					//doesn't hold permanently
 
-				//Note: we may need to check the client has got the full file before deleting it?
-				//e.g. timeout/ or a whole new request.
-				if(verbose == true) console.log("About to shred:" + normpath);
-				shredWrapper(normpath, theFile);
+					//Note: we may need to check the client has got the full file before deleting it?
+					//e.g. timeout/ or a whole new request.
+					if(verbose == true) console.log("About to shred:" + normpath);
+					shredWrapper(normpath, theFile);
 				
 
-			}
+				}
 
-	   	 }
-  	   });
+			 }
+		   });
+		} else {
+			//A normal response
+			res.end(data, function(err) {
+			  //Wait until finished sending, then delete locally
+			  if(err) {
+				 console.log(err);
+			  } else {
+				//success, do nothing
+			
+				if(deleteAfterwards == true) {
+					//Delete the file 'normpath' from the server. This server is like a proxy cache and
+					//doesn't hold permanently
+
+					//Note: we may need to check the client has got the full file before deleting it?
+					//e.g. timeout/ or a whole new request.
+					if(verbose == true) console.log("About to shred:" + normpath);
+					shredWrapper(normpath, theFile);
+				
+
+				}
+
+			 }
+		   });
+		}
+	  
 	 });  //End of readFile
    } else {	//End of if custom string
 
