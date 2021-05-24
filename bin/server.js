@@ -2944,10 +2944,12 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList,
 	  	res.writeHead(200, {'Content-Type': contentType, 'file-name': theFile});		//Trying with cap Content-Type, was content-type
 	  }
 
+		console.log("About to serve file jsonpResponse: " + jsonpResponse);
+		console.log("About to serve file jsonpResponse: " + JSON.stringify(data));
 		if(jsonpResponse) {
 			//A JSONP request - e.g. for a message file from an iPhone
 			var response = jsonpResponse.replace("JSONRESPONSE", JSON.stringify(data));
-			console.log(response);
+			console.log(response);		//TESTING
 			res.end(response, function(err) {
 			  //Wait until finished sending, then delete locally
 			  if(err) {
