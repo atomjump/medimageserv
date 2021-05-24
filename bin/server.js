@@ -2666,7 +2666,8 @@ function handleServer(_req, _res) {
 
 								} else {
 									//Now serve the full file
-									serveUpFile(outfile,localFileName, res, true, jsonpResponse);
+									console.log("Serving up the full file." + localFileName);		//TESTING
+									serveUpFile(outfile,localFileName, res, true, null, jsonpResponse);
 								}
 
 							 } else {
