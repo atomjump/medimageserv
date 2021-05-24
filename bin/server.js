@@ -42,7 +42,7 @@ var async = require('async');
 var os = require('os'); 		//For load levels on unix
 
 
-var verbose = false;		//Set to true to display debug info
+var verbose = true; //TESTING		//Set to true to display debug info
 var outdirDefaultParent = '/medimage';		//These should have a slash before, and no slash after.
 var outdirPhotos = '/photos';			//These should have a slash before, and no slash after.
 var defaultTitle = "image";
