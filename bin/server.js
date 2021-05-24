@@ -2891,10 +2891,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList,
     contentType = 'text/css';
   }
   
-  if(jsonpResponse) {
-  	//Don't want to stream a jsonp response - usually this is a json message
-  	stream = false;	
-  }
+
   
   //Run through the user-defined file types
   for(var type = 0; type < allowedTypes.length; type++) {
@@ -2910,7 +2907,8 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList,
 
 
 
-  if((stream == false)&&(deleteAfterwards != true)) {
+  if(((stream == false)&&(deleteAfterwards != true))||
+  		(jsonpResponse)) {
 	//Implies we need to modify this file, and it is likely and html request - i.e. fairly rare
   	//Use the slow method:
   	if(verbose == true) console.log("Using slow method");		//TESTING
