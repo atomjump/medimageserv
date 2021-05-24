@@ -2903,14 +2903,16 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList,
 
   //Being preparation to send
 
-
+  
 
   if((stream == false)&&(deleteAfterwards != true)) {
 	//Implies we need to modify this file, and it is likely and html request - i.e. fairly rare
   	//Use the slow method:
+  	if(verbose == true) console.log("Using slow method");		//TESTING
+  	
   	fs.readFile(normpath, function (err,data) {
 
-
+	  if(verbose == true) console.log("Read file");			//TESTING
 	  if (err) {
 	   	res.writeHead(404);
 	   	res.end(JSON.stringify(err));
@@ -2931,12 +2933,16 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList,
 
 	     data = JSON.parse( JSON.stringify( strData ) ); 
 	  }
+	  
+	  if(verbose == true) console.log("Parsed data");			//TESTING
 
 	  res.on('error', function(err){
 	  	//Handle the errors here
 	  	res.statusCode = 400;
     	res.end();
 	  })
+
+	  if(verbose == true) console.log("Passed errors");			//TESTING
 
 	  if((res.headersSent) && (res.headersSent == true)) {
 	    	//Sorry, the header has already been sent
@@ -2998,6 +3004,8 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList,
 	  
 	 });  //End of readFile
    } else {	//End of if custom string
+
+		if(verbose == true) console.log("Using streams method");		//TESTING
 
   		//Use streams instead for a larger file
 
