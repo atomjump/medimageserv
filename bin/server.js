@@ -1912,12 +1912,21 @@ function ltrim(str) {
 
 
 function getJSONP(url) {
-	
+	//Checks if there is a JSONP request, and returns a callback string to use, if so.
+	//Otherwise, returns a null.
+	//With the returned callback string, str.replace() the 'JSONRESPONSE' with a JSON stringified
+	//version of the return object. Use JSON.stringify();
 	var jsonpRequest = false;
 	var myURL = new URL("http://127.0.0.1" + url);
 	var callback = myURL.searchParams.get(jsonpCallback);
-	console.log("Callback : " + callback);
-	return; 
+	if(callback) {
+		console.log("Callback : " + callback);
+		var retString = callback + "(JSONRESPONSE)";		
+		console.log("Response : " + retString);
+		return retString; 
+	} else {
+		return null;
+	}
 }
 
 function handleServer(_req, _res) {
@@ -2669,7 +2678,15 @@ function handleServer(_req, _res) {
 									process.stdout.write(".");
 								}
 								res.writeHead(200, {'content-type': 'text/html'});
-								res.end(noFurtherFiles);
+								
+								if(jsonpResponse) {
+									var response = jsonpResponse.replace("JSONRESPONSE", JSON.stringify("none"));
+									console.log(response);
+									res.end(response);
+								} else {
+									//A normal response
+									res.end(noFurtherFiles);
+								}
 								return;
 
 							 }
