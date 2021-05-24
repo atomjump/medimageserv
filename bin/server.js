@@ -2610,7 +2610,7 @@ function handleServer(_req, _res) {
 
 				  if(url.substr(0,read.length) == read) {
 
-					 var jsonpResponse = getJSONP(url);
+					 var jsonpResponse = getJSONP(url);		//See if we have a JSONP request
 					 
 
 				  	 if(allowPhotosLeaving != true) {
@@ -2628,10 +2628,11 @@ function handleServer(_req, _res) {
 
 					 //Get uploaded photos from coded subdir
 					 var codeDir = url.substr(read.length);
+					 codeDir = codeDir.split('?')[0];		//Remove anything after a trailing '?'
 					 /* OLD WAY: if(codeDir.charAt(codeDir.length-1) == "?") {	//remove trailing question marks
 					 	codeDir = codeDir.slice(0, -1);
 					 }*/
-					 codeDir = url.split('?')[0];		//Remove anything after a trailing '?'
+					 
 					 var parentDir = serverParentDir();
 					 if(verbose == true) console.log("This drive:" + parentDir);
 					 if(verbose == true) console.log("Coded directory:" + codeDir);
