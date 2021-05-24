@@ -54,6 +54,7 @@ var addonsConfigFile = __dirname + '/../addons/config.json';
 var htmlHeaderFile = __dirname + '/../public/components/header.html';
 var htmlHeaderCode = "";				//This is loaded from disk on startup
 var noFurtherFiles = "none";			//This gets piped out if there are no further files in directory
+var jsonpCallback = "callback";			//The term used in the URL variable if calling using jsonp
 var pairingURL = "https://medimage-pair.atomjump.com/med-genid.php";  //Redirects to an https connection. 
 var listenPort = 5566;
 var remoteReadTimer = null;
@@ -1909,6 +1910,16 @@ function ltrim(str) {
   return str.replace(/^\s+/g, '');
 }
 
+
+function getJSONP(url) {
+	
+	var jsonpRequest = false;
+	var myURL = new URL(url);
+	var callback = myURL.searchParams.get('jsonpCallback');
+	console.log("Callback : " + callback);
+	return; 
+}
+
 function handleServer(_req, _res) {
 
 	var req = _req;
@@ -2589,6 +2600,9 @@ function handleServer(_req, _res) {
 
 
 				  if(url.substr(0,read.length) == read) {
+
+					 var jsonpResponse = getJSONP(url);
+					 
 
 				  	 if(allowPhotosLeaving != true) {
 
