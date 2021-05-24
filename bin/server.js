@@ -2891,6 +2891,11 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList,
     contentType = 'text/css';
   }
   
+  if(jsonpResponse) {
+  	//Don't want to stream a jsonp response - usually this is a json message
+  	stream = false;	
+  }
+  
   //Run through the user-defined file types
   for(var type = 0; type < allowedTypes.length; type++) {
   	if(ext === allowedTypes[type].extension) {
@@ -2903,7 +2908,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList,
 
   //Being preparation to send
 
-  
+
 
   if((stream == false)&&(deleteAfterwards != true)) {
 	//Implies we need to modify this file, and it is likely and html request - i.e. fairly rare
