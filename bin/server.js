@@ -1914,7 +1914,7 @@ function ltrim(str) {
 function getJSONP(url) {
 	
 	var jsonpRequest = false;
-	var myURL = new URL(url);
+	var myURL = new URL("http://127.0.0.1" + url);
 	var callback = myURL.searchParams.get('jsonpCallback');
 	console.log("Callback : " + callback);
 	return; 
