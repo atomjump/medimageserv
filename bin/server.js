@@ -42,7 +42,7 @@ var async = require('async');
 var os = require('os'); 		//For load levels on unix
 
 
-var verbose = true; //TESTING		//Set to true to display debug info
+var verbose = false; 		//Set to true to display debug info
 var outdirDefaultParent = '/medimage';		//These should have a slash before, and no slash after.
 var outdirPhotos = '/photos';			//These should have a slash before, and no slash after.
 var defaultTitle = "image";
@@ -1917,12 +1917,13 @@ function getJSONP(url) {
 	//With the returned callback string, str.replace() the 'JSONRESPONSE' with a JSON stringified
 	//version of the return object. Use JSON.stringify();
 	var jsonpRequest = false;
-	var myURL = new URL("http://127.0.0.1" + url);
+	var myURL = new URL("http://127.0.0.1" + url);		//Use any old URL at the start. We will 
+														//only be looking at the query section, anyway
 	var callback = myURL.searchParams.get(jsonpCallback);
 	if(callback) {
-		console.log("Callback : " + callback);
+		if(verbose == true) console.log("Callback : " + callback);
 		var retString = callback + "(JSONRESPONSE)";		
-		console.log("Response : " + retString);
+		if(verbose == true) console.log("Response : " + retString);
 		return retString; 
 	} else {
 		return null;
@@ -2628,8 +2629,8 @@ function handleServer(_req, _res) {
 
 					 //Get uploaded photos from coded subdir
 					 var codeDir = url.substr(read.length);
-					 codeDir = codeDir.split('?')[0];		//Remove anything after a trailing '?'
-					 /* OLD WAY: if(codeDir.charAt(codeDir.length-1) == "?") {	//remove trailing question marks
+					 codeDir = codeDir.split('?')[0];		//Remove anything after a trailing '?', including the question mark itself
+					 /* Old way: just removed a trailing question mark by removing the last character: if(codeDir.charAt(codeDir.length-1) == "?") {	//remove trailing question marks
 					 	codeDir = codeDir.slice(0, -1);
 					 }*/
 					 
@@ -2668,7 +2669,6 @@ function handleServer(_req, _res) {
 
 								} else {
 									//Now serve the full file
-									console.log("Serving up the full file." + localFileName);		//TESTING
 									serveUpFile(outfile,localFileName, res, true, null, jsonpResponse);
 								}
 
@@ -2684,7 +2684,7 @@ function handleServer(_req, _res) {
 								
 								if(jsonpResponse) {
 									var response = jsonpResponse.replace("JSONRESPONSE", JSON.stringify(noFurtherFiles));
-									console.log(response);
+									if(verbose == true) console.log("JSONP response:" + response);
 									res.end(response);
 								} else {
 									//A normal response
@@ -2910,12 +2910,9 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList,
   if(((stream == false)&&(deleteAfterwards != true))||
   		(jsonpResponse)) {
 	//Implies we need to modify this file, and it is likely and html request - i.e. fairly rare
-  	//Use the slow method:
-  	if(verbose == true) console.log("Using slow method");		//TESTING
-  	
+  	//Use the slow method:  	
   	fs.readFile(normpath, function (err,data) {
 
-	  if(verbose == true) console.log("Read file");			//TESTING
 	  if (err) {
 	   	res.writeHead(404);
 	   	res.end(JSON.stringify(err));
@@ -2935,9 +2932,7 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList,
 	     }
 
 	     data = JSON.parse( JSON.stringify( strData ) ); 
-	  }
-	  
-	  if(verbose == true) console.log("Parsed data");			//TESTING
+	  }	  
 
 	  res.on('error', function(err){
 	  	//Handle the errors here
@@ -2945,20 +2940,19 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList,
     	res.end();
 	  })
 
-	  if(verbose == true) console.log("Passed errors");			//TESTING
-
 	  if((res.headersSent) && (res.headersSent == true)) {
 	    	//Sorry, the header has already been sent
 	  } else {
 	  	res.writeHead(200, {'Content-Type': contentType, 'file-name': theFile});		//Trying with cap Content-Type, was content-type
 	  }
 
-		console.log("About to serve file jsonpResponse: " + jsonpResponse);
-		console.log("About to serve file jsonpResponse: " + JSON.stringify(data));
+		if(verbose == true) console.log("About to serve file jsonpResponse: " + jsonpResponse);
+		if(verbose == true) console.log("About to serve file contents: " + JSON.stringify(data));
 		if(jsonpResponse) {
 			//A JSONP request - e.g. for a message file from an iPhone
 			var response = jsonpResponse.replace("JSONRESPONSE", JSON.stringify(data));
-			console.log(response);		//TESTING
+			if(verbose == true) console.log("Full JSONP response: " + response);	
+				
 			res.end(response, function(err) {
 			  //Wait until finished sending, then delete locally
 			  if(err) {
@@ -3007,8 +3001,6 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList,
 	  
 	 });  //End of readFile
    } else {	//End of if custom string
-
-		if(verbose == true) console.log("Using streams method");		//TESTING
 
   		//Use streams instead for a larger file
 
