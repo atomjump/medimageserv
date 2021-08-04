@@ -297,7 +297,17 @@ function checkConfigCurrent(setVals, cb) {
 
 		} else {
 			if(data) {
-				var content = JSON.parse(data);
+				try {
+					var content = JSON.parse(data);
+				} catch(e) {
+					//There was an error parsing the data. Use the existing global var if it exists.
+					if(global.globalConfig) {
+						content = global.globalConfig;
+					} else {
+						cb("Sorry, the config file is blank.");
+						return;
+					}
+				}
 			} else {
 				if(global.globalConfig) {
 					content = global.globalConfig;
@@ -863,7 +873,12 @@ function backupFile(thisPath, outhashdir, finalFileName, opts, cb)
 			cb(err, null);
 		} else {
 			if(data) {
-				var content = JSON.parse(data);
+				try {
+					var content = JSON.parse(data);
+				} catch(e) {
+					//There was an error parsing the data. Use the existing global var.
+					var content = global.globalConfig;
+				}
 			} else {
 				//There was an error reading the data. Use the existing global var.
 				var content = global.globalConfig;
@@ -1376,7 +1391,12 @@ function addOns(eventType, cb, param1, param2, param3)
 			console.log("Warning: Error reading addons config file: " + err);
 		} else {
 			if(data) {
-				var content = JSON.parse(data);
+				try {
+					var content = JSON.parse(data);
+				} catch(e) {
+					//There was an error parsing the data. Use the existing global var.
+					var content = global.globalConfig;
+				}
 			} else {
 				//There was an error reading the data. Use the existing global var.
 				var content = global.globalConfig;
@@ -2931,7 +2951,13 @@ function serveUpFile(fullFile, theFile, res, deleteAfterwards, customStringList,
   
 	     }
 
-	     data = JSON.parse( JSON.stringify( strData ) ); 
+		 try {
+	     	data = JSON.parse( JSON.stringify( strData ) ); 
+	     } catch(e) {
+	     	//Unparsable
+	     	data = {};
+	     
+	     }
 	  }	  
 
 	  res.on('error', function(err){
