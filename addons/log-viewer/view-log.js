@@ -5,10 +5,17 @@
 */
 
 var fs = require('fs');
+
+
+const entities = require('html-entities').AllHtmlEntities;
+
+/*
+Old way of using the entities interface for ver 1.3.1, which is the supported interface
+for the old Windows Server < 1.8.4:
 const Entities = require('html-entities').AllHtmlEntities;
  
 const entities = new Entities();
- 
+*/ 
 
 var verbose = false;
 
