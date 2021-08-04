@@ -15,6 +15,7 @@ for the old Windows Server < 1.8.4:
 const Entities = require('html-entities').AllHtmlEntities;
  
 const entities = new Entities();
+
 */ 
 
 var verbose = false;
