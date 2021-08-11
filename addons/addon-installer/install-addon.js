@@ -23,10 +23,10 @@ var async = require('async');
 var exec = require('child_process').exec;
 var spawn = require('child_process').spawn;
 
-const Entities = require('html-entities').AllHtmlEntities;
+//Old style: var Entities = require('html-entities').AllHtmlEntities;
  
-const entities = new Entities();
-
+//Old style: var entities = new Entities();
+import {encode} from 'html-entities';
 
 
 var httpsFlag = false;				//whether we are serving up https (= true) or http (= false)
@@ -400,7 +400,7 @@ function execCommands(commandArray, prepend, cb)
 										
 										
 											//Get rid of any strange chars before sending back to GUI
-											msg = entities.encodeNonUTF(msg);
+											msg = encode(msg, {mode: 'extensive', level: 'all'}); //Old style: entities.encodeNonUTF(msg);
 								
 											//Remove newlines
 											msg = removeUnreadableChars(msg).substr(0,500);
@@ -462,7 +462,7 @@ function execCommands(commandArray, prepend, cb)
 						 		console.log("Stderr:" + outputStdError);
 						 	
 						 		//Get rid of any strange chars
-						 		ext = entities.encodeNonUTF(ext);
+						 		ext = encode(msg, {mode: 'extensive', level: 'all'});		//Old style: entities.encodeNonUTF(ext);
 						 		
 						 		//Remove newlines
 						 		
