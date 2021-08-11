@@ -1,6 +1,7 @@
 {
   "name": "medimage",
   "version": "1.8.5",
+  "notes": "overriding an old dependency. It looks like the developers of unzip are not maintaining the package",
   "lockfileVersion": 1,
   "requires": true,
   "dependencies": {
