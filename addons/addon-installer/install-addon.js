@@ -26,7 +26,10 @@ var spawn = require('child_process').spawn;
 //Old style: var Entities = require('html-entities').AllHtmlEntities;
  
 //Old style: var entities = new Entities();
-import {encode} from 'html-entities';
+//import {encode} from 'html-entities';
+var Entities = require('html-entities');
+var encode = Entities.encode;
+
 
 
 var httpsFlag = false;				//whether we are serving up https (= true) or http (= false)
