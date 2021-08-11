@@ -10,7 +10,7 @@ Unzips, and then runs each of the commands in a
 
 var url = require("url");
 var path = require("path");
-var unzip = require('unzip');
+var unzip = require('unzipper');
 var request = require('request');
 var path = require("path");
 var upath = require("upath");
