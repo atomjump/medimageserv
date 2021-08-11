@@ -7,7 +7,10 @@
 var fs = require('fs');
 
 
-const entities = require('html-entities').AllHtmlEntities;
+
+
+var Entities = require('html-entities');
+var encode = Entities.encode;
 
 /*
 Old way of using the entities interface for ver 1.3.1, which is the supported interface
@@ -206,7 +209,7 @@ readConfig(readConfigFile, function(conf, err) {
 				   } else {
 						var allowChanges = "<i class='fa fa-unlock fa-fw'></i>";
 						
-						var logOutput = entities.encodeNonUTF(log);
+						var logOutput = encode(log, {mode: 'extensive', level: 'all'}); //Old style: entities.encodeNonUTF(log);
 				   		//Convert newlines into HTML breaks
 			  	   		logOutput = logOutput.replace(/\&\#10\;/g, '<br/>');
 							

@@ -23,10 +23,16 @@ var async = require('async');
 var exec = require('child_process').exec;
 var spawn = require('child_process').spawn;
 
-//Old style: var Entities = require('html-entities').AllHtmlEntities;
+
+/*
+Old way of using the entities interface for ver 1.3.1, which is the supported interface
+for the old Windows Server < 1.8.4:
+const Entities = require('html-entities').AllHtmlEntities;
  
-//Old style: var entities = new Entities();
-//import {encode} from 'html-entities';
+const entities = new Entities();
+
+*/ 
+
 var Entities = require('html-entities');
 var encode = Entities.encode;
 
