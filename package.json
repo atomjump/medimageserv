@@ -14,7 +14,7 @@
     "async": "^2.6.0",
     "connect": "*",
     "date-format-lite": "*",
-    "drivelist": "~9.2.4",
+    "drivelist": ">=5.2.2",
     "express": "*",
     "fs-extra": "^4.0.2",
     "glob": "*",
