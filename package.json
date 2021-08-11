@@ -38,6 +38,7 @@
     "url": "^0.11.0",
     "html-entities": "*",
     "uuid": "*",
+    "fstream": ">1.0.12",
     "unzip": "*"
   },
   "stable-1-0-dependencies": {
