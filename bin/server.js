@@ -1953,9 +1953,12 @@ function getJSONP(url) {
 
 function removeTempUploadedFile(files) {
 
+	if(verbose == true) console.log("Removing temporary file.");
+
 	if(files && files.file1 && files.file1[0]) {
 
 		var fileName = files.file1[0].path;
+		if(verbose == true) console.log("Removing temporary file path " + fileName);
 		
 		fs.unlink(fileName, (err) => {
 			if (err) {
