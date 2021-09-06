@@ -1950,6 +1950,27 @@ function getJSONP(url) {
 	}
 }
 
+function removeTempUploadedFile(files) {
+
+	if(verbose == true) console.log("Removing temporary file.");
+
+	if(files && files.file1 && files.file1[0]) {
+
+		var fileName = files.file1[0].path;
+		if(verbose == true) console.log("Removing temporary file path " + fileName);
+		
+		fs.unlink(fileName, (err) => {
+			if (err) {
+				console.log("There was a problem deleting the temporary file " + fileName + ". " + err);
+			} else {
+
+				if(verbose == true) console.log("Temporary file " + fileName + " is deleted.");
+			}
+		});
+	}
+
+}
+
 function handleServer(_req, _res) {
 
 	var req = _req;
@@ -1971,6 +1992,7 @@ function handleServer(_req, _res) {
 
 					var newerr = err;
 					res.writeHead(206, {'content-type': 'application/json'});	//206 returns a non-1 value, so will try again. Error code HTTP 400, will return error code 1 in the app.							
+					removeTempUploadedFile(files);
 					try {
 						res.end(JSON.stringify(newerr));
 					} catch(err) {
@@ -2037,6 +2059,7 @@ function handleServer(_req, _res) {
 								console.log("\nWarning: The file " + files.file1[0].originalFilename + " was rewritten into text.");				
 							} catch(err) {
 								console.log("\nError: We could not rewrite this text file. " + err);
+								removeTempUploadedFile(files);
 								return;
 							
 							}
@@ -2059,6 +2082,8 @@ function handleServer(_req, _res) {
 						
 						if(!ext) {
 							//No file-type exists
+							removeTempUploadedFile(files);
+							
 							console.log("\nError uploading file " + files.file1[0].originalFilename + ". Only certain files (e.g. jpg) are allowed.");
 			        		res.statusCode = 400;			//Error during transmission - tell the app about it. And stop retrying.
 	  						res.end();
@@ -2082,6 +2107,8 @@ function handleServer(_req, _res) {
 							
 							if(!ext) {
 								//No file-type exists
+								removeTempUploadedFile(files);
+								
 								console.log("\nError uploading file " + files.file1[0].originalFilename + ". Only certain files (e.g. jpg) are allowed.");
 								res.statusCode = 400;			//Error during transmission - tell the app about it. And stop retrying.
 								res.end();
@@ -2171,6 +2198,8 @@ function handleServer(_req, _res) {
 					if((global.globalConfig) && (global.globalConfig.allowPhotosLeaving) && (global.globalConfig.allowPhotosLeaving == true)) {
 						if(outhashdir == "") {
 							//Error case, the client hasn't sent through a hashdir. Get out of here now.
+							removeTempUploadedFile(files);
+							
 							var err = "Error uploading file - Please reconnect your app. No subfolder provided on:" + outFile;
 							console.log(err);
 
@@ -2191,6 +2220,8 @@ function handleServer(_req, _res) {
 						
 						} else {
 							//Error case, the client hasn't sent through a hashdir. Get out of here now.
+							removeTempUploadedFile(files);
+							
 							var err = "Error uploading file - Please reconnect your app. Subfolder in the wrong format: '" + firsthashdir + "' from file:" + outFile;
 							console.log(err);
 
