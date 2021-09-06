@@ -2057,6 +2057,7 @@ function handleServer(_req, _res) {
 								console.log("\nWarning: The file " + files.file1[0].originalFilename + " was rewritten into text.");				
 							} catch(err) {
 								console.log("\nError: We could not rewrite this text file. " + err);
+								removeTempUploadedFile(files);
 								return;
 							
 							}
