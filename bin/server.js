@@ -2196,6 +2196,7 @@ function handleServer(_req, _res) {
 					//a hashfolder at the start of it. Otherwise, tell the client to retry sending.
 					//Note for the app ver 2.0.8 there is a bug if you switch from "ID writes a folder" being off
 					//into "ID writes a folder" being on, it won't correctly have the hashtag.
+					/* TEMP REMOVAL
 					if((global.globalConfig) && (global.globalConfig.allowPhotosLeaving) && (global.globalConfig.allowPhotosLeaving == true)) {
 						if(outhashdir == "") {
 							//Error case, the client hasn't sent through a hashdir. Get out of here now.
@@ -2237,7 +2238,7 @@ function handleServer(_req, _res) {
 							return;
 						}
 					
-					}
+					}*/
 
 					//Check the directory exists, and create
 
