@@ -64,7 +64,7 @@ var httpsFlag = false;				//whether we are serving up https (= true) or http (= 
 var serverOptions = {};				//default https server options (see nodejs https module)
 var bytesTransferred = 0;
 var noWin = false;					//By default we are on Windows
-var maxUploadSize = 10485760;		//In bytes, max allowed = 10MB
+var maxUploadSize = 16777216;		//In bytes, max allowed = 16MB, now that iPhones have 4032x3024, which, if aliased. e.g. a photo of a screen, can be larger than 10MB, e.g. 12MB.
 var readingRemoteServer = false;		//We have started reading the remote server
 var allowPhotosLeaving = false;			//An option to allow/prevent photos from leaving the server
 var allowGettingRemotePhotos = false;	//An option to allow reading a proxy server - usually the client (often Windows) will need this
