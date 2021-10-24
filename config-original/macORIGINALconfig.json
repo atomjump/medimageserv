@@ -17,5 +17,6 @@
       				 	 { "extension": ".m4a", "mime": "audio/m4a" },
       				 	 { "extension": ".csv", "mime": "text/csv" },
       				 	 { "extension": ".json", "mime": "application/json" }  ],
-      "allowedChars" : "a-zA-z0-9#._-"
+      "allowedChars" : "a-zA-z0-9#._-",
+      "maxUploadSize" : 16777216
 }
