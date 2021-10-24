@@ -379,6 +379,12 @@ function checkConfigCurrent(setVals, cb) {
 
 			 }
 			 
+			 if(content.maxUploadSize) {
+			 	//Modify the max upload size
+			 	maxUploadSize = content.maxUploadSize;			 
+			 }
+			 
+			 
 			 if(content.webProxy) {
 			 	//There is a web proxy server used for download requests from the web.
 			 	//Format: "http://" + user + ":" + password + "@" + host + ":" + port
