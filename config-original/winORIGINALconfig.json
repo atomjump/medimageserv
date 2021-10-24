@@ -16,7 +16,9 @@
       				 	 { "extension": ".m4v", "mime": "video/mp4" },
       				 	 { "extension": ".m4a", "mime": "audio/m4a" },
       				 	 { "extension": ".csv", "mime": "text/csv" },
-      				 	 { "extension": ".json", "mime": "application/json" }  ],
+      				 	 { "extension": ".json", "mime": "application/json" },
+      				 	 { "extension": ".heic", "mime": "image/heic" },
+      				 	 { "extension": ".heif", "mime": "image/heif" }  ],
       "allowedChars" : "a-zA-z0-9#._-",
       "maxUploadSize" : 16777216
 }
