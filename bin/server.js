@@ -380,6 +380,8 @@ function checkConfigCurrent(setVals, cb) {
 
 			 }
 			 
+	 
+			 
 			 if(content.maxUploadSize) {
 			 	//Modify the max upload size
 			 	maxUploadSize = content.maxUploadSize;			 
@@ -1865,7 +1867,7 @@ function httpHttpsCreateServer(options) {
 
 			} else {
 				console.log("Starting http server.");
-				http.createServer(handleServer).listen(listenPort);
+				http.createServer(options, handleServer).listen(listenPort);
 			}
 		}
 	});
@@ -1983,11 +1985,18 @@ function handleServer(_req, _res) {
 	var res = _res;
 	var body = [];
 
+
 	//Set headers e.g. allowing CORS access
-	if((global.globalConfig)&&(global.globalConfig.headers)) {
+	 if((global.globalConfig)&&(global.globalConfig.headers)) {
 		for(var cnt = 0; cnt < global.globalConfig.headers.length; cnt++) {
 			res.setHeader(global.globalConfig.headers[cnt].header, global.globalConfig.headers[cnt].value);	//E.g. "Access-Control-Allow-Origin", "*"
 		}
+	}
+	
+	if (req.method === 'OPTIONS' ) {
+		res.writeHead(200);
+		res.end();
+		return;
 	}
 
 	if (req.url === '/api/photo' && req.method === 'POST') {
