@@ -23,5 +23,5 @@
       				 	 { "extension": ".heif", "mime": "image/heif" }   ],
       "allowedChars" : "a-zA-z0-9#._-",
       "maxUploadSize" : 16777216,
-      "headers" : [ { "header": "Access-Control-Allow-Origin", "value": "[LeaveJustStarForBrowserAppAccess]" } ]
+      "headers" : [ { "header": "Access-Control-Allow-Origin", "value": "*" } ]
 }
