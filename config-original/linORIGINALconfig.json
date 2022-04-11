@@ -22,5 +22,9 @@
       				 	 { "extension": ".heic", "mime": "image/heic" },
       				 	 { "extension": ".heif", "mime": "image/heif" }   ],
       "allowedChars" : "a-zA-z0-9#._-",
-      "maxUploadSize" : 16777216
+      "maxUploadSize" : 16777216,
+      "headers" : [ { "header": "Access-Control-Allow-Origin", "value": "*" },
+      				{ "header": "Access-Control-Request-Method", "value": "*" },
+      				{ "header": "Access-Control-Allow-Headers", "value": "*" },
+      				{ "header": "Access-Control-Allow-Methods", "value": "OPTIONS, GET, POST" } ]
 }
