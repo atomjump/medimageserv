@@ -1865,7 +1865,9 @@ function httpHttpsCreateServer(options) {
 
 			} else {
 				console.log("Starting http server.");
-				http.createServer(options, handleServer).listen(listenPort);
+				http.createServer(handleServer).listen(listenPort);			//Note: in vers 1.8.5.x on Windows 'options' cannot be the 1st param,
+																			//but it is OK in 2.x on Windows.
+
 			}
 		}
 	});
